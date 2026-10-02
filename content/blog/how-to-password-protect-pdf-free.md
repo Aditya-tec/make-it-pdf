@@ -1,5 +1,5 @@
 ---
-title: "How to Password-Protect a PDF Free — AES-256 Encryption in Your Browser"
+title: "How to Password-Protect a PDF Free: AES-256 Encryption in Your Browser"
 excerpt: "Add a strong password to your PDF using AES-256 encryption, entirely in your browser. Your password is never sent to any server."
 relatedTools: ["encrypt-pdf", "organize-pages", "add-watermark"]
 ---
@@ -15,7 +15,7 @@ Password-protected PDFs require the password to open. This protects:
 
 ## What is AES-256 encryption?
 
-AES-256 (Advanced Encryption Standard with a 256-bit key) is a widely used, standardised cipher for protecting sensitive data. A correctly encrypted PDF cannot be read without the password — even if someone intercepts the file.
+AES-256 (Advanced Encryption Standard with a 256-bit key) is a widely used, standardised cipher for protecting sensitive data. A correctly encrypted PDF cannot be read without the password, even if someone intercepts the file.
 
 ## How to password-protect a PDF free
 

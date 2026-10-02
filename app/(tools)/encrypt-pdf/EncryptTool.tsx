@@ -93,7 +93,7 @@ export default function EncryptTool() {
           </div>
 
           <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-xl p-3 text-xs text-amber-700 dark:text-amber-300 max-w-sm">
-            ⚠️ Your password is never sent to any server. Store it safely — there is no recovery.
+            ⚠️ Your password is never sent to any server. Store it safely, there is no recovery.
           </div>
 
           <button

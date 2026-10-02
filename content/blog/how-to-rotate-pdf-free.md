@@ -1,5 +1,5 @@
 ---
-title: "How to Rotate a PDF Free — 90°, 180°, or 270°"
+title: "How to Rotate a PDF Free: 90°, 180°, or 270°"
 excerpt: "Rotate every page of a PDF in your browser. Additive rotation, no upload."
 relatedTools: ["rotate-pdf","organize-pages","crop-resize"]
 ---
@@ -17,7 +17,7 @@ Rotate every page of a PDF in your browser. Additive rotation, no upload.
 
 ## Privacy
 
-All processing happens in your browser. For OCR, the English language model is served from this site — not a third-party CDN.
+All processing happens in your browser. For OCR, the English language model is served from this site, not a third-party CDN.
 
 ## Related tools
 

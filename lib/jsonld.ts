@@ -25,7 +25,7 @@ export function toolJsonLd(tool: Tool) {
       },
       {
         "@type": "HowTo",
-        name: `How to ${tool.name.toLowerCase()} — step by step`,
+        name: `How to ${tool.name.toLowerCase()}: step by step`,
         step: tool.howTo.map((text, i) => ({
           "@type": "HowToStep",
           position: i + 1,

@@ -1,5 +1,5 @@
 ---
-title: "How to Split a PDF File Free — Extract Pages Instantly"
+title: "How to Split a PDF File Free: Extract Pages Instantly"
 excerpt: "Extract individual pages or custom page ranges from any PDF, all in your browser. No upload, no account, no watermark."
 relatedTools: ["split-pdf", "merge-pdf", "organize-pages"]
 ---
@@ -13,12 +13,12 @@ Splitting a PDF is useful when you need to:
 - Break a 200-page scanned book into chapters
 - Separate a combined bank statement into individual months
 
-## How to split a PDF free — no upload
+## How to split a PDF free: no upload
 
 1. Open the **Split PDF** tool.
 2. Drop your PDF onto the upload zone.
 3. Choose your method:
-   - **Click pages**: Thumbnail grid appears — click the pages you want to extract.
+   - **Click pages**: Thumbnail grid appears, click the pages you want to extract.
    - **Page ranges**: Type ranges like `1-3, 5, 7-10` for precise control.
 4. Click **Split PDF**.
 5. If you selected multiple pages, you get a ZIP file containing each as a separate PDF. Single-page extractions download directly as a PDF.

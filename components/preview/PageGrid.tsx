@@ -1,5 +1,5 @@
 "use client";
-// ponytail: lazy IntersectionObserver rendering — no virtualization lib.
+// ponytail: lazy IntersectionObserver rendering, no virtualization lib.
 // Upgrade path: react-virtual if page count > 300 causes jank.
 import { useEffect, useRef, useState, useCallback } from "react";
 

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function Privacy() {
   return (
-    <article className="prose dark:prose-invert max-w-3xl mx-auto px-4 py-12">
+    <article className="prose paper max-w-3xl mx-4 sm:mx-8 my-12 sm:my-16 p-6 sm:p-10">
       <h1>Privacy Policy</h1>
       <p><em>Last updated: October 2026</em></p>
 
@@ -28,7 +28,7 @@ export default function Privacy() {
       <h2>Passwords</h2>
       <p>
         A password you enter in the Encrypt PDF tool is used only in your browser to encrypt your file.
-        It is never transmitted. We cannot recover it — if you lose it, the file cannot be opened.
+        It is never transmitted. We cannot recover it, if you lose it, the file cannot be opened.
       </p>
 
       <h2>Third parties</h2>

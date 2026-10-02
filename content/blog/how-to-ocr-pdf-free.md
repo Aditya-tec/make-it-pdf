@@ -1,5 +1,5 @@
 ---
-title: "How to OCR a PDF Free — Make Scans Searchable"
+title: "How to OCR a PDF Free: Make Scans Searchable"
 excerpt: "Turn a scanned PDF into a searchable document with in-browser OCR. No CDN language downloads."
 relatedTools: ["ocr-pdf","extract-text","compress-pdf"]
 ---
@@ -17,7 +17,7 @@ Turn a scanned PDF into a searchable document with in-browser OCR. No CDN langua
 
 ## Privacy
 
-All processing happens in your browser. For OCR, the English language model is served from this site — not a third-party CDN.
+All processing happens in your browser. For OCR, the English language model is served from this site, not a third-party CDN.
 
 ## Related tools
 

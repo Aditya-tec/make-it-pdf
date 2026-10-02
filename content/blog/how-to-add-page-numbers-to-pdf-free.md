@@ -17,7 +17,7 @@ Number your PDF with format, start number, and skip-cover options. No signup.
 
 ## Privacy
 
-All processing happens in your browser. For OCR, the English language model is served from this site — not a third-party CDN.
+All processing happens in your browser. For OCR, the English language model is served from this site, not a third-party CDN.
 
 ## Related tools
 

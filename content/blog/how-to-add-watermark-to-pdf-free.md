@@ -1,6 +1,6 @@
 ---
-title: "How to Add a Watermark to a PDF Free — Text or Image"
-excerpt: "Overlay a text watermark on every page of your PDF. Control opacity, rotation and size — all without uploading your file."
+title: "How to Add a Watermark to a PDF Free: Text or Image"
+excerpt: "Overlay a text watermark on every page of your PDF. Control opacity, rotation and size, all without uploading your file."
 relatedTools: ["add-watermark", "organize-pages", "encrypt-pdf"]
 ---
 

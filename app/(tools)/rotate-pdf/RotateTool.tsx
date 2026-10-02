@@ -52,7 +52,7 @@ export default function RotateTool() {
               </button>
             ))}
           </div>
-          <p className="text-xs text-slate-500">Rotation is additive — already-rotated pages keep their orientation.</p>
+          <p className="text-xs text-slate-500">Rotation is additive, already-rotated pages keep their orientation.</p>
           <button onClick={go} className="self-start bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl">
             Rotate PDF
           </button>

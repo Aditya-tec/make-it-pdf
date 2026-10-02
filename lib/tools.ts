@@ -78,7 +78,7 @@ export const TOOLS: Tool[] = [
     howTo: [
       "Upload your PDF.",
       "Choose a compression level: Light, Medium, or Heavy.",
-      "Click 'Compress' — the before/after size appears when done.",
+      "Click 'Compress', the before/after size appears when done.",
       "Download only if you're happy with the result.",
     ],
     faq: [
@@ -188,7 +188,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "How many undo steps are available?",
-        a: "Unlimited — we keep the full history in memory until you close the page.",
+        a: "Unlimited, we keep the full history in memory until you close the page.",
       },
       {
         q: "Is there a page limit?",
@@ -228,7 +228,7 @@ export const TOOLS: Tool[] = [
     name: "Encrypt PDF",
     tagline: "Password-protect your PDF with AES-256",
     description:
-      "Set a password on your PDF using AES-256 encryption. The file is processed entirely in your browser — we never see your password or your file.",
+      "Set a password on your PDF using AES-256 encryption. The file is processed entirely in your browser, we never see your password or your file.",
     icon: "🔒",
     category: "security",
     howTo: [
@@ -240,7 +240,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Can I remove the password later?",
-        a: "Yes — use our Remove Password tool with the same password, or open the PDF in a viewer and save/print a copy without one.",
+        a: "Yes, use our Remove Password tool with the same password, or open the PDF in a viewer and save/print a copy without one.",
       },
       {
         q: "What encryption standard is used?",
@@ -280,7 +280,7 @@ export const TOOLS: Tool[] = [
     name: "Rotate PDF",
     tagline: "Rotate every page 90°, 180°, or 270°",
     description:
-      "Rotate an entire PDF in your browser. Rotation is additive — already-rotated pages keep their orientation and get another turn.",
+      "Rotate an entire PDF in your browser. Rotation is additive, already-rotated pages keep their orientation and get another turn.",
     icon: "🔄",
     category: "edit",
     howTo: [
@@ -316,7 +316,7 @@ export const TOOLS: Tool[] = [
     ],
     faq: [
       {
-        q: "Contain vs stretch — what's the difference?",
+        q: "Contain vs stretch: what's the difference?",
         a: "Contain keeps aspect ratio and may leave empty margins. Stretch fills the page and may distort the content.",
       },
     ],
@@ -327,7 +327,7 @@ export const TOOLS: Tool[] = [
     name: "Page Numbers",
     tagline: "Add page numbers with format and position",
     description:
-      "Number every page (or skip a cover). Choose format, starting number, font size, and position — all in your browser.",
+      "Number every page (or skip a cover). Choose format, starting number, font size, and position, all in your browser.",
     icon: "🔢",
     category: "edit",
     howTo: [
@@ -339,7 +339,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Can I start at a number other than 1?",
-        a: "Yes — set the starting number before applying.",
+        a: "Yes, set the starting number before applying.",
       },
     ],
     related: ["headers-footers", "add-watermark", "organize-pages"],
@@ -371,7 +371,7 @@ export const TOOLS: Tool[] = [
     name: "Remove Password",
     tagline: "Unlock a PDF when you know the password",
     description:
-      "Decrypt a password-protected PDF using the correct password. Processing stays in your browser — the password is never uploaded.",
+      "Decrypt a password-protected PDF using the correct password. Processing stays in your browser, the password is never uploaded.",
     icon: "🔓",
     category: "security",
     howTo: [
@@ -393,7 +393,7 @@ export const TOOLS: Tool[] = [
     name: "OCR PDF",
     tagline: "Make a scanned PDF searchable",
     description:
-      "Run OCR on scanned pages and download a searchable PDF with an invisible text layer. English is bundled locally — nothing is fetched from a CDN.",
+      "Run OCR on scanned pages and download a searchable PDF with an invisible text layer. English is bundled locally, nothing is fetched from a CDN.",
     icon: "👁️",
     category: "edit",
     howTo: [
@@ -429,7 +429,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Are filled-in values kept?",
-        a: "Yes — field values are baked into the page appearance, then the interactive fields are removed.",
+        a: "Yes, field values are baked into the page appearance, then the interactive fields are removed.",
       },
     ],
     related: ["redact-pdf", "encrypt-pdf", "privacy-scanner"],
@@ -450,7 +450,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Is the text really gone?",
-        a: "Yes for redacted pages — they become images with the boxes burned in, so Extract Text cannot recover what was under a box.",
+        a: "Yes for redacted pages, they become images with the boxes burned in, so Extract Text cannot recover what was under a box.",
       },
     ],
     related: ["flatten-pdf", "privacy-scanner", "encrypt-pdf"],
@@ -460,7 +460,7 @@ export const TOOLS: Tool[] = [
     name: "Invert Colours",
     tagline: "Dark mode, grayscale, or sepia pages",
     description:
-      "Re-render pages inverted, grayscale, or sepia. Pages become images (text is no longer selectable) — labeled clearly before you run.",
+      "Re-render pages inverted, grayscale, or sepia. Pages become images (text is no longer selectable), labeled clearly before you run.",
     icon: "🌙",
     category: "convert",
     howTo: [

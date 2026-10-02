@@ -1,5 +1,5 @@
 ---
-title: "How to Convert PDF to JPG Free — High Quality, No Upload"
+title: "How to Convert PDF to JPG Free: High Quality, No Upload"
 excerpt: "Render every page of your PDF as a high-quality JPG or PNG image, right in your browser. No signup, no watermark."
 relatedTools: ["pdf-to-jpg", "images-to-pdf", "compress-pdf"]
 ---
@@ -29,9 +29,9 @@ DPI (dots per inch) controls the image resolution:
 - **150 DPI**: Good quality, moderate file size. The safe default.
 - **300 DPI**: Print quality, large files. Slow on mobile for large pages.
 
-**Tip**: Avoid 300 DPI on mobile — rendering a large page at high resolution uses significant memory and may be slow or fail on older devices.
+**Tip**: Avoid 300 DPI on mobile, rendering a large page at high resolution uses significant memory and may be slow or fail on older devices.
 
-## JPG vs PNG — which to choose?
+## JPG vs PNG: which to choose?
 
 | Format | Best for | File size |
 |--------|----------|-----------|

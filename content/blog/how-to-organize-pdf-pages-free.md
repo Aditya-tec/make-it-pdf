@@ -1,6 +1,6 @@
 ---
 title: "How to Reorder, Rotate and Delete PDF Pages Free"
-excerpt: "Drag pages to reorder, rotate individual pages, and delete unwanted pages — all in your browser. Undo any mistake instantly."
+excerpt: "Drag pages to reorder, rotate individual pages, and delete unwanted pages, all in your browser. Undo any mistake instantly."
 relatedTools: ["organize-pages", "split-pdf", "merge-pdf"]
 ---
 
@@ -16,23 +16,23 @@ relatedTools: ["organize-pages", "split-pdf", "merge-pdf"]
 1. Open the **Organize Pages** tool.
 2. Drop your PDF onto the upload zone.
 3. Page thumbnails appear. Three actions are available per page:
-   - **Drag** to reorder — grab any thumbnail and drop it in the new position.
-   - **Rotate icon** — rotates the page 90° clockwise each click.
-   - **Delete icon** — removes the page from the output.
-4. Made a mistake? Click **Undo** — the full history is kept until you close the tab.
+   - **Drag** to reorder, grab any thumbnail and drop it in the new position.
+   - **Rotate icon**, rotates the page 90° clockwise each click.
+   - **Delete icon**, removes the page from the output.
+4. Made a mistake? Click **Undo**, the full history is kept until you close the tab.
 5. When you are happy with the arrangement, click **Save PDF** and download.
 
 ## Keyboard and accessibility
 
-The page grid is keyboard-navigable — tab between pages and use Enter/Space to select. Rotate and delete buttons are fully labelled for screen readers.
+The page grid is keyboard-navigable, tab between pages and use Enter/Space to select. Rotate and delete buttons are fully labelled for screen readers.
 
 ## How many undo steps are available?
 
-Unlimited — every change is recorded in memory. Very long editing sessions on large PDFs may use significant browser memory, but there is no artificial cap.
+Unlimited, every change is recorded in memory. Very long editing sessions on large PDFs may use significant browser memory, but there is no artificial cap.
 
 ## Does organising pages affect quality?
 
-No. Pages are copied exactly using pdf-lib — no re-rendering, no quality loss.
+No. Pages are copied exactly using pdf-lib, no re-rendering, no quality loss.
 
 ## Combining with other tools
 

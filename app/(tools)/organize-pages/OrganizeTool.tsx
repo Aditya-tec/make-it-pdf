@@ -13,7 +13,7 @@ import type { PageOp } from "@/lib/workers/engines/organizePages";
 export default function OrganizeTool() {
   const [file, setFile] = useState<File | null>(null);
   const [pages, setPages] = useState<PageItem[]>([]);
-  // undo stack — ponytail: unlimited, limited by RAM; fine for typical docs
+  // undo stack, ponytail: unlimited, limited by RAM; fine for typical docs
   const [history, setHistory] = useState<PageItem[][]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const pdfRef = useRef<PDFDocumentProxy | null>(null);

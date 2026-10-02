@@ -1,12 +1,12 @@
 ---
-title: "How to Redact a PDF Free — Permanently Black Out Text"
-excerpt: "Draw black boxes that permanently remove content (not just paint over it) — all in your browser."
+title: "How to Redact a PDF Free: Permanently Black Out Text"
+excerpt: "Draw black boxes that permanently remove content (not just paint over it), all in your browser."
 relatedTools: ["redact-pdf","privacy-scanner","flatten-pdf"]
 ---
 
 ## How to Redact a PDF Free
 
-Draw black boxes that permanently remove content (not just paint over it) — all in your browser.
+Draw black boxes that permanently remove content (not just paint over it), all in your browser.
 
 ## Steps
 
@@ -17,7 +17,7 @@ Draw black boxes that permanently remove content (not just paint over it) — al
 
 ## Privacy
 
-All processing happens in your browser. For OCR, the English language model is served from this site — not a third-party CDN.
+All processing happens in your browser. For OCR, the English language model is served from this site, not a third-party CDN.
 
 ## Related tools
 

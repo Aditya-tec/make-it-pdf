@@ -17,7 +17,7 @@ Put header/footer text, date, and page numbers on every page in your browser.
 
 ## Privacy
 
-All processing happens in your browser. For OCR, the English language model is served from this site — not a third-party CDN.
+All processing happens in your browser. For OCR, the English language model is served from this site, not a third-party CDN.
 
 ## Related tools
 

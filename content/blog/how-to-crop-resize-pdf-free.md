@@ -1,12 +1,12 @@
 ---
 title: "How to Crop or Resize a PDF Free"
-excerpt: "Trim margins or resize pages to A4/Letter with contain or stretch — entirely offline."
+excerpt: "Trim margins or resize pages to A4/Letter with contain or stretch, entirely offline."
 relatedTools: ["crop-resize","rotate-pdf","compress-pdf"]
 ---
 
 ## How to Crop or Resize a PDF Free
 
-Trim margins or resize pages to A4/Letter with contain or stretch — entirely offline.
+Trim margins or resize pages to A4/Letter with contain or stretch, entirely offline.
 
 ## Steps
 
@@ -17,7 +17,7 @@ Trim margins or resize pages to A4/Letter with contain or stretch — entirely o
 
 ## Privacy
 
-All processing happens in your browser. For OCR, the English language model is served from this site — not a third-party CDN.
+All processing happens in your browser. For OCR, the English language model is served from this site, not a third-party CDN.
 
 ## Related tools
 

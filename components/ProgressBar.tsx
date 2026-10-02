@@ -5,14 +5,14 @@ interface Props {
 
 export default function ProgressBar({ percent, message }: Props) {
   return (
-    <div className="w-full max-w-md mx-auto flex flex-col gap-2 py-8">
-      <div className="flex justify-between text-sm text-slate-600 dark:text-slate-300">
+    <div className="w-full max-w-md mx-auto flex flex-col gap-3 py-8">
+      <div className="flex justify-between gap-4 label-mono text-xs text-black">
         <span>{message || "Processing…"}</span>
         <span>{percent}%</span>
       </div>
-      <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
+      <div className="w-full bg-white border-4 border-black h-7 shadow-[4px_4px_0_#000]">
         <div
-          className="bg-indigo-600 h-2.5 rounded-full transition-all duration-300"
+          className="bg-volt h-full border-r-4 border-black transition-all duration-300"
           style={{ width: `${percent}%` }}
           role="progressbar"
           aria-valuenow={percent}

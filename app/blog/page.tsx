@@ -3,30 +3,29 @@ import { getAllPosts } from "@/lib/blog";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "How-to PDF Guides — Free Tips & Tutorials",
+  title: "How-to PDF Guides: Free Tips & Tutorials",
   description:
-    "Step-by-step guides for common PDF tasks: merge, split, compress, convert, and more — all free, no upload required.",
+    "Step-by-step guides for common PDF tasks: merge, split, compress, convert, and more. All free, no upload required.",
 };
 
 export default function BlogIndex() {
   const posts = getAllPosts();
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-2">How-to PDF Guides</h1>
-      <p className="text-slate-500 dark:text-slate-400 mb-8">
-        Free, step-by-step tutorials for every PDF task.
-      </p>
-      <div className="flex flex-col gap-4">
+    <div className="max-w-4xl px-4 sm:px-8 py-12 sm:py-16">
+      <span className="inline-block -rotate-2 bg-white text-black border-4 border-black label-mono text-xs px-3 py-1 mb-6">
+        {posts.length} guides
+      </span>
+      <h1 className="headline text-6xl sm:text-8xl text-white [text-shadow:6px_6px_0_#000] mb-5">How-to guides</h1>
+      <p className="text-xl italic text-slate-300 mb-12">Free, step-by-step tutorials for every PDF task.</p>
+      <div className="flex flex-col gap-6">
         {posts.map((post) => (
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="group border border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-all"
+            className="block bg-white text-black border-4 border-black p-5 shadow-[6px_6px_0_#fff] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none hover:bg-volt transition-transform"
           >
-            <h2 className="font-semibold text-lg group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-              {post.title}
-            </h2>
-            <p className="text-sm text-slate-500 mt-1">{post.excerpt}</p>
+            <h2 className="font-extrabold text-lg">{post.title}</h2>
+            <p className="text-sm text-slate-700 mt-1">{post.excerpt}</p>
           </Link>
         ))}
       </div>

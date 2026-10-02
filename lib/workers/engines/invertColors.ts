@@ -1,4 +1,4 @@
-// Visual invert / grayscale / sepia via canvas. Pages become images — text is NOT selectable afterward.
+// Visual invert / grayscale / sepia via canvas. Pages become images, text is NOT selectable afterward.
 // Labeled honestly in the UI. True content-stream recolor isn't feasible with pdf-lib alone.
 import "@/lib/pdf/pdfjsWorker";
 import * as pdfjsLib from "pdfjs-dist";

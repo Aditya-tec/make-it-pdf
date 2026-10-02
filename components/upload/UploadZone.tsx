@@ -68,11 +68,8 @@ export default function UploadZone({ accept, multiple = false, onFiles, label }:
         role="button"
         tabIndex={0}
         aria-label={label || "Upload files"}
-        className={`border-2 border-dashed rounded-xl p-10 flex flex-col items-center gap-3 cursor-pointer transition-colors
-          ${dragOver
-            ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950"
-            : "border-slate-300 dark:border-slate-600 hover:border-indigo-400 bg-slate-50 dark:bg-slate-800"
-          }`}
+        className={`border-4 border-dashed border-black p-8 sm:p-10 flex flex-col items-center gap-3 cursor-pointer transition-colors
+          ${dragOver ? "bg-volt border-solid" : "bg-white hover:border-solid"}`}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         onDrop={onDrop}
@@ -80,15 +77,16 @@ export default function UploadZone({ accept, multiple = false, onFiles, label }:
         onClick={() => inputRef.current?.click()}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") inputRef.current?.click(); }}
       >
-        <svg className="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
-        <p className="text-slate-600 dark:text-slate-300 font-medium text-center">
+        <span className="w-14 h-14 bg-volt border-4 border-black -rotate-3 flex items-center justify-center" aria-hidden>
+          <svg className="w-7 h-7 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="square" strokeWidth={3} d="M12 19V5m-6 6l6-6 6 6" />
+          </svg>
+        </span>
+        <p className="label-mono text-sm text-black text-center">
           Drop {multiple ? "files" : "a file"} here, or{" "}
-          <span className="text-indigo-600 dark:text-indigo-400">click to browse</span>
+          <span className="underline decoration-4 underline-offset-4">click to browse</span>
         </p>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-600 text-center">
           Accepts: {accept} · Max 100 MB per file · Or paste from clipboard
         </p>
       </div>

@@ -33,34 +33,34 @@ export default async function BlogPost({ params }: Props) {
     .filter(Boolean) as typeof TOOLS;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <Link href="/blog" className="text-sm text-slate-400 hover:text-indigo-600 mb-6 inline-block">
+    <div className="max-w-4xl px-4 sm:px-8 py-12 sm:py-16">
+      <Link href="/blog" className="btn mb-8">
         ← All guides
       </Link>
-      <h1 className="text-3xl font-bold mb-3">{post.title}</h1>
-      <p className="text-slate-500 dark:text-slate-400 mb-8">{post.excerpt}</p>
+      <h1 className="headline text-5xl sm:text-7xl text-white [text-shadow:6px_6px_0_#000] mb-5 break-words">{post.title}</h1>
+      <p className="text-xl italic text-slate-300 mb-10">{post.excerpt}</p>
 
       {/* Prose content */}
       <article
-        className="prose dark:prose-invert max-w-none"
+        className="prose max-w-none paper p-6 sm:p-10"
         dangerouslySetInnerHTML={{ __html: post.contentHtml }}
       />
 
       {/* Related tools */}
       {relatedTools.length > 0 && (
-        <div className="mt-12 border-t border-slate-200 dark:border-slate-700 pt-8">
-          <h2 className="text-xl font-semibold mb-4">Try these tools</h2>
-          <div className="grid sm:grid-cols-2 gap-3">
+        <div className="mt-16">
+          <h2 className="headline text-5xl text-white mb-8">Try these tools</h2>
+          <div className="grid sm:grid-cols-2 gap-6">
             {relatedTools.map((t) => (
               <Link
                 key={t.slug}
                 href={`/${t.slug}`}
-                className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 hover:border-indigo-400 transition-colors"
+                className="flex items-center gap-3 bg-white text-black border-4 border-black p-4 shadow-[6px_6px_0_#fff] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none hover:bg-volt transition-transform"
               >
-                <span className="text-2xl">{t.icon}</span>
-                <div>
-                  <p className="font-medium text-sm">{t.name}</p>
-                  <p className="text-xs text-slate-400 line-clamp-1">{t.tagline}</p>
+                <span className="text-2xl" aria-hidden>{t.icon}</span>
+                <div className="min-w-0">
+                  <p className="label-mono text-xs">{t.name}</p>
+                  <p className="text-xs text-slate-600 line-clamp-1">{t.tagline}</p>
                 </div>
               </Link>
             ))}

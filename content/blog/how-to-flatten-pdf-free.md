@@ -1,5 +1,5 @@
 ---
-title: "How to Flatten a PDF Free — Lock Form Fields"
+title: "How to Flatten a PDF Free: Lock Form Fields"
 excerpt: "Bake form field values into the page so they stay visible but can no longer be edited."
 relatedTools: ["flatten-pdf","redact-pdf","encrypt-pdf"]
 ---
@@ -17,7 +17,7 @@ Bake form field values into the page so they stay visible but can no longer be e
 
 ## Privacy
 
-All processing happens in your browser. For OCR, the English language model is served from this site — not a third-party CDN.
+All processing happens in your browser. For OCR, the English language model is served from this site, not a third-party CDN.
 
 ## Related tools
 

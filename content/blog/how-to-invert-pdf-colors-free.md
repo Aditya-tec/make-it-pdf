@@ -1,5 +1,5 @@
 ---
-title: "How to Invert PDF Colours Free — Dark Mode & Grayscale"
+title: "How to Invert PDF Colours Free: Dark Mode & Grayscale"
 excerpt: "Convert pages to inverted, grayscale, or sepia for easier reading. Runs on your device."
 relatedTools: ["invert-colors","compress-pdf","pdf-to-jpg"]
 ---
@@ -17,7 +17,7 @@ Convert pages to inverted, grayscale, or sepia for easier reading. Runs on your 
 
 ## Privacy
 
-All processing happens in your browser. For OCR, the English language model is served from this site — not a third-party CDN.
+All processing happens in your browser. For OCR, the English language model is served from this site, not a third-party CDN.
 
 ## Related tools
 

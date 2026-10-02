@@ -2,30 +2,19 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200 dark:border-slate-700 mt-16 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
-      <p>
-        All files processed entirely in your browser — nothing is ever uploaded to a server.
-      </p>
-      <p className="mt-2">
-        <Link href="/" className="hover:text-indigo-600 dark:hover:text-indigo-400">
-          PDF Tools
-        </Link>{" "}
-        · Free forever · No watermark · No signup ·{" "}
-        <Link
-          href="/blog"
-          className="hover:text-indigo-600 dark:hover:text-indigo-400"
-        >
-          How-to Guides
-        </Link>{" "}
-        ·{" "}
-        <Link href="/privacy" className="hover:text-indigo-600 dark:hover:text-indigo-400">
-          Privacy
-        </Link>{" "}
-        ·{" "}
-        <Link href="/terms" className="hover:text-indigo-600 dark:hover:text-indigo-400">
-          Terms
-        </Link>
-      </p>
+    <footer className="bg-white text-black border-t-8 border-black">
+      <div className="px-4 sm:px-8 py-10 flex flex-col md:flex-row gap-6 md:items-center md:justify-between">
+        <p className="headline text-5xl">PDF Tools</p>
+        <p className="label-mono text-xs max-w-sm leading-relaxed">
+          Every file is processed in your browser. Nothing is ever uploaded. Free, no watermark, no signup.
+        </p>
+        <nav className="flex flex-wrap gap-x-5 gap-y-2 label-mono text-xs">
+          <Link href="/" className="underline decoration-4 underline-offset-4 hover:bg-volt">Tools</Link>
+          <Link href="/blog" className="underline decoration-4 underline-offset-4 hover:bg-volt">Guides</Link>
+          <Link href="/privacy" className="underline decoration-4 underline-offset-4 hover:bg-volt">Privacy</Link>
+          <Link href="/terms" className="underline decoration-4 underline-offset-4 hover:bg-volt">Terms</Link>
+        </nav>
+      </div>
     </footer>
   );
 }

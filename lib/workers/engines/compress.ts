@@ -39,7 +39,7 @@ export async function run(
       try {
         bitmap = await createImageBitmap(blob);
       } catch {
-        continue; // not a JPEG — skip
+        continue; // not a JPEG, skip
       }
 
       const scale = Math.min(1, preset.maxDim / Math.max(bitmap.width, bitmap.height));

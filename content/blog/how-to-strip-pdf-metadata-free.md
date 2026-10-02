@@ -1,5 +1,5 @@
 ---
-title: "How to Strip PDF Metadata Free — Privacy Scanner"
+title: "How to Strip PDF Metadata Free: Privacy Scanner"
 excerpt: "See author, creator app, and timestamps hidden in your PDF, then download a cleaned copy."
 relatedTools: ["privacy-scanner","encrypt-pdf","redact-pdf"]
 ---
@@ -17,7 +17,7 @@ See author, creator app, and timestamps hidden in your PDF, then download a clea
 
 ## Privacy
 
-All processing happens in your browser. For OCR, the English language model is served from this site — not a third-party CDN.
+All processing happens in your browser. For OCR, the English language model is served from this site, not a third-party CDN.
 
 ## Related tools
 

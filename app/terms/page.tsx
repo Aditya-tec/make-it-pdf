@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function Terms() {
   return (
-    <article className="prose dark:prose-invert max-w-3xl mx-auto px-4 py-12">
+    <article className="prose paper max-w-3xl mx-4 sm:mx-8 my-12 sm:my-16 p-6 sm:p-10">
       <h1>Terms of Use</h1>
       <p><em>Last updated: October 2026</em></p>
 
@@ -20,7 +20,7 @@ export default function Terms() {
       <h2>No warranty</h2>
       <p>
         The tools are provided &ldquo;as is&rdquo;, without warranties of any kind. Output (including
-        converted, compressed or encrypted files) may differ from what you expect — for example, Word
+        converted, compressed or encrypted files) may differ from what you expect, for example, Word
         to PDF conversion is not pixel-perfect. Keep a copy of your original files and check results
         before relying on them.
       </p>

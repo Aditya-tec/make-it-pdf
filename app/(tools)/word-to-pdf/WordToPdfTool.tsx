@@ -49,7 +49,7 @@ export default function WordToPdfTool() {
       <div className="flex flex-col gap-4">
         <PrivacyBadge />
         <p className="text-sm text-slate-600 dark:text-slate-300">
-          Your document is ready. Click <strong>Save as PDF</strong> — your browser will open the print
+          Your document is ready. Click <strong>Save as PDF</strong>, your browser will open the print
           dialog where you can choose &ldquo;Save as PDF&rdquo; as the destination.
         </p>
         <p className="text-xs text-slate-400">

@@ -1,4 +1,4 @@
-/* Shared qpdf WASM loader — Encrypt + Remove Password. Needs COOP/COEP. */
+/* Shared qpdf WASM loader, Encrypt + Remove Password. Needs COOP/COEP. */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export async function loadQpdf(): Promise<any> {
