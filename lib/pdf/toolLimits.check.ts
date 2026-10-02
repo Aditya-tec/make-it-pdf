@@ -7,11 +7,13 @@ function assert(cond: unknown, msg: string) {
   if (!cond) throw new Error(msg);
 }
 
-assert(getToolLimits("merge-pdf").maxFileBytes === 200 * MB, "merge should be 200MB");
+assert(getToolLimits("merge-pdf").maxFileBytes === 300 * MB, "merge should be 300MB");
+assert(getToolLimits("merge-pdf").maxTotalBytes === 600 * MB, "merge total 600MB");
 assert(getToolLimits("encrypt-pdf").weight === "light", "encrypt is light");
-assert(getToolLimits("compress-pdf").maxFileBytes === 100 * MB, "compress should be 100MB");
+assert(getToolLimits("compress-pdf").maxFileBytes === 150 * MB, "compress should be 150MB");
+assert(getToolLimits("compress-pdf").maxTotalBytes === 250 * MB, "compress total 250MB");
 assert(getToolLimits("pdf-to-jpg").weight === "heavy", "pdf-to-jpg is heavy");
-assert(getToolLimits("ocr-pdf").maxFileBytes === 50 * MB, "ocr should be 50MB");
+assert(getToolLimits("ocr-pdf").maxFileBytes === 75 * MB, "ocr should be 75MB");
 assert(getToolLimits("unknown-tool").weight === "heavy", "unknown defaults heavy");
 assert(mbLabel(100 * MB) === 100, "mbLabel");
 

@@ -1,12 +1,50 @@
 import Link from "next/link";
 import { TOOLS, TOOL_CATEGORIES } from "@/lib/tools";
 import TypeSiteName from "@/components/TypeSiteName";
+import ToolIcon from "@/components/ToolIcon";
 
 const STICKERS = [
-  { icon: "⛔", text: "No upload. Files stay in your tab.", rot: "-rotate-2" },
-  { icon: "🔑", text: "No signup. No email wall.", rot: "rotate-1" },
-  { icon: "🚫", text: "No watermark. Ever.", rot: "-rotate-1" },
-  { icon: "⚡", text: `${TOOLS.length} tools. All free.`, rot: "rotate-2" },
+  {
+    text: "No upload. Files stay in your tab.",
+    rot: "-rotate-2",
+    icon: (
+      <svg viewBox="0 0 32 32" className="w-6 h-6" aria-hidden>
+        <path d="M16 2l12 4.5v8c0 8-5.2 13.2-12 15.5C9.2 27.7 4 22.5 4 14.5v-8L16 2z" fill="currentColor" />
+        <path d="M11 16h10" stroke="#ccff00" strokeWidth="2.5" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    text: "No signup. No email wall.",
+    rot: "rotate-1",
+    icon: (
+      <svg viewBox="0 0 32 32" className="w-6 h-6" aria-hidden>
+        <circle cx="16" cy="11" r="5" fill="currentColor" />
+        <path d="M6 28c2-7 6-10 10-10s8 3 10 10" fill="currentColor" />
+        <circle cx="16" cy="11" r="2" fill="#ccff00" />
+      </svg>
+    ),
+  },
+  {
+    text: "No watermark. Ever.",
+    rot: "-rotate-1",
+    icon: (
+      <svg viewBox="0 0 32 32" className="w-6 h-6" aria-hidden>
+        <circle cx="16" cy="16" r="12" fill="currentColor" />
+        <path d="M8 8l16 16" stroke="#ccff00" strokeWidth="3" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    text: `${TOOLS.length} tools. All free.`,
+    rot: "rotate-2",
+    icon: (
+      <svg viewBox="0 0 32 32" className="w-6 h-6" aria-hidden>
+        <path d="M17 2L6 18h8l-1 12 13-16h-8z" fill="currentColor" />
+        <path d="M17 2l-2 8h6z" fill="#ccff00" />
+      </svg>
+    ),
+  },
 ];
 
 const STEPS = [
@@ -46,7 +84,7 @@ export default function Home() {
               className={`${s.rot} flex items-center gap-2 sm:gap-3 bg-white text-black border-4 border-black p-2 sm:p-2.5 shadow-[5px_5px_0_#000]`}
             >
               <span
-                className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 bg-volt border-4 border-black flex items-center justify-center text-lg sm:text-xl"
+                className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 bg-white text-black border-4 border-black flex items-center justify-center shadow-[3px_3px_0_#ccff00]"
                 aria-hidden
               >
                 {s.icon}
@@ -73,8 +111,8 @@ export default function Home() {
                     href={`/${tool.slug}`}
                     className="group flex items-start gap-3 bg-white text-black border-4 border-black p-3.5 shadow-[6px_6px_0_#fff] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none hover:bg-volt transition-transform"
                   >
-                    <span className="w-10 h-10 shrink-0 border-4 border-black flex items-center justify-center text-xl bg-white" aria-hidden>
-                      {tool.icon}
+                    <span className="w-11 h-11 shrink-0 border-4 border-black flex items-center justify-center bg-white text-black shadow-[3px_3px_0_#ccff00] group-hover:shadow-none transition-shadow" aria-hidden>
+                      <ToolIcon slug={tool.slug} className="w-6 h-6" />
                     </span>
                     <span className="min-w-0">
                       <span className="block label-mono text-xs">{tool.name}</span>

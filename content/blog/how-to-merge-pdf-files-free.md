@@ -31,13 +31,13 @@ That's it. No email required. No account. No watermark.
 ## Tips for better results
 
 - **Password-protected PDFs**: Remove the password first (open it in a PDF viewer, enter the password, and save a copy without one), then merge.
-- **Large files**: The tool handles files up to 200 MB total. For very large scans, try [compressing first](/compress-pdf).
+- **Large files**: The tool handles files up to 300 MB per file (600 MB total). For very large scans, try [compressing first](/compress-pdf).
 - **Page order**: Drag file cards before merging, what you see is what you get.
 
 ## Frequently asked questions
 
 **Is there a limit on how many PDFs I can merge?**
-No hard limit. Keep total input under 200 MB for best performance.
+No hard page limit. Keep total input under 600 MB for best performance.
 
 **Will the merged PDF lose quality?**
 No. We copy pages exactly as-is using pdf-lib, there is no re-rendering or quality loss.

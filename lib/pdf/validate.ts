@@ -2,11 +2,11 @@
 import { OOM_USER_MESSAGE } from "./toolLimits";
 
 /** @deprecated Prefer getToolLimits(tool).maxFileBytes — kept for callers without a tool slug. */
-export const MAX_FILE_BYTES = 100 * 1024 * 1024;
+export const MAX_FILE_BYTES = 150 * 1024 * 1024;
 /** @deprecated Prefer getToolLimits(tool).maxTotalBytes */
 export const MAX_TOTAL_BYTES = 250 * 1024 * 1024;
-export const MAX_PAGES = 500;
-export const MAX_OUTPUT_BYTES = 500 * 1024 * 1024;
+export const MAX_PAGES = 750;
+export const MAX_OUTPUT_BYTES = 750 * 1024 * 1024;
 
 const starts = (b: Uint8Array, sig: number[], at = 0) => sig.every((v, i) => b[at + i] === v);
 
@@ -41,7 +41,7 @@ export function assertPageCount(n: number) {
 
 export function assertOutputSize(bytes: number) {
   if (bytes > MAX_OUTPUT_BYTES)
-    throw new Error("The output would be larger than 500 MB. Try fewer pages or a lower DPI.");
+    throw new Error("The output would be larger than 750 MB. Try fewer pages or a lower DPI.");
 }
 
 /** Turn pdf.js / pdf-lib / runtime errors into a message a user can act on. */

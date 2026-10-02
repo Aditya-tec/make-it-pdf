@@ -3,6 +3,7 @@ import { getPost, getAllPosts } from "@/lib/blog";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { TOOLS } from "@/lib/tools";
+import ToolIcon from "@/components/ToolIcon";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -57,7 +58,9 @@ export default async function BlogPost({ params }: Props) {
                 href={`/${t.slug}`}
                 className="flex items-center gap-3 bg-white text-black border-2 border-black rounded-xl p-4 shadow-[3px_3px_0_rgba(255,255,255,0.7)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none hover:bg-volt transition-all duration-150"
               >
-                <span className="text-2xl" aria-hidden>{t.icon}</span>
+                <span className="w-10 h-10 shrink-0 border-2 border-black rounded-md flex items-center justify-center bg-white text-black shadow-[2px_2px_0_#ccff00]" aria-hidden>
+                  <ToolIcon slug={t.slug} className="w-5 h-5" />
+                </span>
                 <div className="min-w-0">
                   <p className="label-mono text-xs">{t.name}</p>
                   <p className="text-xs text-slate-600 line-clamp-1">{t.tagline}</p>

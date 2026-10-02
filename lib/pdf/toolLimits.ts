@@ -8,9 +8,9 @@ export type ToolWeight = "light" | "heavy" | "ocr";
 type Caps = { maxFileBytes: number; maxTotalBytes: number };
 
 const CAPS: Record<ToolWeight, Caps> = {
-  light: { maxFileBytes: 200 * MB, maxTotalBytes: 400 * MB },
-  heavy: { maxFileBytes: 100 * MB, maxTotalBytes: 150 * MB },
-  ocr: { maxFileBytes: 50 * MB, maxTotalBytes: 50 * MB },
+  light: { maxFileBytes: 300 * MB, maxTotalBytes: 600 * MB },
+  heavy: { maxFileBytes: 150 * MB, maxTotalBytes: 250 * MB },
+  ocr: { maxFileBytes: 75 * MB, maxTotalBytes: 75 * MB },
 };
 
 /** Default when a slug is missing — stay conservative (heavy). */

@@ -28,7 +28,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Is there a file size limit?",
-        a: "Merge allows up to 200 MB per file (400 MB total). Heavier tools like Compress or OCR have lower caps.",
+        a: "Merge allows up to 300 MB per file (600 MB total). Heavier tools like Compress or OCR have lower caps.",
       },
       {
         q: "Are my files uploaded anywhere?",
@@ -404,7 +404,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Is there a page limit?",
-        a: "OCR is capped at 50 pages for browser memory. Split larger scans first.",
+        a: "OCR is capped at 75 pages for browser memory. Split larger scans first.",
       },
       {
         q: "Does this upload my file?",

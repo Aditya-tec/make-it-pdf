@@ -40,7 +40,7 @@ export default function OcrTool() {
             onReplace={setFile}
           />
           <p className="text-xs text-slate-500 max-w-md">
-            English OCR model is bundled on this site (no CDN). Cap: 50 pages / 50 MB. Progress is shown page by page.
+            English OCR model is bundled on this site (no CDN). Cap: 75 pages / 75 MB. Progress is shown page by page.
           </p>
           <button onClick={go} className="self-start bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl">
             Run OCR

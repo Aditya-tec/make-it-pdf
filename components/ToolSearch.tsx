@@ -2,6 +2,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isConfident, rankTools } from "@/lib/toolSearch";
+import ToolIcon from "@/components/ToolIcon";
 
 type SpeechRec = {
   lang: string;
@@ -234,8 +235,8 @@ export default function ToolSearch() {
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => go(t.slug)}
                 >
-                  <span className="text-xl shrink-0" aria-hidden>
-                    {t.icon}
+                  <span className="w-9 h-9 shrink-0 border-2 border-black rounded-md flex items-center justify-center bg-white text-black shadow-[2px_2px_0_#ccff00]" aria-hidden>
+                    <ToolIcon slug={t.slug} className="w-5 h-5" />
                   </span>
                   <span className="min-w-0">
                     <span className="block label-mono text-xs">{t.name}</span>

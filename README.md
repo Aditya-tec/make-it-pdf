@@ -11,7 +11,7 @@ Privacy-first PDF tools that run entirely in your browser. Your files never leav
 Most free PDF sites upload your documents to a server. OfflinePDF does the opposite: every tool runs locally via WebAssembly and Web Workers. Close the tab and the file is gone.
 
 - **20 tools** across merge, convert, edit, and security  
-- **Tiered size limits** (light tools up to 200&nbsp;MB; heavy tools 100&nbsp;MB; OCR 50&nbsp;MB / 50 pages)  
+- **Tiered size limits** (light tools up to 300&nbsp;MB; heavy tools 150&nbsp;MB; OCR 75&nbsp;MB / 75 pages)  
 - **Search + voice** in the header to jump to the best tool  
 - **MIT licensed** — free for personal and commercial use  
 

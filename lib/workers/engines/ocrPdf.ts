@@ -5,7 +5,7 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { createWorker } from "tesseract.js";
 import { assertPageCount, MAX_PAGES } from "@/lib/pdf/validate";
 
-const OCR_PAGE_CAP = 50; // ponytail: OCR is heavy; 50 pages is enough for most scans. Raise with care.
+const OCR_PAGE_CAP = 75; // ponytail: OCR is heavy; 75 pages covers most scans. Raise with care.
 
 export async function run(
   files: ArrayBuffer[],
