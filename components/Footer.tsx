@@ -14,18 +14,15 @@ export default function Footer() {
           <Link href="/blog" className="underline decoration-4 underline-offset-4 hover:bg-volt">Guides</Link>
           <Link href="/privacy" className="underline decoration-4 underline-offset-4 hover:bg-volt">Privacy</Link>
           <Link href="/terms" className="underline decoration-4 underline-offset-4 hover:bg-volt">Terms</Link>
+          <a
+            href="https://www.adityakalambe.xyz/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-volt px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0_#000] hover:bg-black hover:text-volt"
+          >
+            Built by Aditya
+          </a>
         </nav>
-      </div>
-      <div className="px-4 sm:px-8 pb-8 label-mono text-xs text-slate-600">
-        Built by{" "}
-        <a
-          href="https://www.adityakalambe.xyz/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline decoration-4 underline-offset-4 text-black hover:bg-volt"
-        >
-          Aditya
-        </a>
       </div>
     </footer>
   );
