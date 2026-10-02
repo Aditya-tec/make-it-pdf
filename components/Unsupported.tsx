@@ -5,7 +5,7 @@ export default function Unsupported({ children }: { children: React.ReactNode })
   return (
     <div
       role="alert"
-      className="bg-volt text-black border-4 border-black shadow-[4px_4px_0_#000] p-4 text-sm font-medium"
+      className="bg-volt text-black border-2 border-black rounded-xl shadow-[2px_2px_0_#000] p-4 text-sm font-medium"
     >
       {children}
     </div>

@@ -1,8 +1,8 @@
-# PDF Tools
+# OfflinePDF
 
 Free, browser-based PDF tools. Merge, split, compress, convert, and more — all processed in the visitor's browser. No upload, no signup, no watermark.
 
-**Live at**: [pdftools.vercel.app](https://pdftools.vercel.app) *(update with your URL after deploy)*
+**Live at**: [offlinepdf.vercel.app](https://offlinepdf.vercel.app) *(update with your URL after deploy)*
 
 ## Tools (v1 — 10 shipped)
 
@@ -34,7 +34,7 @@ Free, browser-based PDF tools. Merge, split, compress, convert, and more — all
 
 1. Push this repo to a free GitHub account:
    ```
-   git remote add origin https://github.com/YOUR_USERNAME/pdftool.git
+   git remote add origin https://github.com/YOUR_USERNAME/offlinepdf.git
    git push -u origin main
    ```
 
@@ -44,7 +44,7 @@ Free, browser-based PDF tools. Merge, split, compress, convert, and more — all
 
 4. Vercel auto-detects Next.js — click **Deploy** with no configuration changes.
 
-5. Your site is live at `https://pdftool-yourname.vercel.app` immediately.
+5. Your site is live at `https://offlinepdf-yourname.vercel.app` immediately.
 
 Every `git push` to `main` triggers an auto-deploy. Pull requests get free preview URLs.
 
@@ -71,7 +71,7 @@ npm run e2e                       # all 10 tools in real Chromium with prod head
 
 In the Vercel dashboard → Settings → Domains, add your domain. Vercel provides free HTTPS. You only pay the registrar (~$10–15/year).
 
-**Then set `NEXT_PUBLIC_SITE_URL=https://yourdomain.com`** (Settings → Environment Variables) and redeploy. It feeds `sitemap.xml`, `robots.txt`, JSON-LD and `metadataBase` (via `lib/site.ts`). If unset, those keep pointing at the `*.vercel.app` host (Vercel's `VERCEL_PROJECT_PRODUCTION_URL`, else `make-it-pdf.vercel.app`), so search engines index the wrong domain. Nothing crashes.
+**Then set `NEXT_PUBLIC_SITE_URL=https://yourdomain.com`** (Settings → Environment Variables) and redeploy. It feeds `sitemap.xml`, `robots.txt`, JSON-LD and `metadataBase` (via `lib/site.ts`). If unset, those keep pointing at the `*.vercel.app` host (Vercel's `VERCEL_PROJECT_PRODUCTION_URL`, else `offlinepdf.vercel.app`), so search engines index the wrong domain. Nothing crashes.
 
 ## Project structure
 

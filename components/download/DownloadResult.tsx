@@ -52,7 +52,7 @@ export default function DownloadResult({ files, onReset }: Props) {
         {files.map((f, i) => (
           <div
             key={i}
-            className="flex flex-col sm:flex-row sm:items-end gap-3 bg-white px-4 py-3 border-4 border-black shadow-[6px_6px_0_#000]"
+            className="flex flex-col sm:flex-row sm:items-end gap-3 bg-white px-4 py-3 border-2 border-black rounded-xl shadow-[3px_3px_0_#000]"
           >
             <div className="min-w-0 flex-1">
               <label
@@ -69,7 +69,7 @@ export default function DownloadResult({ files, onReset }: Props) {
                   onChange={(e) => setName(i, e.target.value)}
                   onBlur={() => setName(i, safeName(names[i] ?? f.name, f.name))}
                   spellCheck={false}
-                  className="w-full font-medium text-sm bg-white border-4 border-black focus:bg-volt rounded-lg pl-3 pr-9 py-2 outline-none"
+                  className="w-full font-medium text-sm bg-white border-2 border-black focus:bg-volt rounded-lg pl-3 pr-9 py-2 outline-none"
                 />
                 <span
                   className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400"
@@ -95,7 +95,7 @@ export default function DownloadResult({ files, onReset }: Props) {
 
       <button
         onClick={onReset}
-        className="label-mono text-xs text-black underline decoration-4 underline-offset-4 hover:bg-volt"
+        className="label-mono text-xs text-black underline decoration-2 underline-offset-4 hover:bg-volt"
       >
         Process another file
       </button>

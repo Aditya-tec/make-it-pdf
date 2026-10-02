@@ -8,7 +8,7 @@ export default function NotFound() {
       </h1>
       <p className="text-xl italic text-slate-300 mb-10">That page doesn&apos;t exist.</p>
       <Link href="/" className="btn">
-        Back to all PDF tools
+        Back to OfflinePDF
       </Link>
     </div>
   );

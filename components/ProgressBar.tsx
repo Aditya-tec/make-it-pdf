@@ -10,9 +10,9 @@ export default function ProgressBar({ percent, message }: Props) {
         <span>{message || "Processing…"}</span>
         <span>{percent}%</span>
       </div>
-      <div className="w-full bg-white border-4 border-black h-7 shadow-[4px_4px_0_#000]">
+      <div className="w-full bg-white border-2 border-black rounded-lg h-6 shadow-[2px_2px_0_#000] overflow-hidden">
         <div
-          className="bg-volt h-full border-r-4 border-black transition-all duration-300"
+          className="bg-volt h-full border-r-2 border-black transition-all duration-300"
           style={{ width: `${percent}%` }}
           role="progressbar"
           aria-valuenow={percent}

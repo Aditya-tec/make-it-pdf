@@ -103,7 +103,7 @@ const docx = Buffer.from(zipSync({
   "word/document.xml": strToU8(`<?xml version="1.0"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body><w:p><w:r><w:t>Hello &lt;img src=x onerror=alert(1)&gt; world</w:t></w:r></w:p><w:p><w:hyperlink r:id="rId9"><w:r><w:t>evil link</w:t></w:r></w:hyperlink></w:p></w:body></w:document>`),
 }));
 
-const dir = fs.mkdtempSync(path.join(os.tmpdir(), "pdftool-e2e-"));
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), "offlinepdf-e2e-"));
 const F = (name, buf) => { const p = path.join(dir, name); fs.writeFileSync(p, buf); return p; };
 const a = F("a.pdf", await pdf(2, "A")), b = F("b.pdf", await pdf(3, "B")), one = F("one.pdf", await pdf(1));
 const imgs = { jpg: F("p.jpg", jpg), png: F("p.png", png), webp: F("p.webp", webp) };

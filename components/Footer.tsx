@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { SITE_NAME } from "@/lib/site";
 
 export default function Footer() {
   return (
     <footer className="bg-white text-black border-t-8 border-black">
       <div className="px-4 sm:px-8 py-10 flex flex-col md:flex-row gap-6 md:items-center md:justify-between">
-        <p className="headline text-5xl">PDF Tools</p>
+        <p className="headline text-3xl sm:text-4xl">{SITE_NAME}</p>
         <p className="label-mono text-xs max-w-sm leading-relaxed">
           Every file is processed in your browser. Nothing is ever uploaded. Free, no watermark, no signup.
         </p>

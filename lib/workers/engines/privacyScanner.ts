@@ -48,8 +48,8 @@ export async function run(
   out.setAuthor("");
   out.setSubject("");
   out.setKeywords([]);
-  out.setCreator("PDF Tools");
-  out.setProducer("PDF Tools");
+  out.setCreator("offlinePDF");
+  out.setProducer("offlinePDF");
 
   onProgress(90, "Saving…");
   const bytes = await out.save();
