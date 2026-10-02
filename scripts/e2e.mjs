@@ -20,17 +20,40 @@ const HEADERS = JSON.parse(fs.readFileSync(path.join(ROOT, "vercel.json"), "utf8
 const COI = new Set(["cross-origin-opener-policy", "cross-origin-embedder-policy"]);
 const MIME = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".wasm": "application/wasm", ".txt": "text/plain", ".xml": "application/xml", ".ico": "image/x-icon", ".json": "application/json", ".svg": "image/svg+xml" };
 
+function send404(res) {
+  const candidates = [
+    path.join(OUT, "404.html"),
+    path.join(OUT, "_not-found", "index.html"),
+  ];
+  const page = candidates.find((c) => fs.existsSync(c));
+  res.statusCode = 404;
+  if (!page) {
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.end("<!doctype html><title>404</title><h1>Not found</h1>");
+    return;
+  }
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  fs.createReadStream(page).on("error", () => {
+    if (!res.headersSent) res.writeHead(404, { "Content-Type": "text/plain" });
+    res.end("Not found");
+  }).pipe(res);
+}
+
 const server = http.createServer((req, res) => {
   const p = decodeURIComponent(new URL(req.url, "http://x").pathname);
   let f = path.join(OUT, p);
-  if (!f.startsWith(OUT)) { res.statusCode = 403; return res.end(); }
+  // Windows: normalize for startsWith check
+  if (!path.resolve(f).toLowerCase().startsWith(path.resolve(OUT).toLowerCase())) {
+    res.statusCode = 403;
+    return res.end();
+  }
   if (fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, "index.html");
-  if (!fs.existsSync(f)) { f = path.join(OUT, "404.html"); res.statusCode = 404; }
   // a test can ask for the isolation headers to be dropped, to exercise Encrypt's fallback
   const dropCoi = req.headers["x-e2e-no-coi"] === "1";
   for (const h of HEADERS) if (!(dropCoi && COI.has(h.key.toLowerCase()))) res.setHeader(h.key, h.value);
+  if (!fs.existsSync(f)) return send404(res);
   res.setHeader("Content-Type", MIME[path.extname(f)] || "application/octet-stream");
-  fs.createReadStream(f).pipe(res);
+  fs.createReadStream(f).on("error", () => send404(res)).pipe(res);
 });
 await new Promise((r) => server.listen(Number(process.env.E2E_PORT) || 0, "127.0.0.1", r));
 const BASE = `http://127.0.0.1:${server.address().port}`;
