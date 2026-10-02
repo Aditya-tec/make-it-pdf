@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
@@ -68,12 +69,17 @@ export default function CompressTool() {
   return (
     <div className="flex flex-col gap-5">
       {!file ? (
-        <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+        <UploadZone tool="compress-pdf" accept=".pdf" onFiles={(f) => setFile(f[0])} />
       ) : (
         <>
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Selected: <strong>{file.name}</strong> ({formatBytes(file.size)})
-          </p>
+
+          <SelectedFile
+            file={file}
+            tool="compress-pdf"
+            accept=".pdf"
+            onClear={() => setFile(null)}
+            onReplace={setFile}
+          />
 
           <div>
             <p className="text-sm font-medium mb-2 text-slate-600 dark:text-slate-300">

@@ -1,7 +1,13 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
 import type { WorkerRequest, WorkerResponse } from "@/lib/workers/pdf.worker";
-import { MAX_TOTAL_BYTES } from "@/lib/pdf/validate";
+import {
+  deviceMemoryGb,
+  getToolLimits,
+  mbLabel,
+  needsLowMemoryConfirm,
+  OOM_USER_MESSAGE,
+} from "@/lib/pdf/toolLimits";
 
 export type JobState =
   | { status: "idle" }
@@ -25,9 +31,36 @@ export function useWorker() {
         setJob({ status: "error", message: "No files selected." });
         return;
       }
-      if (request.files.reduce((n, f) => n + f.byteLength, 0) > MAX_TOTAL_BYTES) {
-        setJob({ status: "error", message: `Total input is over ${MAX_TOTAL_BYTES / 1024 / 1024} MB. Use fewer or smaller files.` });
+
+      const total = request.files.reduce((n, f) => n + f.byteLength, 0);
+      const limits = getToolLimits(request.tool);
+
+      for (const f of request.files) {
+        if (f.byteLength > limits.maxFileBytes) {
+          setJob({
+            status: "error",
+            message: `A file is larger than ${mbLabel(limits.maxFileBytes)} MB for this tool.`,
+          });
+          return;
+        }
+      }
+      if (total > limits.maxTotalBytes) {
+        setJob({
+          status: "error",
+          message: `Total input is over ${mbLabel(limits.maxTotalBytes)} MB. Use fewer or smaller files.`,
+        });
         return;
+      }
+
+      if (needsLowMemoryConfirm(request.tool, total)) {
+        const mem = deviceMemoryGb();
+        const ok = window.confirm(
+          `This is a large file for your device${mem != null ? ` (${mem} GB RAM)` : ""}. Processing may be slow or fail. Continue?`
+        );
+        if (!ok) {
+          setJob({ status: "idle" });
+          return;
+        }
       }
 
       setJob({ status: "processing", percent: 0, message: "Starting…" });
@@ -54,7 +87,15 @@ export function useWorker() {
       };
 
       worker.onerror = (err) => {
-        setJob({ status: "error", message: err.message || "Worker crashed unexpectedly." });
+        const raw = err.message || "";
+        // OOM often kills the worker with an empty or generic "Script error."
+        const looksOom =
+          !raw ||
+          /script error|out of memory|oom|allocation/i.test(raw);
+        setJob({
+          status: "error",
+          message: looksOom ? OOM_USER_MESSAGE : raw,
+        });
         worker.terminate();
         workerRef.current = null;
       };

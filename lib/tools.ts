@@ -28,7 +28,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Is there a file size limit?",
-        a: "We recommend keeping total input under 200 MB for smooth in-browser processing.",
+        a: "Merge allows up to 200 MB per file (400 MB total). Heavier tools like Compress or OCR have lower caps.",
       },
       {
         q: "Are my files uploaded anywhere?",

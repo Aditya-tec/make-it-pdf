@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
-import { formatBytes } from "@/lib/pdf/load";
 
 export default function HeadersFootersTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -39,10 +39,17 @@ export default function HeadersFootersTool() {
   return (
     <div className="flex flex-col gap-5">
       {!file ? (
-        <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+        <UploadZone tool="headers-footers" accept=".pdf" onFiles={(f) => setFile(f[0])} />
       ) : (
         <>
-          <p className="text-sm">Selected: <strong>{file.name}</strong> ({formatBytes(file.size)})</p>
+
+          <SelectedFile
+            file={file}
+            tool="headers-footers"
+            accept=".pdf"
+            onClear={() => setFile(null)}
+            onReplace={setFile}
+          />
           <label className="text-sm max-w-lg">Header text
             <input value={header} onChange={(e) => setHeader(e.target.value)} maxLength={120}
               className="mt-1 w-full border rounded-lg px-3 py-2 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600" />

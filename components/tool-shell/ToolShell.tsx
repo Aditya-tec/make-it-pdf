@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
@@ -113,18 +114,44 @@ export default function ToolShell({
         <ProgressBar percent={job.percent} message={job.message} />
       ) : (
         <>
-          <UploadZone
-            accept={accept}
-            multiple={multiple}
-            onFiles={setFiles}
-            label={uploadLabel}
-          />
+          {files.length === 0 || multiple ? (
+            <UploadZone
+              tool={tool}
+              accept={accept}
+              multiple={multiple}
+              onFiles={(incoming) =>
+                setFiles((prev) => (multiple ? [...prev, ...incoming] : incoming))
+              }
+              label={uploadLabel}
+            />
+          ) : null}
 
-          {files.length > 0 && (
-            <div className="text-sm text-slate-600 dark:text-slate-300">
-              {files.length} file{files.length > 1 ? "s" : ""} selected:{" "}
-              {files.map((f) => f.name).join(", ")}
-            </div>
+          {files.length === 1 && !multiple ? (
+            <SelectedFile
+              file={files[0]}
+              tool={tool}
+              accept={accept}
+              onClear={() => setFiles([])}
+              onReplace={(f) => setFiles([f])}
+            />
+          ) : null}
+
+          {multiple && files.length > 0 && (
+            <ul className="flex flex-col gap-2">
+              {files.map((f, i) => (
+                <li key={`${f.name}-${i}`}>
+                  <SelectedFile
+                    file={f}
+                    tool={tool}
+                    accept={accept}
+                    onClear={() => setFiles((prev) => prev.filter((_, j) => j !== i))}
+                    onReplace={(next) =>
+                      setFiles((prev) => prev.map((p, j) => (j === i ? next : p)))
+                    }
+                  />
+                </li>
+              ))}
+            </ul>
           )}
 
           {controls && files.length > 0 && controls(files, setFiles)}

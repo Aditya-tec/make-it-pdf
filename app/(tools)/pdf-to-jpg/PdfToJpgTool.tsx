@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
-import { formatBytes } from "@/lib/pdf/load";
 import { hasOffscreenCanvas2d, useSupported } from "@/hooks/useSupported";
 import Unsupported, { NEEDS_NEWER_BROWSER } from "@/components/Unsupported";
 
@@ -36,12 +36,17 @@ export default function PdfToJpgTool() {
   return (
     <div className="flex flex-col gap-5">
       {!file ? (
-        <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+        <UploadZone tool="pdf-to-jpg" accept=".pdf" onFiles={(f) => setFile(f[0])} />
       ) : (
         <>
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Selected: <strong>{file.name}</strong> ({formatBytes(file.size)})
-          </p>
+
+          <SelectedFile
+            file={file}
+            tool="pdf-to-jpg"
+            accept=".pdf"
+            onClear={() => setFile(null)}
+            onReplace={setFile}
+          />
 
           <div className="flex gap-6 flex-wrap">
             <div>

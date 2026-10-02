@@ -1,10 +1,10 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
-import { formatBytes } from "@/lib/pdf/load";
 import { loadPdfForPreview, renderThumbnail } from "@/lib/pdf/render";
 import { friendlyError } from "@/lib/pdf/validate";
 import { hasOffscreenCanvas2d, useSupported } from "@/hooks/useSupported";
@@ -112,7 +112,7 @@ export default function RedactTool() {
 
   if (!file) return (
     <>
-      <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+      <UploadZone tool="redact-pdf" accept=".pdf" onFiles={(f) => setFile(f[0])} />
       {loadError && <p role="alert" className="mt-2 text-sm text-red-600">{loadError}</p>}
     </>
   );
@@ -122,7 +122,18 @@ export default function RedactTool() {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm">Selected: <strong>{file.name}</strong> ({formatBytes(file.size)})</p>
+      <SelectedFile
+        file={file}
+        tool="redact-pdf"
+        onClear={handleReset}
+        onReplace={(f) => {
+          setRectsByPage({});
+          setThumb("");
+          setPageCount(0);
+          setPageIndex(0);
+          setFile(f);
+        }}
+      />
       <p className="text-xs text-slate-500">Drag on the page to draw black boxes. Redacted pages become images so text under a box cannot be recovered.</p>
       <div className="flex items-center gap-3 text-sm">
         <button disabled={pageIndex <= 0} onClick={() => setPageIndex((i) => i - 1)}

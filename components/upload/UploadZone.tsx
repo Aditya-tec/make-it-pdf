@@ -1,19 +1,22 @@
 "use client";
 import { useRef, useState, useCallback } from "react";
 
-import { checkFile, MAX_TOTAL_BYTES } from "@/lib/pdf/validate";
+import { checkFile } from "@/lib/pdf/validate";
+import { getToolLimits, mbLabel } from "@/lib/pdf/toolLimits";
 
 interface Props {
+  tool: string; // slug → looks up size caps in toolLimits.ts
   accept: string; // e.g. ".pdf" or ".jpg,.png,.webp"
   multiple?: boolean;
   onFiles: (files: File[]) => void;
   label?: string;
 }
 
-export default function UploadZone({ accept, multiple = false, onFiles, label }: Props) {
+export default function UploadZone({ tool, accept, multiple = false, onFiles, label }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { maxFileBytes, maxTotalBytes } = getToolLimits(tool);
 
   const handleFiles = useCallback(
     async (raw: FileList | null) => {
@@ -27,21 +30,21 @@ export default function UploadZone({ accept, multiple = false, onFiles, label }:
           setError(`"${f.name}" is not an accepted file type (${accept}).`);
           return;
         }
-        const problem = await checkFile(f); // size cap + magic-byte check
+        const problem = await checkFile(f, maxFileBytes);
         if (problem) {
           setError(problem);
           return;
         }
         totalSize += f.size;
       }
-      if (totalSize > MAX_TOTAL_BYTES) {
-        setError(`Total file size exceeds ${MAX_TOTAL_BYTES / 1024 / 1024} MB. Try fewer or smaller files.`);
+      if (totalSize > maxTotalBytes) {
+        setError(`Total file size exceeds ${mbLabel(maxTotalBytes)} MB. Try fewer or smaller files.`);
         return;
       }
       setError(null);
       onFiles(files);
     },
-    [accept, onFiles]
+    [accept, onFiles, maxFileBytes, maxTotalBytes]
   );
 
   const onDrop = useCallback(
@@ -68,7 +71,7 @@ export default function UploadZone({ accept, multiple = false, onFiles, label }:
         role="button"
         tabIndex={0}
         aria-label={label || "Upload files"}
-        className={`border-2 border-dashed border-black rounded-xl p-8 sm:p-10 flex flex-col items-center gap-3 cursor-pointer transition-colors
+        className={`border-2 border-dashed border-black rounded-xl p-5 sm:p-6 flex flex-col items-center justify-center gap-2.5 cursor-pointer transition-colors min-h-[140px]
           ${dragOver ? "bg-volt border-solid" : "bg-white hover:border-solid"}`}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
@@ -87,7 +90,7 @@ export default function UploadZone({ accept, multiple = false, onFiles, label }:
           <span className="underline decoration-2 underline-offset-4">click to browse</span>
         </p>
         <p className="text-xs text-slate-600 text-center">
-          Accepts: {accept} · Max 100 MB per file · Or paste from clipboard
+          Accepts: {accept} · Max {mbLabel(maxFileBytes)} MB per file · Or paste from clipboard
         </p>
       </div>
 

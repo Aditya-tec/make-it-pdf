@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
-import { formatBytes } from "@/lib/pdf/load";
 
 const ANGLES = [90, 180, 270] as const;
 
@@ -31,12 +31,17 @@ export default function RotateTool() {
   return (
     <div className="flex flex-col gap-5">
       {!file ? (
-        <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+        <UploadZone tool="rotate-pdf" accept=".pdf" onFiles={(f) => setFile(f[0])} />
       ) : (
         <>
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Selected: <strong>{file.name}</strong> ({formatBytes(file.size)})
-          </p>
+
+          <SelectedFile
+            file={file}
+            tool="rotate-pdf"
+            accept=".pdf"
+            onClear={() => setFile(null)}
+            onReplace={setFile}
+          />
           <div className="flex gap-2">
             {ANGLES.map((a) => (
               <button

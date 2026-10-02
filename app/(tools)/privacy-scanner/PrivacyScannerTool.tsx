@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import PrivacyBadge from "@/components/PrivacyBadge";
 import { useWorker } from "@/hooks/useWorker";
-import { formatBytes } from "@/lib/pdf/load";
 import type { Finding } from "@/lib/workers/engines/privacyScanner";
 
 export default function PrivacyScannerTool() {
@@ -120,10 +120,17 @@ export default function PrivacyScannerTool() {
   return (
     <div className="flex flex-col gap-5">
       {!file ? (
-        <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+        <UploadZone tool="privacy-scanner" accept=".pdf" onFiles={(f) => setFile(f[0])} />
       ) : (
         <>
-          <p className="text-sm">Selected: <strong>{file.name}</strong> ({formatBytes(file.size)})</p>
+
+          <SelectedFile
+            file={file}
+            tool="privacy-scanner"
+            accept=".pdf"
+            onClear={() => setFile(null)}
+            onReplace={setFile}
+          />
           <button onClick={scan} className="self-start bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl">
             Scan for metadata
           </button>

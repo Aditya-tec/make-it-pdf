@@ -69,7 +69,7 @@ export default function DownloadResult({ files, onReset }: Props) {
                   onChange={(e) => setName(i, e.target.value)}
                   onBlur={() => setName(i, safeName(names[i] ?? f.name, f.name))}
                   spellCheck={false}
-                  className="w-full font-medium text-sm bg-white border-2 border-black focus:bg-volt rounded-lg pl-3 pr-9 py-2 outline-none"
+                  className="w-full font-medium text-sm bg-white border-2 border-black rounded-lg pl-3 pr-9 py-2 outline-none focus:ring-2 focus:ring-blue-500 selection:bg-blue-500 selection:text-white"
                 />
                 <span
                   className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400"

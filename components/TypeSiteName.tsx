@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { SITE_NAME } from "@/lib/site";
 
-// ponytail: interval typewriter; swap for a motion lib if we need erase/caret polish
+// ponytail: interval typewriter; swap for a motion lib if we need erase polish
 const CHAR_MS = 70;
-const CYCLE_MS = 5000;
+const CYCLE_MS = 3000;
 
 export default function TypeSiteName() {
   const [len, setLen] = useState(SITE_NAME.length);
+  const done = len >= SITE_NAME.length;
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -35,13 +36,23 @@ export default function TypeSiteName() {
   }, []);
 
   return (
-    <span className="relative inline-block">
+    // whitespace-nowrap keeps the caret on this line (never wraps onto "we never see")
+    <span className="relative inline-block whitespace-nowrap align-baseline">
       <span className="invisible" aria-hidden>
         {SITE_NAME}
+        <span className="inline-block w-[0.1em]" />
       </span>
-      <span className="absolute inset-0" aria-label={SITE_NAME}>
+      <span
+        className={`absolute left-0 top-0 ${done ? "text-white" : "text-red-500"}`}
+        aria-label={SITE_NAME}
+      >
         {SITE_NAME.slice(0, len)}
-        <span className="inline-block w-[0.08em] h-[0.85em] ml-[0.05em] align-baseline bg-volt animate-pulse" aria-hidden />
+        <span
+          className={`inline-block w-[0.08em] h-[0.85em] ml-[0.06em] align-baseline animate-pulse ${
+            done ? "bg-white" : "bg-red-500"
+          }`}
+          aria-hidden
+        />
       </span>
     </span>
   );

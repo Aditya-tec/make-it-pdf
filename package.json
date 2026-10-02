@@ -10,8 +10,11 @@
     "lint": "eslint",
     "prebuild": "node scripts/copy-assets.mjs",
     "predev": "node scripts/copy-assets.mjs",
+    "check:limits": "npx tsx lib/pdf/toolLimits.check.ts",
+    "check:engines": "npx tsx engines.check.ts",
     "e2e": "node scripts/e2e.mjs",
-    "check-links": "node scripts/check-links.mjs"
+    "check-links": "node scripts/check-links.mjs",
+    "ci": "npm run lint && npm run check:limits && npm run check:engines && npm run build && npm run check-links"
   },
   "dependencies": {
     "@tailwindcss/typography": "0.5.20",

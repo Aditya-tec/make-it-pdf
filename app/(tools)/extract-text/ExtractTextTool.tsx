@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import { useWorker } from "@/hooks/useWorker";
 import { formatBytes } from "@/lib/pdf/load";
@@ -97,12 +98,17 @@ export default function ExtractTextTool() {
   return (
     <div className="flex flex-col gap-5">
       {!file ? (
-        <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+        <UploadZone tool="extract-text" accept=".pdf" onFiles={(f) => setFile(f[0])} />
       ) : (
         <>
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Selected: <strong>{file.name}</strong> ({formatBytes(file.size)})
-          </p>
+
+          <SelectedFile
+            file={file}
+            tool="extract-text"
+            accept=".pdf"
+            onClear={() => setFile(null)}
+            onReplace={setFile}
+          />
           <button
             onClick={handleExtract}
             className="self-start bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors"

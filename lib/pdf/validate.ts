@@ -1,9 +1,12 @@
 // Pure helpers (no DOM) so both the UI and the Web Worker can import them.
+import { OOM_USER_MESSAGE } from "./toolLimits";
 
-export const MAX_FILE_BYTES = 100 * 1024 * 1024; // per file
-export const MAX_TOTAL_BYTES = 250 * 1024 * 1024; // per job (e.g. many files into Merge)
+/** @deprecated Prefer getToolLimits(tool).maxFileBytes — kept for callers without a tool slug. */
+export const MAX_FILE_BYTES = 100 * 1024 * 1024;
+/** @deprecated Prefer getToolLimits(tool).maxTotalBytes */
+export const MAX_TOTAL_BYTES = 250 * 1024 * 1024;
 export const MAX_PAGES = 500;
-export const MAX_OUTPUT_BYTES = 500 * 1024 * 1024; // total generated output (zip / many parts)
+export const MAX_OUTPUT_BYTES = 500 * 1024 * 1024;
 
 const starts = (b: Uint8Array, sig: number[], at = 0) => sig.every((v, i) => b[at + i] === v);
 
@@ -20,9 +23,11 @@ const SIGNATURES: Record<string, (b: Uint8Array) => boolean> = {
 };
 
 /** Returns an error message, or null if the file is acceptable. */
-export async function checkFile(f: File): Promise<string | null> {
+export async function checkFile(f: File, maxFileBytes = MAX_FILE_BYTES): Promise<string | null> {
   if (f.size === 0) return `"${f.name}" is empty.`;
-  if (f.size > MAX_FILE_BYTES) return `"${f.name}" is larger than ${MAX_FILE_BYTES / 1024 / 1024} MB.`;
+  if (f.size > maxFileBytes) {
+    return `"${f.name}" is larger than ${Math.round(maxFileBytes / 1024 / 1024)} MB for this tool.`;
+  }
   const ext = "." + (f.name.split(".").pop() ?? "").toLowerCase();
   const matches = SIGNATURES[ext];
   if (!matches) return `"${f.name}": unsupported file type.`;
@@ -49,7 +54,11 @@ export function friendlyError(err: unknown): string {
     return "This file looks corrupted or truncated and can't be read as a PDF.";
   if (/WinAnsi cannot encode/i.test(msg))
     return "The watermark text has characters this tool can't draw yet. Use Latin letters, digits and common punctuation.";
-  if (e instanceof RangeError || /out of memory|allocation/i.test(msg))
-    return "Your device ran out of memory. Try a smaller file or lower settings.";
+  if (
+    e instanceof RangeError ||
+    /out of memory|allocation failed|Array buffer allocation|OOM|Exceeded .*memory/i.test(msg)
+  ) {
+    return OOM_USER_MESSAGE;
+  }
   return msg;
 }

@@ -3,13 +3,14 @@ import Link from "next/link";
 import { useState } from "react";
 import { SITE_NAME } from "@/lib/site";
 import { TOOLS } from "@/lib/tools";
+import ToolSearch from "@/components/ToolSearch";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 bg-white text-black border-b-4 border-black">
-      <nav className="px-3 sm:px-6 h-16 flex items-center gap-3">
+      <nav className="px-3 sm:px-6 h-16 flex items-center gap-2 sm:gap-3">
         <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label={`${SITE_NAME} home`}>
           <span className="w-9 h-9 sm:w-10 sm:h-10 bg-black rotate-3 flex items-center justify-center" aria-hidden>
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -17,10 +18,14 @@ export default function Header() {
               <path d="M15 2v5h5M9 13h6M9 17h6" />
             </svg>
           </span>
-          <span className="font-extrabold text-lg sm:text-2xl lg:text-[30px] tracking-tight leading-none">{SITE_NAME}</span>
+          <span className="font-extrabold text-lg sm:text-2xl lg:text-[30px] tracking-tight leading-none">
+            {SITE_NAME}
+          </span>
         </Link>
 
-        <div className="flex-1" />
+        <div className="flex-1 min-w-0 px-1">
+          <ToolSearch />
+        </div>
 
         <span className="hidden xl:inline-block label-mono text-[11px] bg-volt border-4 border-black px-2 py-1 shadow-[4px_4px_0_#000] shrink-0">
           {TOOLS.length} tools / 0 uploads

@@ -65,7 +65,7 @@ export async function run(
     }
 
     done++;
-    onProgress(10 + Math.round((done / Math.max(imageRefs.length, 1)) * 80), "Compressing images…");
+    onProgress(10 + Math.round((done / Math.max(imageRefs.length, 1)) * 80), `Compressing image ${done}/${Math.max(imageRefs.length, 1)}…`);
     void ref;
   }
 

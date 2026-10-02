@@ -1,6 +1,7 @@
 "use client";
 import { useState, useCallback, useEffect, useRef } from "react";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import PageGrid, { type PageItem } from "@/components/preview/PageGrid";
@@ -112,13 +113,19 @@ export default function OrganizeTool() {
 
   if (!file) return (
     <>
-      <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+      <UploadZone tool="organize-pages" accept=".pdf" onFiles={(f) => setFile(f[0])} />
       {loadError && <p role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">{loadError}</p>}
     </>
   );
 
   return (
     <div className="flex flex-col gap-5">
+      <SelectedFile
+        file={file}
+        tool="organize-pages"
+        onClear={() => { setFile(null); setPages([]); setHistory([]); }}
+        onReplace={(f) => { setPages([]); setHistory([]); setFile(f); }}
+      />
       <div className="flex gap-3 flex-wrap">
         <button
           onClick={undo}

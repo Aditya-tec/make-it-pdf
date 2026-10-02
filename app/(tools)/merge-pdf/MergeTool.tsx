@@ -1,13 +1,18 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import UploadZone from "@/components/upload/UploadZone";
 import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
+import { checkFile } from "@/lib/pdf/validate";
+import { getToolLimits } from "@/lib/pdf/toolLimits";
 
 export default function MergeTool() {
   const [files, setFiles] = useState<File[]>([]);
   const { job, run, reset } = useWorker();
+  const replaceIdx = useRef<number | null>(null);
+  const replaceInput = useRef<HTMLInputElement>(null);
+  const { maxFileBytes } = getToolLimits("merge-pdf");
 
   const addFiles = useCallback((incoming: File[]) => {
     setFiles((prev) => [...prev, ...incoming]);
@@ -25,6 +30,20 @@ export default function MergeTool() {
   const removeFile = useCallback((idx: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== idx));
   }, []);
+
+  const openReplace = (idx: number) => {
+    replaceIdx.current = idx;
+    replaceInput.current?.click();
+  };
+
+  const onReplacePick = async (list: FileList | null) => {
+    const idx = replaceIdx.current;
+    replaceIdx.current = null;
+    if (idx == null || !list?.[0]) return;
+    const problem = await checkFile(list[0], maxFileBytes);
+    if (problem) return;
+    setFiles((prev) => prev.map((f, i) => (i === idx ? list[0] : f)));
+  };
 
   const handleMerge = async () => {
     const buffers = await Promise.all(files.map((f) => f.arrayBuffer()));
@@ -44,7 +63,14 @@ export default function MergeTool() {
 
   return (
     <div className="flex flex-col gap-5">
-      <UploadZone accept=".pdf" multiple onFiles={addFiles} label="Drop PDF files here" />
+      <UploadZone tool="merge-pdf" accept=".pdf" multiple onFiles={addFiles} label="Drop PDF files here" />
+      <input
+        ref={replaceInput}
+        type="file"
+        accept=".pdf"
+        className="hidden"
+        onChange={(e) => { onReplacePick(e.target.files); e.target.value = ""; }}
+      />
 
       {files.length > 0 && (
         <div className="flex flex-col gap-2">
@@ -62,7 +88,7 @@ export default function MergeTool() {
                 const from = Number(e.dataTransfer.getData("idx"));
                 if (from !== i) moveFile(from, i);
               }}
-              className="flex items-center gap-3 bg-slate-50 dark:bg-slate-700 rounded-lg px-3 py-2 border border-slate-200 dark:border-slate-600 cursor-grab"
+              className="flex items-center gap-3 bg-slate-50 border-2 border-black rounded-xl px-3 py-2 cursor-grab"
             >
               <span className="text-slate-400 select-none">⠿</span>
               <span className="flex-1 text-sm truncate">{f.name}</span>
@@ -70,11 +96,19 @@ export default function MergeTool() {
                 {(f.size / 1024).toFixed(0)} KB
               </span>
               <button
+                type="button"
+                onClick={() => openReplace(i)}
+                className="shrink-0 label-mono text-[11px] px-2 py-1 border-2 border-black rounded-md bg-white hover:bg-volt"
+              >
+                Replace
+              </button>
+              <button
+                type="button"
                 onClick={() => removeFile(i)}
                 aria-label={`Remove ${f.name}`}
-                className="text-slate-400 hover:text-red-500 transition-colors"
+                className="shrink-0 w-8 h-8 flex items-center justify-center text-red-600 border-2 border-red-600 rounded-md hover:bg-red-50 text-xl leading-none font-bold"
               >
-                ✕
+                ×
               </button>
             </div>
           ))}

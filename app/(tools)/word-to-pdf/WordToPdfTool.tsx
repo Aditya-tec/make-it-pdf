@@ -2,9 +2,9 @@
 import { useMemo, useRef, useState } from "react";
 import DOMPurify from "dompurify";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import { useWorker } from "@/hooks/useWorker";
-import { formatBytes } from "@/lib/pdf/load";
 import PrivacyBadge from "@/components/PrivacyBadge";
 
 const STYLE = `<style>
@@ -81,12 +81,17 @@ export default function WordToPdfTool() {
   return (
     <div className="flex flex-col gap-5">
       {!file ? (
-        <UploadZone accept=".docx" onFiles={(f) => setFile(f[0])} />
+        <UploadZone tool="word-to-pdf" accept=".docx" onFiles={(f) => setFile(f[0])} />
       ) : (
         <>
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Selected: <strong>{file.name}</strong> ({formatBytes(file.size)})
-          </p>
+
+          <SelectedFile
+            file={file}
+            tool="word-to-pdf"
+            accept=".docx"
+            onClear={() => setFile(null)}
+            onReplace={setFile}
+          />
           <button
             onClick={handleConvert}
             className="self-start bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors"

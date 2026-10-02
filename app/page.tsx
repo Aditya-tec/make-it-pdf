@@ -9,13 +9,6 @@ const STICKERS = [
   { icon: "⚡", text: `${TOOLS.length} tools. All free.`, rot: "rotate-2" },
 ];
 
-const COMPARE = [
-  { label: "Where your file goes", old: "Uploaded to a stranger's server", next: "Stays in your browser" },
-  { label: "Before you download", old: "Make an account first", next: "Nothing. Just drop it" },
-  { label: "Your output", old: "Logo stamped on page one", next: "Clean file, no watermark" },
-  { label: "Free plan", old: "Two files per hour", next: "Up to 100 MB per file" },
-];
-
 const STEPS = [
   { title: "Drop", text: "Drag a file in, pick it, or paste it from your clipboard." },
   { title: "Process", text: "Your own device does the work in a background worker. Nothing leaves the tab." },
@@ -92,22 +85,6 @@ export default function Home() {
             </div>
           );
         })}
-      </section>
-
-      {/* Comparison */}
-      <section className="border-y-8 border-black bg-black">
-        {COMPARE.map((row) => (
-          <div key={row.label} className="grid md:grid-cols-2 border-b-8 border-black last:border-b-0">
-            <div className="bg-black px-4 sm:px-8 py-8">
-              <p className="label-mono text-[11px] text-slate-500 mb-2">The old way / {row.label}</p>
-              <p className="headline text-2xl sm:text-3xl xl:text-4xl text-[#475569]">{row.old}</p>
-            </div>
-            <div className="bg-volt text-black px-4 sm:px-8 py-8 md:border-l-8 border-black">
-              <p className="label-mono text-[11px] mb-2">The better way / {row.label}</p>
-              <p className="headline text-2xl sm:text-3xl xl:text-4xl">{row.next}</p>
-            </div>
-          </div>
-        ))}
       </section>
 
       {/* Process blueprint */}

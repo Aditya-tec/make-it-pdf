@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
-import { formatBytes } from "@/lib/pdf/load";
 
 export default function PageNumbersTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -37,10 +37,17 @@ export default function PageNumbersTool() {
   return (
     <div className="flex flex-col gap-5">
       {!file ? (
-        <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+        <UploadZone tool="page-numbers" accept=".pdf" onFiles={(f) => setFile(f[0])} />
       ) : (
         <>
-          <p className="text-sm">Selected: <strong>{file.name}</strong> ({formatBytes(file.size)})</p>
+
+          <SelectedFile
+            file={file}
+            tool="page-numbers"
+            accept=".pdf"
+            onClear={() => setFile(null)}
+            onReplace={setFile}
+          />
           <div className="grid sm:grid-cols-2 gap-4 max-w-lg">
             <label className="text-sm">Format
               <select value={format} onChange={(e) => setFormat(e.target.value)}

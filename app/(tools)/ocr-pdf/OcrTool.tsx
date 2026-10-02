@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import UploadZone from "@/components/upload/UploadZone";
+import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
-import { formatBytes } from "@/lib/pdf/load";
 
 export default function OcrTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -28,12 +28,19 @@ export default function OcrTool() {
   return (
     <div className="flex flex-col gap-5">
       {!file ? (
-        <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+        <UploadZone tool="ocr-pdf" accept=".pdf" onFiles={(f) => setFile(f[0])} />
       ) : (
         <>
-          <p className="text-sm">Selected: <strong>{file.name}</strong> ({formatBytes(file.size)})</p>
+
+          <SelectedFile
+            file={file}
+            tool="ocr-pdf"
+            accept=".pdf"
+            onClear={() => setFile(null)}
+            onReplace={setFile}
+          />
           <p className="text-xs text-slate-500 max-w-md">
-            English OCR model is bundled on this site (no CDN). Cap: 50 pages. Progress is shown page by page.
+            English OCR model is bundled on this site (no CDN). Cap: 50 pages / 50 MB. Progress is shown page by page.
           </p>
           <button onClick={go} className="self-start bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl">
             Run OCR

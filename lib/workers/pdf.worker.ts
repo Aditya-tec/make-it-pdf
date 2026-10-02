@@ -64,6 +64,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
     const transferList = result.map((f) => f.bytes.buffer as ArrayBuffer);
     (self as unknown as Worker).postMessage({ type: "done", files: result }, transferList);
   } catch (err) {
+    // Uncaught OOM often bypasses this; when it does land here, friendlyError maps it.
     post({ type: "error", message: friendlyError(err) });
   }
 };
