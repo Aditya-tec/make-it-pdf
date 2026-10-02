@@ -5,6 +5,8 @@ import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
 import { formatBytes } from "@/lib/pdf/load";
+import { isCrossOriginIsolated, useSupported } from "@/hooks/useSupported";
+import Unsupported from "@/components/Unsupported";
 
 export default function EncryptTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -12,6 +14,7 @@ export default function EncryptTool() {
   const [confirm, setConfirm] = useState("");
   const [showPw, setShowPw] = useState(false);
   const { job, run, reset } = useWorker();
+  const isolated = useSupported(isCrossOriginIsolated);
 
   const mismatch = password !== confirm && confirm.length > 0;
 
@@ -23,6 +26,13 @@ export default function EncryptTool() {
 
   const handleReset = () => { reset(); setFile(null); setPassword(""); setConfirm(""); };
 
+  if (!isolated) return (
+    <Unsupported>
+      Encryption can&apos;t run here: this page didn&apos;t load in the secure, isolated mode the encryption engine
+      needs. Try reloading the page. If this keeps happening, use an up-to-date Chrome, Firefox or Safari.
+      Your file has not been sent anywhere.
+    </Unsupported>
+  );
   if (job.status === "processing") return <ProgressBar percent={job.percent} message={job.message} />;
   if (job.status === "done") return <DownloadResult files={job.files} onReset={handleReset} />;
   if (job.status === "error") return (

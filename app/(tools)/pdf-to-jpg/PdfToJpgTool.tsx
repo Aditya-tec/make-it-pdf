@@ -5,12 +5,15 @@ import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
 import { formatBytes } from "@/lib/pdf/load";
+import { hasOffscreenCanvas2d, useSupported } from "@/hooks/useSupported";
+import Unsupported, { NEEDS_NEWER_BROWSER } from "@/components/Unsupported";
 
 export default function PdfToJpgTool() {
   const [file, setFile] = useState<File | null>(null);
   const [dpi, setDpi] = useState(150);
   const [format, setFormat] = useState("jpeg");
   const { job, run, reset } = useWorker();
+  const supported = useSupported(hasOffscreenCanvas2d);
 
   const handleConvert = async () => {
     if (!file) return;
@@ -20,6 +23,7 @@ export default function PdfToJpgTool() {
 
   const handleReset = () => { reset(); setFile(null); };
 
+  if (!supported) return <Unsupported>{NEEDS_NEWER_BROWSER}</Unsupported>;
   if (job.status === "processing") return <ProgressBar percent={job.percent} message={job.message} />;
   if (job.status === "done") return <DownloadResult files={job.files} onReset={handleReset} />;
   if (job.status === "error") return (

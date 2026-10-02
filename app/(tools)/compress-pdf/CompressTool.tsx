@@ -5,6 +5,8 @@ import ProgressBar from "@/components/ProgressBar";
 import DownloadResult from "@/components/download/DownloadResult";
 import { useWorker } from "@/hooks/useWorker";
 import { formatBytes } from "@/lib/pdf/load";
+import { hasOffscreenCanvas2d, useSupported } from "@/hooks/useSupported";
+import Unsupported, { NEEDS_NEWER_BROWSER } from "@/components/Unsupported";
 
 const LEVELS = [
   { id: "light", label: "Light", hint: "Small reduction, best quality" },
@@ -16,6 +18,7 @@ export default function CompressTool() {
   const [file, setFile] = useState<File | null>(null);
   const [level, setLevel] = useState("medium");
   const { job, run, reset } = useWorker();
+  const supported = useSupported(hasOffscreenCanvas2d);
 
   const handleCompress = async () => {
     if (!file) return;
@@ -25,6 +28,7 @@ export default function CompressTool() {
 
   const handleReset = () => { reset(); setFile(null); };
 
+  if (!supported) return <Unsupported>{NEEDS_NEWER_BROWSER}</Unsupported>;
   if (job.status === "processing") return <ProgressBar percent={job.percent} message={job.message} />;
 
   if (job.status === "done") {

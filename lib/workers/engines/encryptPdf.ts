@@ -12,6 +12,9 @@ export async function run(
   const password = (opts.password as string) || "";
   if (!password) throw new Error("Please enter a password.");
 
+  if (!self.crossOriginIsolated)
+    throw new Error("Encryption needs a cross-origin isolated page (COOP/COEP headers). Reload and try again.");
+
   onProgress(10, "Initialising encryption engine…");
   const base = new URL("/qpdf/", self.location.origin).href;
   const init = (await import(/* webpackIgnore: true */ /* turbopackIgnore: true */ `${base}qpdf.js`)).default;
