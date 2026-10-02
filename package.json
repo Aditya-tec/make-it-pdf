@@ -19,6 +19,7 @@
   "dependencies": {
     "@tailwindcss/typography": "0.5.20",
     "@tesseract.js-data/eng": "1.0.0",
+    "@vercel/analytics": "^2.0.1",
     "dompurify": "3.4.16",
     "fflate": "0.8.3",
     "gray-matter": "4.0.3",

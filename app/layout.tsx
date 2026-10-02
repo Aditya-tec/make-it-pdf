@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { Analytics } from "@vercel/analytics/react";
 
 // next/font self-hosts these at build time, so the site still makes zero third-party requests.
 const ranchers = Ranchers({ weight: "400", subsets: ["latin"], variable: "--font-ranchers", display: "swap" });
@@ -50,6 +51,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
+        <Analytics />
       </body>
     </html>
   );
