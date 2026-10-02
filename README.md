@@ -56,9 +56,15 @@ npm run dev      # http://localhost:3000
 npm run build    # verify static export
 ```
 
-### Engine smoke test (no framework)
+`npm run dev` doesn't send the `vercel.json` headers, so Encrypt PDF shows its "isolated mode" notice in dev. Use `npm run e2e` (serves `out/` with the real headers) to exercise it.
+
+### Checks
 ```bash
-npx tsx engines.check.ts
+npx tsx engines.check.ts          # engine smoke test, no browser
+npm run build                     # also copies qpdf into public/qpdf (scripts/copy-qpdf.mjs)
+npm run check-links               # every internal link in out/ resolves
+npx playwright install chromium   # once
+npm run e2e                       # all 10 tools in real Chromium with prod headers; asserts zero external requests
 ```
 
 ## Add a custom domain (optional, later)
