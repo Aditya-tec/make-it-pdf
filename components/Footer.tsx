@@ -4,8 +4,8 @@ import { SITE_NAME } from "@/lib/site";
 export default function Footer() {
   return (
     <footer className="bg-white text-black border-t-8 border-black">
-      <div className="px-4 sm:px-8 py-10 flex flex-col md:flex-row gap-6 md:items-center md:justify-between">
-        <p className="headline text-3xl sm:text-4xl">{SITE_NAME}</p>
+      <div className="px-3 sm:px-8 py-8 sm:py-10 flex flex-col md:flex-row gap-5 sm:gap-6 md:items-center md:justify-between">
+        <p className="headline text-2xl sm:text-4xl">{SITE_NAME}</p>
         <p className="label-mono text-xs max-w-sm leading-relaxed">
           Processes files entirely in your browser; tested with zero third-party network requests during
           file processing. No account required, no feature behind a paywall, no watermark.

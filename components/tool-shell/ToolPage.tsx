@@ -18,34 +18,34 @@ export default function ToolPage({ tool, children }: Props) {
   const ld = toolJsonLd(tool);
 
   return (
-    <div className="w-full px-4 sm:px-8 py-10 sm:py-14">
+    <div className="w-full px-3 sm:px-8 py-8 sm:py-14">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
       />
 
-      <div className="mb-8 max-w-7xl">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="w-12 h-12 bg-white text-black border-2 border-black rounded-lg flex items-center justify-center shadow-[3px_3px_0_#ccff00]" aria-hidden>
-            <ToolIcon slug={tool.slug} className="w-7 h-7" />
+      <div className="mb-6 sm:mb-8 max-w-7xl">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
+          <span className="w-11 h-11 sm:w-12 sm:h-12 bg-white text-black border-2 border-black rounded-lg flex items-center justify-center shadow-[3px_3px_0_#ccff00]" aria-hidden>
+            <ToolIcon slug={tool.slug} className="w-6 h-6 sm:w-7 sm:h-7" />
           </span>
-          <span className="bg-white text-black border-2 border-black rounded-md label-mono text-[11px] px-2.5 py-1">
+          <span className="bg-white text-black border-2 border-black rounded-md label-mono text-[10px] sm:text-[11px] px-2 py-1 max-w-full">
             {category} / runs on your device
           </span>
         </div>
-        <h1 className="headline text-3xl sm:text-4xl text-white [text-shadow:3px_3px_0_rgba(0,0,0,0.55)] break-words">
+        <h1 className="headline text-[1.75rem] sm:text-4xl text-white [text-shadow:3px_3px_0_rgba(0,0,0,0.55)] break-words">
           {tool.name}
         </h1>
-        <p className="mt-3 text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">{tool.tagline}</p>
+        <p className="mt-3 text-sm sm:text-lg text-slate-300 leading-relaxed max-w-2xl">{tool.tagline}</p>
       </div>
 
-      {/* Upload + how-to sit side by side with a modest gap */}
-      <div className="flex flex-col md:flex-row gap-8 md:gap-10 items-stretch mb-14 w-full max-w-7xl">
-        <div className="bg-white text-black border-2 border-black rounded-xl shadow-[4px_4px_0_#ccff00] p-4 sm:p-5 w-full max-w-3xl shrink-0">
+      {/* Upload + how-to: stack on phones, side by side from md */}
+      <div className="flex flex-col md:flex-row gap-5 sm:gap-8 md:gap-10 items-stretch mb-10 sm:mb-14 w-full max-w-7xl min-w-0">
+        <div className="bg-white text-black border-2 border-black rounded-xl shadow-[4px_4px_0_#ccff00] p-3 sm:p-5 w-full max-w-3xl min-w-0 md:flex-1">
           {children}
         </div>
 
-        <aside className="bg-white text-black border-2 border-black rounded-xl shadow-[4px_4px_0_#ccff00] p-5 sm:p-6 flex flex-col w-full md:w-80 lg:w-96 shrink-0">
+        <aside className="bg-white text-black border-2 border-black rounded-xl shadow-[4px_4px_0_#ccff00] p-4 sm:p-6 flex flex-col w-full md:w-80 lg:w-96 shrink-0 min-w-0">
           <p className="label-mono text-[11px] text-slate-500 mb-1">How it works</p>
           <h2 className="headline text-2xl mb-4">Step by step</h2>
           <ol className="space-y-3 flex-1">

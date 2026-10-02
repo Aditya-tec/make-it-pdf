@@ -251,7 +251,7 @@ export default function ToolSearch() {
   };
 
   return (
-    <div className="relative flex-1 min-w-0 max-w-xl mx-auto">
+    <div className="relative flex-1 min-w-0 max-w-xl mx-auto w-full">
       <div className="flex items-stretch border-2 border-black rounded-xl overflow-hidden shadow-[3px_3px_0_#000] bg-white">
         <input
           ref={inputRef}
@@ -267,8 +267,9 @@ export default function ToolSearch() {
             window.setTimeout(() => setOpen(false), 150);
           }}
           onKeyDown={onKeyDown}
-          placeholder="Describe it… “make my pdf smaller”"
-          className="flex-1 min-w-0 px-3 py-2 text-sm outline-none bg-white selection:bg-blue-500 selection:text-white"
+          placeholder="Find a tool…"
+          aria-label="Search tools"
+          className="flex-1 min-w-0 px-2.5 sm:px-3 py-2 text-sm outline-none bg-white selection:bg-blue-500 selection:text-white"
           role="combobox"
           aria-expanded={open && results.length > 0}
           aria-controls={listId}
@@ -282,7 +283,7 @@ export default function ToolSearch() {
           aria-pressed={listening}
           aria-label={listening ? "Stop voice input" : "Search by voice"}
           title="Voice search (Chrome or Edge)"
-          className={`shrink-0 w-11 flex items-center justify-center border-l-2 border-black transition-colors ${
+          className={`shrink-0 w-10 sm:w-11 min-h-10 flex items-center justify-center border-l-2 border-black transition-colors ${
             listening ? "bg-red-500 text-white" : "bg-volt text-black hover:bg-black hover:text-white"
           }`}
         >
@@ -294,7 +295,8 @@ export default function ToolSearch() {
         <button
           type="button"
           onClick={submit}
-          className="shrink-0 label-mono text-[11px] px-3 bg-black text-white border-l-2 border-black hover:bg-white hover:text-black transition-colors"
+          aria-label="Find tool"
+          className="shrink-0 label-mono text-[11px] px-2.5 sm:px-3 min-h-10 bg-black text-white border-l-2 border-black hover:bg-white hover:text-black transition-colors"
         >
           Find
         </button>

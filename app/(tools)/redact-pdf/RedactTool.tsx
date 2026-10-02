@@ -135,14 +135,14 @@ export default function RedactTool() {
         }}
       />
       <p className="text-xs text-slate-500">Drag on the page to draw black boxes. Redacted pages become images so text under a box cannot be recovered.</p>
-      <div className="flex items-center gap-3 text-sm">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm">
         <button disabled={pageIndex <= 0} onClick={() => setPageIndex((i) => i - 1)}
-          className="px-3 py-1 border rounded-lg disabled:opacity-40">Prev</button>
-        <span>Page {pageIndex + 1} / {pageCount}</span>
+          className="min-h-10 px-3 py-1.5 border-2 border-black rounded-lg disabled:opacity-40">Prev</button>
+        <span className="tabular-nums">Page {pageIndex + 1} / {pageCount}</span>
         <button disabled={pageIndex >= pageCount - 1} onClick={() => setPageIndex((i) => i + 1)}
-          className="px-3 py-1 border rounded-lg disabled:opacity-40">Next</button>
+          className="min-h-10 px-3 py-1.5 border-2 border-black rounded-lg disabled:opacity-40">Next</button>
         <button onClick={() => setRectsByPage((p) => ({ ...p, [pageIndex]: [] }))}
-          className="ml-auto text-xs underline text-slate-500">Clear page boxes</button>
+          className="sm:ml-auto text-xs underline text-slate-500 py-2">Clear page boxes</button>
       </div>
       <div className="relative inline-block max-w-full border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden touch-none">
         {thumb ? (

@@ -71,7 +71,7 @@ export default function UploadZone({ tool, accept, multiple = false, onFiles, la
         role="button"
         tabIndex={0}
         aria-label={label || "Upload files"}
-        className={`border-2 border-dashed border-black rounded-xl p-5 sm:p-6 flex flex-col items-center justify-center gap-2.5 cursor-pointer transition-colors min-h-[140px]
+        className={`border-2 border-dashed border-black rounded-xl p-4 sm:p-6 flex flex-col items-center justify-center gap-2.5 cursor-pointer transition-colors min-h-[120px] sm:min-h-[140px]
           ${dragOver ? "bg-volt border-solid" : "bg-white hover:border-solid"}`}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
@@ -85,12 +85,13 @@ export default function UploadZone({ tool, accept, multiple = false, onFiles, la
             <path strokeLinecap="square" strokeWidth={3} d="M12 19V5m-6 6l6-6 6 6" />
           </svg>
         </span>
-        <p className="label-mono text-sm text-black text-center">
+        <p className="label-mono text-xs sm:text-sm text-black text-center px-1">
           Drop {multiple ? "files" : "a file"} here, or{" "}
-          <span className="underline decoration-2 underline-offset-4">click to browse</span>
+          <span className="underline decoration-2 underline-offset-4">tap to browse</span>
         </p>
-        <p className="text-xs text-slate-600 text-center">
-          Accepts: {accept} · Max {mbLabel(maxFileBytes)} MB per file · Or paste from clipboard
+        <p className="text-[11px] sm:text-xs text-slate-600 text-center px-1 leading-snug">
+          Accepts: {accept} · Max {mbLabel(maxFileBytes)} MB
+          <span className="hidden sm:inline"> · Or paste from clipboard</span>
         </p>
       </div>
 

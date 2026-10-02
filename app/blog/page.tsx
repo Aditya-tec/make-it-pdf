@@ -15,7 +15,7 @@ export default function BlogIndex() {
       <span className="inline-block bg-white text-black border-2 border-black rounded-lg label-mono text-xs px-3 py-1 mb-5">
         {posts.length} guides
       </span>
-      <h1 className="display-title text-white [text-shadow:3px_3px_0_rgba(0,0,0,0.55)] mb-4">How-to guides</h1>
+      <h1 className="headline text-3xl sm:text-5xl text-white [text-shadow:3px_3px_0_rgba(0,0,0,0.55)] mb-4 break-words">How-to guides</h1>
       <p className="text-lg text-slate-300 mb-10 leading-relaxed">Free, step-by-step tutorials for every PDF task.</p>
       <div className="flex flex-col gap-4">
         {posts.map((post) => (

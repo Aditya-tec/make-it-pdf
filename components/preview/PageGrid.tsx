@@ -75,8 +75,8 @@ export default function PageGrid({
 
   return (
     <div
-      className="grid gap-3"
-      style={{ gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))" }}
+      className="grid gap-2 sm:gap-3"
+      style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 110px), 1fr))" }}
     >
       {pages.map((page, position) => (
         <div

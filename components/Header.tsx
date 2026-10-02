@@ -11,22 +11,23 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 bg-white text-black border-b-4 border-black">
-      <nav className="px-3 sm:px-6 h-16 flex items-center gap-2 sm:gap-3">
-        <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label={`${SITE_NAME} home`}>
+      <nav className="px-3 sm:px-6 h-14 sm:h-16 flex items-center gap-1.5 sm:gap-3">
+        <Link href="/" className="flex items-center gap-2 shrink-0" aria-label={`${SITE_NAME} home`}>
           <Image
             src="/logo.png"
             alt=""
             width={40}
             height={40}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border-2 border-black rotate-3"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg border-2 border-black rotate-3"
             priority
           />
-          <span className="font-extrabold text-lg sm:text-2xl lg:text-[30px] tracking-tight leading-none">
+          {/* Hide brand text under ~380px so search keeps usable width */}
+          <span className="hidden min-[380px]:inline font-extrabold text-base sm:text-2xl lg:text-[30px] tracking-tight leading-none">
             {SITE_NAME}
           </span>
         </Link>
 
-        <div className="flex-1 min-w-0 px-1">
+        <div className="flex-1 min-w-0 px-0.5 sm:px-1">
           <ToolSearch />
         </div>
 
@@ -38,7 +39,7 @@ export default function Header() {
         </Link>
 
         <button
-          className="md:hidden p-1.5 border-4 border-black rounded-lg shrink-0"
+          className="md:hidden min-w-11 min-h-11 flex items-center justify-center border-2 sm:border-4 border-black rounded-lg shrink-0"
           aria-label="Toggle menu"
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((v) => !v)}
@@ -52,10 +53,10 @@ export default function Header() {
       </nav>
 
       {menuOpen && (
-        <div className="md:hidden border-t-4 border-black bg-white px-4 py-3 flex flex-col gap-3 label-mono text-sm">
-          <Link href="/" onClick={() => setMenuOpen(false)}>All tools</Link>
-          <Link href="/blog" onClick={() => setMenuOpen(false)}>How-to guides</Link>
-          <Link href="/privacy" onClick={() => setMenuOpen(false)}>Privacy</Link>
+        <div className="md:hidden border-t-4 border-black bg-white px-4 py-4 flex flex-col gap-1 label-mono text-sm">
+          <Link href="/" onClick={() => setMenuOpen(false)} className="py-3 border-b border-black/10">All tools</Link>
+          <Link href="/blog" onClick={() => setMenuOpen(false)} className="py-3 border-b border-black/10">How-to guides</Link>
+          <Link href="/privacy" onClick={() => setMenuOpen(false)} className="py-3">Privacy</Link>
         </div>
       )}
     </header>

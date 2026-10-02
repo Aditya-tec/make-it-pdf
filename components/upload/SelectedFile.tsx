@@ -46,7 +46,7 @@ export default function SelectedFile({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="shrink-0 label-mono text-[11px] px-2 py-1 border-2 border-black rounded-md bg-white hover:bg-volt transition-colors"
+          className="shrink-0 label-mono text-[11px] min-h-10 px-2.5 py-1.5 border-2 border-black rounded-md bg-white hover:bg-volt transition-colors"
         >
           Replace
         </button>
@@ -54,7 +54,7 @@ export default function SelectedFile({
           type="button"
           onClick={onClear}
           aria-label={`Remove ${file.name}`}
-          className="shrink-0 w-8 h-8 flex items-center justify-center text-red-600 border-2 border-red-600 rounded-md hover:bg-red-50 text-xl leading-none font-bold"
+          className="shrink-0 w-10 h-10 flex items-center justify-center text-red-600 border-2 border-red-600 rounded-md hover:bg-red-50 text-xl leading-none font-bold"
         >
           ×
         </button>

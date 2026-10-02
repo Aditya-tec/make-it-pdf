@@ -1,10 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Ranchers, Space_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { Analytics } from "@vercel/analytics/react";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#161616",
+};
 
 // next/font self-hosts these at build time, so the site still makes zero third-party requests.
 const ranchers = Ranchers({ weight: "400", subsets: ["latin"], variable: "--font-ranchers", display: "swap" });

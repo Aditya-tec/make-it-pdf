@@ -57,23 +57,23 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="px-4 sm:px-8 pt-8 pb-6 sm:pt-12 sm:pb-8 grid lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] gap-8 lg:gap-12 items-start">
-        <div>
-          <span className="inline-block -rotate-2 bg-white text-black border-4 border-black label-mono text-xs px-3 py-1.5 mb-6">
+      <section className="px-3 sm:px-8 pt-6 pb-5 sm:pt-12 sm:pb-8 grid lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] gap-6 sm:gap-8 lg:gap-12 items-start">
+        <div className="min-w-0">
+          <span className="inline-block -rotate-2 bg-white text-black border-2 sm:border-4 border-black label-mono text-[10px] sm:text-xs px-2.5 sm:px-3 py-1 sm:py-1.5 mb-4 sm:mb-6">
             100% in your browser
           </span>
-          <h1 className="text-[32px] sm:text-[56px] lg:text-[76px] xl:text-[88px] [text-shadow:6px_6px_0_#000] break-words">
-            <span className="headline normal-case tracking-[0.06em]! block text-white">
+          <h1 className="text-[clamp(1.75rem,8vw,5.5rem)] sm:text-[56px] lg:text-[76px] xl:text-[88px] [text-shadow:4px_4px_0_#000] sm:[text-shadow:6px_6px_0_#000] break-words">
+            <span className="headline normal-case tracking-[0.06em]! block text-white max-w-full overflow-x-clip">
               <TypeSiteName />
             </span>
-            <span className="headline block mt-3 sm:mt-5 text-[0.62em] leading-[1.05] text-white">
+            <span className="headline block mt-2 sm:mt-5 text-[0.62em] leading-[1.05] text-white">
               we <span className="text-volt">never</span> see your files
             </span>
           </h1>
-          <p className="mt-6 text-base sm:text-lg italic text-slate-300 max-w-2xl">
+          <p className="mt-4 sm:mt-6 text-sm sm:text-lg italic text-slate-300 max-w-2xl leading-relaxed">
             We built tools that don&apos;t need your files to work.
-            <br />
-            Edit, convert, and clean up your documents. Processes files entirely in your browser — tested with zero third-party network requests during file processing. {TOOLS.length} tools, no account required, no feature behind a paywall.
+            <br className="hidden sm:block" />
+            {" "}Edit, convert, and clean up your documents. Processes files entirely in your browser — tested with zero third-party network requests during file processing. {TOOLS.length} tools, no account required, no feature behind a paywall.
           </p>
         </div>
 
@@ -96,20 +96,20 @@ export default function Home() {
       </section>
 
       {/* Tools */}
-      <section className="px-4 sm:px-8 pt-6 pb-16 sm:pt-8 sm:pb-20" id="tools">
+      <section className="px-3 sm:px-8 pt-4 pb-12 sm:pt-8 sm:pb-20" id="tools">
         {TOOL_CATEGORIES.map((cat) => {
           const catTools = TOOLS.filter((t) => t.category === cat.id);
           if (!catTools.length) return null;
           return (
-            <div key={cat.id} className="mb-16 last:mb-0">
+            <div key={cat.id} className="mb-10 sm:mb-16 last:mb-0">
               <p className="label-mono text-[11px] text-volt mb-2">{catTools.length} tools</p>
-              <h2 className="headline text-2xl sm:text-3xl text-white mb-6">{cat.label}</h2>
-              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              <h2 className="headline text-xl sm:text-3xl text-white mb-4 sm:mb-6">{cat.label}</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
                 {catTools.map((tool) => (
                   <Link
                     key={tool.slug}
                     href={`/${tool.slug}`}
-                    className="group flex items-start gap-3 bg-white text-black border-4 border-black p-3.5 shadow-[6px_6px_0_#fff] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none hover:bg-volt transition-transform"
+                    className="group flex items-start gap-3 bg-white text-black border-2 sm:border-4 border-black p-3 sm:p-3.5 shadow-[4px_4px_0_#fff] sm:shadow-[6px_6px_0_#fff] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none hover:bg-volt transition-transform"
                   >
                     <span className="w-11 h-11 shrink-0 border-4 border-black flex items-center justify-center bg-white text-black shadow-[3px_3px_0_#ccff00] group-hover:shadow-none transition-shadow" aria-hidden>
                       <ToolIcon slug={tool.slug} className="w-6 h-6" />
