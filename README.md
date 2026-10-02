@@ -100,4 +100,5 @@ content/blog/        # 10 .md how-to posts
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE). Shipped third-party code is MIT/Apache-2.0/BSD (qpdf-wasm is Apache-2.0).
+`sharp` (LGPL, pulled in by Next.js for image optimization) is build-time only and never in `out/`, since `images.unoptimized` is on.
