@@ -1,57 +1,50 @@
 "use client";
-import { useState, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
+import DOMPurify from "dompurify";
 import UploadZone from "@/components/upload/UploadZone";
 import ProgressBar from "@/components/ProgressBar";
 import { useWorker } from "@/hooks/useWorker";
 import { formatBytes } from "@/lib/pdf/load";
 import PrivacyBadge from "@/components/PrivacyBadge";
 
+const STYLE = `<style>
+  body { font-family: Georgia, serif; font-size: 12pt; margin: 2cm; line-height: 1.6; color: #000; }
+  h1,h2,h3,h4 { font-family: Arial, sans-serif; }
+  table { border-collapse: collapse; width: 100%; }
+  td, th { border: 1px solid #ccc; padding: 4px 8px; }
+  img { max-width: 100%; }
+  @page { margin: 2cm; }
+</style>`;
+
 export default function WordToPdfTool() {
   const [file, setFile] = useState<File | null>(null);
-  const [htmlReady, setHtmlReady] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { job, run, reset } = useWorker();
 
+  // The .docx is untrusted: sanitize the generated HTML before it touches any DOM.
+  const srcDoc = useMemo(() => {
+    if (job.status !== "done") return "";
+    const clean = DOMPurify.sanitize(new TextDecoder().decode(job.files[0].bytes));
+    return `<!DOCTYPE html><html><head><meta charset="utf-8">${STYLE}</head><body>${clean}</body></html>`;
+  }, [job]);
+
   const handleConvert = async () => {
     if (!file) return;
-    const buf = await file.arrayBuffer();
-    run({ tool: "word-to-pdf", files: [buf], options: {} });
+    run({ tool: "word-to-pdf", files: [await file.arrayBuffer()], options: {} });
   };
 
-  // When the worker returns HTML, load it into the hidden iframe
-  if (job.status === "done" && !htmlReady) {
-    const f = job.files[0];
-    if (f && f.name.endsWith(".html")) {
-      const html = new TextDecoder().decode(f.bytes);
-      const blob = new Blob([html], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      setTimeout(() => {
-        if (iframeRef.current) {
-          iframeRef.current.src = url;
-          setHtmlReady(true);
-        }
-      }, 50);
-    }
-  }
-
-  const handlePrint = () => {
-    if (iframeRef.current?.contentWindow) {
-      iframeRef.current.contentWindow.print();
-    }
-  };
-
-  const handleReset = () => { reset(); setFile(null); setHtmlReady(false); };
+  const handleReset = () => { reset(); setFile(null); };
 
   if (job.status === "processing") return <ProgressBar percent={job.percent} message={job.message} />;
 
   if (job.status === "error") return (
     <div className="flex flex-col items-center gap-4 py-4">
-      <p className="text-red-600 dark:text-red-400">{job.message}</p>
+      <p role="alert" className="text-red-600 dark:text-red-400">{job.message}</p>
       <button onClick={handleReset} className="text-sm underline text-slate-500">Try again</button>
     </div>
   );
 
-  if (job.status === "done" && htmlReady) {
+  if (job.status === "done") {
     return (
       <div className="flex flex-col gap-4">
         <PrivacyBadge />
@@ -62,15 +55,17 @@ export default function WordToPdfTool() {
         <p className="text-xs text-slate-400">
           Note: Formatting fidelity is good but may differ from Microsoft Word for complex layouts.
         </p>
-        {/* Hidden iframe for printing */}
+        {/* no allow-scripts: nothing inside can execute, even if sanitizing missed something */}
         <iframe
           ref={iframeRef}
           title="Word to PDF preview"
+          sandbox="allow-same-origin allow-modals"
+          srcDoc={srcDoc}
           className="w-full h-96 border border-slate-200 dark:border-slate-700 rounded-lg bg-white"
         />
         <div className="flex gap-3">
           <button
-            onClick={handlePrint}
+            onClick={() => iframeRef.current?.contentWindow?.print()}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
           >
             Save as PDF (Print)

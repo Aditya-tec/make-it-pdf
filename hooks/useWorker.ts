@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
 import type { WorkerRequest, WorkerResponse } from "@/lib/workers/pdf.worker";
+import { MAX_TOTAL_BYTES } from "@/lib/pdf/validate";
 
 export type JobState =
   | { status: "idle" }
@@ -20,6 +21,15 @@ export function useWorker() {
         workerRef.current = null;
       }
 
+      if (request.files.length === 0) {
+        setJob({ status: "error", message: "No files selected." });
+        return;
+      }
+      if (request.files.reduce((n, f) => n + f.byteLength, 0) > MAX_TOTAL_BYTES) {
+        setJob({ status: "error", message: `Total input is over ${MAX_TOTAL_BYTES / 1024 / 1024} MB. Use fewer or smaller files.` });
+        return;
+      }
+
       setJob({ status: "processing", percent: 0, message: "Starting…" });
 
       const worker = new Worker(
@@ -36,8 +46,8 @@ export function useWorker() {
           setJob({ status: "done", files: msg.files });
           worker.terminate();
           workerRef.current = null;
-        } else {
-          setJob({ status: "error", message: msg.message });
+        } else if (msg.type === "error") {
+          setJob({ status: "error", message: msg.message || "Something went wrong." });
           worker.terminate();
           workerRef.current = null;
         }
@@ -50,8 +60,7 @@ export function useWorker() {
       };
 
       // Transfer ownership of ArrayBuffers for zero-copy
-      const transfers = request.files.map((f) => f);
-      worker.postMessage(request, transfers);
+      worker.postMessage(request, request.files);
     },
     []
   );

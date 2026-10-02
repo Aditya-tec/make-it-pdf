@@ -12,6 +12,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "public/qpdf/**", // vendored third-party build, copied by scripts/copy-qpdf.mjs
   ]),
 ]);
 

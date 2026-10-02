@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: {
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   },
   description:
     "Free browser-based PDF tools. Merge, split, compress, convert and more — all processed on your device. No upload, no signup, no watermark.",
-  metadataBase: new URL("https://pdftools.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     siteName: "PDF Tools",
     type: "website",

@@ -1,0 +1,8 @@
+// Single source of truth for the canonical URL (sitemap, robots, OG, JSON-LD).
+// Set NEXT_PUBLIC_SITE_URL in Vercel once you have a custom domain; on Vercel the
+// production *.vercel.app host is picked up automatically at build time.
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "") ||
+  "https://make-it-pdf.vercel.app"
+).replace(/\/$/, "");

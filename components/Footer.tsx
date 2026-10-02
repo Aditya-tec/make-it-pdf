@@ -16,6 +16,14 @@ export default function Footer() {
           className="hover:text-indigo-600 dark:hover:text-indigo-400"
         >
           How-to Guides
+        </Link>{" "}
+        ·{" "}
+        <Link href="/privacy" className="hover:text-indigo-600 dark:hover:text-indigo-400">
+          Privacy
+        </Link>{" "}
+        ·{" "}
+        <Link href="/terms" className="hover:text-indigo-600 dark:hover:text-indigo-400">
+          Terms
         </Link>
       </p>
     </footer>

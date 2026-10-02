@@ -6,12 +6,14 @@ import DownloadResult from "@/components/download/DownloadResult";
 import PageGrid, { type PageItem } from "@/components/preview/PageGrid";
 import { useWorker } from "@/hooks/useWorker";
 import { loadPdfForPreview, renderThumbnail } from "@/lib/pdf/render";
+import { friendlyError } from "@/lib/pdf/validate";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 
 export default function SplitTool() {
   const [file, setFile] = useState<File | null>(null);
   const [pages, setPages] = useState<PageItem[]>([]);
   const [ranges, setRanges] = useState("");
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [mode, setMode] = useState<"click" | "range">("click");
   const pdfRef = useRef<PDFDocumentProxy | null>(null);
   const { job, run, reset } = useWorker();
@@ -20,17 +22,23 @@ export default function SplitTool() {
     if (!file) return;
     let cancelled = false;
     (async () => {
-      const buf = await file.arrayBuffer();
-      const pdf = await loadPdfForPreview(buf);
-      if (cancelled) return;
-      pdfRef.current = pdf;
-      setPages(
-        Array.from({ length: pdf.numPages }, (_, i) => ({
-          index: i,
-          rotation: 0,
-          selected: false,
-        }))
-      );
+      try {
+        const pdf = await loadPdfForPreview(await file.arrayBuffer());
+        if (cancelled) return;
+        pdfRef.current = pdf;
+        setLoadError(null);
+        setPages(
+          Array.from({ length: pdf.numPages }, (_, i) => ({
+            index: i,
+            rotation: 0,
+            selected: false,
+          }))
+        );
+      } catch (e) {
+        if (cancelled) return;
+        setLoadError(friendlyError(e));
+        setFile(null);
+      }
     })();
     return () => { cancelled = true; };
   }, [file]);
@@ -70,7 +78,12 @@ export default function SplitTool() {
   );
   if (job.status === "processing") return <ProgressBar percent={job.percent} message={job.message} />;
 
-  if (!file) return <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />;
+  if (!file) return (
+    <>
+      <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+      {loadError && <p role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">{loadError}</p>}
+    </>
+  );
 
   return (
     <div className="flex flex-col gap-5">

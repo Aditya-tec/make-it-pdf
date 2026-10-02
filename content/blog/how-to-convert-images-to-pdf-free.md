@@ -33,7 +33,7 @@ PDFs are the universal document format. Converting images to PDF lets you:
 ## Tips
 
 - **Mixed orientations**: Use "Fit to image" — each page adapts to portrait or landscape as needed.
-- **Scanned documents**: Scan at 150–300 DPI, then convert. The result is a searchable layout if the source has text (use [Extract Text](/extract-text) to pull the text out).
+- **Scanned documents**: Scan at 150–300 DPI, then convert. Note the PDF will contain the pictures only, not selectable text, so [Extract Text](/extract-text) will not find anything in it.
 - **Large number of images**: The tool processes them sequentially. 50+ high-resolution photos may take 30–60 seconds.
 
 ## Does this tool upload my images?

@@ -1,6 +1,7 @@
 import { PDFDocument } from "pdf-lib";
-import { Zip, ZipPassThrough, strToU8 } from "fflate";
 import { loadPdf } from "@/lib/pdf/load";
+import { assertOutputSize, assertPageCount } from "@/lib/pdf/validate";
+import { zipFiles } from "@/lib/pdf/zip";
 
 /** Parse a page-range string like "1-3, 5, 7-10" (1-indexed) into 0-indexed page indices. */
 function parseRanges(rangeStr: string, total: number): number[] {
@@ -25,19 +26,24 @@ export async function run(
 ): Promise<{ name: string; bytes: Uint8Array }[]> {
   const src = await loadPdf(files[0]);
   const total = src.getPageCount();
+  assertPageCount(total);
   const rangeStr = (opts.ranges as string | undefined) || "";
   // If ranges provided, split by them; otherwise one file per page
   const indices: number[][] = rangeStr
     ? [parseRanges(rangeStr, total)]
     : Array.from({ length: total }, (_, i) => [i]);
+  if (indices.some((g) => g.length === 0)) throw new Error("No valid pages in that range.");
 
   const outputs: { name: string; bytes: Uint8Array }[] = [];
+  let size = 0;
   for (let i = 0; i < indices.length; i++) {
     onProgress(Math.round((i / indices.length) * 90), `Creating part ${i + 1}…`);
     const part = await PDFDocument.create();
     const pages = await part.copyPages(src, indices[i]);
     pages.forEach((p) => part.addPage(p));
     const bytes = await part.save();
+    // each part can re-embed shared resources, so total output can far exceed the input
+    assertOutputSize((size += bytes.length));
     const name =
       indices.length === 1
         ? "split.pdf"
@@ -50,37 +56,7 @@ export async function run(
     onProgress(100);
     return outputs;
   }
-
-  // Zip multiple outputs
   const zipBytes = await zipFiles(outputs);
   onProgress(100);
   return [{ name: "split.zip", bytes: zipBytes }];
 }
-
-function zipFiles(files: { name: string; bytes: Uint8Array }[]): Promise<Uint8Array> {
-  return new Promise((resolve, reject) => {
-    const chunks: Uint8Array[] = [];
-    const zip = new Zip((err, chunk, final) => {
-      if (err) return reject(err);
-      chunks.push(chunk);
-      if (final) resolve(concat(chunks));
-    });
-    for (const f of files) {
-      const file = new ZipPassThrough(f.name);
-      zip.add(file);
-      file.push(f.bytes, true);
-    }
-    zip.end();
-  });
-}
-
-function concat(arrays: Uint8Array[]): Uint8Array {
-  const total = arrays.reduce((n, a) => n + a.length, 0);
-  const out = new Uint8Array(total);
-  let off = 0;
-  for (const a of arrays) { out.set(a, off); off += a.length; }
-  return out;
-}
-
-// suppress unused-import warning from fflate strToU8
-void strToU8;

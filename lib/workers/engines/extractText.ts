@@ -1,6 +1,5 @@
+import "@/lib/pdf/pdfjsWorker";
 import * as pdfjsLib from "pdfjs-dist";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = "";
 
 export async function run(
   files: ArrayBuffer[],

@@ -1,43 +1,23 @@
 import type { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/tools";
+import { getAllPosts } from "@/lib/blog";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-static";
 
-const BASE = "https://pdftools.vercel.app";
-
-// Blog slugs — must match filenames in content/blog/
-const BLOG_SLUGS = [
-  "how-to-merge-pdf-files-free",
-  "how-to-split-pdf-free",
-  "how-to-compress-pdf-free",
-  "how-to-convert-pdf-to-jpg-free",
-  "how-to-convert-images-to-pdf-free",
-  "how-to-convert-word-to-pdf-free",
-  "how-to-organize-pdf-pages-free",
-  "how-to-add-watermark-to-pdf-free",
-  "how-to-password-protect-pdf-free",
-  "how-to-extract-text-from-pdf-free",
-];
-
 export default function sitemap(): MetadataRoute.Sitemap {
-  const toolRoutes: MetadataRoute.Sitemap = TOOLS.map((t) => ({
-    url: `${BASE}/${t.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly",
-    priority: 0.9,
-  }));
-
-  const blogRoutes: MetadataRoute.Sitemap = BLOG_SLUGS.map((slug) => ({
-    url: `${BASE}/blog/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "yearly",
-    priority: 0.7,
-  }));
-
+  const now = new Date();
+  const page = (path: string, priority: number) => ({
+    url: `${SITE_URL}${path}${path ? "/" : ""}`, // trailingSlash: true, so this is the canonical form
+    lastModified: now,
+    priority,
+  });
   return [
-    { url: BASE, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
-    { url: `${BASE}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
-    ...toolRoutes,
-    ...blogRoutes,
+    page("", 1),
+    page("/blog", 0.8),
+    ...TOOLS.map((t) => page(`/${t.slug}`, 0.9)),
+    ...getAllPosts().map((p) => page(`/blog/${p.slug}`, 0.7)),
+    page("/privacy", 0.3),
+    page("/terms", 0.3),
   ];
 }

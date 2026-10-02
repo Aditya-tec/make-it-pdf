@@ -16,7 +16,7 @@ export const TOOLS: Tool[] = [
     name: "Merge PDF",
     tagline: "Combine multiple PDFs into one file",
     description:
-      "Drag in your PDFs, rearrange them in any order, and download a single merged PDF. No upload, no watermark, works offline.",
+      "Drag in your PDFs, rearrange them in any order, and download a single merged PDF. No upload, no watermark, no signup.",
     icon: "🔗",
     category: "essentials",
     howTo: [
@@ -36,7 +36,7 @@ export const TOOLS: Tool[] = [
       },
       {
         q: "What if one of my PDFs is password-protected?",
-        a: "Remove the password first using our Encrypt/Decrypt tool, then merge.",
+        a: "Remove the password first: open it in a PDF viewer, enter the password, save/print a copy without one, then merge.",
       },
     ],
     related: ["split-pdf", "compress-pdf", "organize-pages"],
@@ -240,11 +240,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Can I remove the password later?",
-        a: "Yes — open the encrypted PDF in your browser's PDF viewer or any PDF reader and use the 'Save as' option, or use a dedicated decrypt tool.",
+        a: "Yes — open the encrypted PDF in a PDF viewer, enter the password, and print/save a copy without one.",
       },
       {
         q: "What encryption standard is used?",
-        a: "AES-256, the same standard used by banks. It is processed 100% in your browser.",
+        a: "AES-256. It is processed 100% in your browser.",
       },
     ],
     related: ["organize-pages", "add-watermark", "extract-text"],

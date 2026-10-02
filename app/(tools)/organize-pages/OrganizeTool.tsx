@@ -6,6 +6,7 @@ import DownloadResult from "@/components/download/DownloadResult";
 import PageGrid, { type PageItem } from "@/components/preview/PageGrid";
 import { useWorker } from "@/hooks/useWorker";
 import { loadPdfForPreview, renderThumbnail } from "@/lib/pdf/render";
+import { friendlyError } from "@/lib/pdf/validate";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 import type { PageOp } from "@/lib/workers/engines/organizePages";
 
@@ -14,6 +15,7 @@ export default function OrganizeTool() {
   const [pages, setPages] = useState<PageItem[]>([]);
   // undo stack — ponytail: unlimited, limited by RAM; fine for typical docs
   const [history, setHistory] = useState<PageItem[][]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const pdfRef = useRef<PDFDocumentProxy | null>(null);
   const { job, run, reset } = useWorker();
 
@@ -21,17 +23,24 @@ export default function OrganizeTool() {
     if (!file) return;
     let cancelled = false;
     (async () => {
-      const buf = await file.arrayBuffer();
-      const pdf = await loadPdfForPreview(buf);
-      if (cancelled) return;
-      pdfRef.current = pdf;
-      const initial = Array.from({ length: pdf.numPages }, (_, i) => ({
-        index: i,
-        rotation: 0,
-        selected: false,
-      }));
-      setPages(initial);
-      setHistory([]);
+      try {
+        const pdf = await loadPdfForPreview(await file.arrayBuffer());
+        if (cancelled) return;
+        pdfRef.current = pdf;
+        setLoadError(null);
+        setPages(
+          Array.from({ length: pdf.numPages }, (_, i) => ({
+            index: i,
+            rotation: 0,
+            selected: false,
+          }))
+        );
+        setHistory([]);
+      } catch (e) {
+        if (cancelled) return;
+        setLoadError(friendlyError(e));
+        setFile(null);
+      }
     })();
     return () => { cancelled = true; };
   }, [file]);
@@ -101,7 +110,12 @@ export default function OrganizeTool() {
   );
   if (job.status === "processing") return <ProgressBar percent={job.percent} message={job.message} />;
 
-  if (!file) return <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />;
+  if (!file) return (
+    <>
+      <UploadZone accept=".pdf" onFiles={(f) => setFile(f[0])} />
+      {loadError && <p role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">{loadError}</p>}
+    </>
+  );
 
   return (
     <div className="flex flex-col gap-5">

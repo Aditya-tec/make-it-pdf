@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { Marked } from "marked";
 
 const BLOG_DIR = path.join(process.cwd(), "content/blog");
 
@@ -15,37 +16,10 @@ export interface Post extends PostMeta {
   contentHtml: string;
 }
 
-/** Very small Markdown → HTML converter — no heavy lib needed. */
-function mdToHtml(md: string): string {
-  return md
-    // headings
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    // bold
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    // italic
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    // inline code
-    .replace(/`(.+?)`/g, "<code>$1</code>")
-    // unordered list items
-    .replace(/^[-*] (.+)$/gm, "<li>$1</li>")
-    // ordered list items
-    .replace(/^\d+\. (.+)$/gm, "<li>$1</li>")
-    // paragraphs (blank line separated)
-    .split(/\n{2,}/)
-    .map((block) => {
-      const trimmed = block.trim();
-      if (!trimmed) return "";
-      if (trimmed.startsWith("<h") || trimmed.startsWith("<li")) {
-        // wrap consecutive <li> in <ul>
-        if (trimmed.startsWith("<li")) return `<ul>${trimmed}</ul>`;
-        return trimmed;
-      }
-      return `<p>${trimmed.replace(/\n/g, " ")}</p>`;
-    })
-    .join("\n");
-}
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+// Raw HTML in a .md file is escaped, never passed through.
+const md = new Marked({ renderer: { html: ({ text }) => esc(text) } });
 
 export function getAllPosts(): PostMeta[] {
   if (!fs.existsSync(BLOG_DIR)) return [];
@@ -76,6 +50,6 @@ export function getPost(slug: string): Post | null {
     title: data.title as string,
     excerpt: data.excerpt as string,
     relatedTools: data.relatedTools as string[] | undefined,
-    contentHtml: mdToHtml(content),
+    contentHtml: md.parse(content, { async: false }),
   };
 }

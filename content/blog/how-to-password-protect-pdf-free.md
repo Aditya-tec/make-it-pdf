@@ -15,7 +15,7 @@ Password-protected PDFs require the password to open. This protects:
 
 ## What is AES-256 encryption?
 
-AES-256 (Advanced Encryption Standard with a 256-bit key) is the same standard used by banks, governments, and major cloud providers to protect sensitive data. A correctly encrypted PDF cannot be read without the password — even if someone intercepts the file.
+AES-256 (Advanced Encryption Standard with a 256-bit key) is a widely used, standardised cipher for protecting sensitive data. A correctly encrypted PDF cannot be read without the password — even if someone intercepts the file.
 
 ## How to password-protect a PDF free
 

@@ -1,5 +1,6 @@
 import { PDFDocument, degrees } from "pdf-lib";
 import { loadPdf } from "@/lib/pdf/load";
+import { assertPageCount } from "@/lib/pdf/validate";
 
 /** PageOp: the ordered list of page operations sent from the UI. */
 export type PageOp = {
@@ -17,6 +18,7 @@ export async function run(
 
   onProgress(10, "Loading document…");
   const src = await loadPdf(files[0]);
+  assertPageCount(src.getPageCount());
   const out = await PDFDocument.create();
 
   onProgress(30, "Rebuilding pages…");

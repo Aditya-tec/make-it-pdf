@@ -1,6 +1,6 @@
 import type { Tool } from "./tools";
 
-const BASE = "https://pdftools.vercel.app";
+import { SITE_URL as BASE } from "./site";
 
 export function toolJsonLd(tool: Tool) {
   return {

@@ -1,4 +1,6 @@
 /// <reference lib="webworker" />
+import { friendlyError } from "@/lib/pdf/validate";
+
 // ponytail: single worker entry that lazy-imports the right engine per tool.
 // If tool count grows past 20, consider one worker per tool family instead.
 
@@ -52,9 +54,6 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
     const transferList = result.map((f) => f.bytes.buffer as ArrayBuffer);
     (self as unknown as Worker).postMessage({ type: "done", files: result }, transferList);
   } catch (err) {
-    post({
-      type: "error",
-      message: err instanceof Error ? err.message : String(err),
-    });
+    post({ type: "error", message: friendlyError(err) });
   }
 };

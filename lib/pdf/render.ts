@@ -1,6 +1,7 @@
 "use client";
 // Renders PDF pages to thumbnail data URLs in the main thread using pdf.js.
 import type { PDFDocumentProxy } from "pdfjs-dist";
+import { assertPageCount } from "./validate";
 
 let pdfjsLib: typeof import("pdfjs-dist") | null = null;
 
@@ -17,8 +18,14 @@ async function getPdfjs() {
 
 export async function loadPdfForPreview(bytes: ArrayBuffer): Promise<PDFDocumentProxy> {
   const lib = await getPdfjs();
-  const task = lib.getDocument({ data: bytes.slice(0) });
-  return task.promise;
+  const pdf = await lib.getDocument({ data: bytes.slice(0) }).promise;
+  try {
+    assertPageCount(pdf.numPages);
+  } catch (e) {
+    void pdf.cleanup();
+    throw e;
+  }
+  return pdf;
 }
 
 export async function renderThumbnail(

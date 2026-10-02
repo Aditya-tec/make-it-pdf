@@ -18,7 +18,7 @@ export default function Home() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
           </svg>
-          100% private · No watermark · Works offline
+          100% private · No watermark · No signup
         </div>
       </div>
 
@@ -66,9 +66,9 @@ export default function Home() {
             <p>No signup, no watermark, no file size tricks. Just PDF tools that work.</p>
           </div>
           <div>
-            <div className="text-3xl mb-2">📶</div>
-            <p className="font-semibold mb-1">Works Offline</p>
-            <p>Once the page loads, internet is not required. Process files anywhere.</p>
+            <div className="text-3xl mb-2">🧾</div>
+            <p className="font-semibold mb-1">Nothing Stored</p>
+            <p>No accounts and no file history. Close the tab and your files are gone.</p>
           </div>
         </div>
       </section>

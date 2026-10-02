@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useState, useCallback } from "react";
 
-const MAX_BYTES = 200 * 1024 * 1024; // 200 MB
+import { checkFile, MAX_TOTAL_BYTES } from "@/lib/pdf/validate";
 
 interface Props {
   accept: string; // e.g. ".pdf" or ".jpg,.png,.webp"
@@ -16,27 +16,30 @@ export default function UploadZone({ accept, multiple = false, onFiles, label }:
   const [error, setError] = useState<string | null>(null);
 
   const handleFiles = useCallback(
-    (raw: FileList | null) => {
+    async (raw: FileList | null) => {
       if (!raw || raw.length === 0) return;
       const files = Array.from(raw);
       let totalSize = 0;
-      const valid: File[] = [];
       const ext = accept.split(",").map((e) => e.trim().toLowerCase());
       for (const f of files) {
         const fileExt = "." + f.name.split(".").pop()?.toLowerCase();
-        if (!ext.some((e) => e === fileExt || e === "*")) {
+        if (!ext.includes(fileExt)) {
           setError(`"${f.name}" is not an accepted file type (${accept}).`);
           return;
         }
-        totalSize += f.size;
-        if (totalSize > MAX_BYTES) {
-          setError("Total file size exceeds 200 MB. Try fewer or smaller files.");
+        const problem = await checkFile(f); // size cap + magic-byte check
+        if (problem) {
+          setError(problem);
           return;
         }
-        valid.push(f);
+        totalSize += f.size;
+      }
+      if (totalSize > MAX_TOTAL_BYTES) {
+        setError(`Total file size exceeds ${MAX_TOTAL_BYTES / 1024 / 1024} MB. Try fewer or smaller files.`);
+        return;
       }
       setError(null);
-      onFiles(valid);
+      onFiles(files);
     },
     [accept, onFiles]
   );
@@ -86,7 +89,7 @@ export default function UploadZone({ accept, multiple = false, onFiles, label }:
           <span className="text-indigo-600 dark:text-indigo-400">click to browse</span>
         </p>
         <p className="text-xs text-slate-400">
-          Accepts: {accept} · Max 200 MB · Or paste from clipboard
+          Accepts: {accept} · Max 100 MB per file · Or paste from clipboard
         </p>
       </div>
 
@@ -96,7 +99,8 @@ export default function UploadZone({ accept, multiple = false, onFiles, label }:
         accept={accept}
         multiple={multiple}
         className="hidden"
-        onChange={(e) => handleFiles(e.target.files)}
+        onChange={(e) => { handleFiles(e.target.files); }}
+        onClick={(e) => { (e.target as HTMLInputElement).value = ""; }}
         aria-hidden="true"
       />
 

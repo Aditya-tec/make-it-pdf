@@ -30,7 +30,7 @@ That's it. No email required. No account. No watermark.
 
 ## Tips for better results
 
-- **Password-protected PDFs**: Remove the password first using the [Encrypt PDF](/encrypt-pdf) tool, then merge.
+- **Password-protected PDFs**: Remove the password first (open it in a PDF viewer, enter the password, and save a copy without one), then merge.
 - **Large files**: The tool handles files up to 200 MB total. For very large scans, try [compressing first](/compress-pdf).
 - **Page order**: Drag file cards before merging — what you see is what you get.
 
@@ -46,4 +46,4 @@ No. We copy pages exactly as-is using pdf-lib — there is no re-rendering or qu
 Yes. The tool works on modern mobile browsers (Chrome, Safari). Very large files may be slower on older phones.
 
 **Is this really free?**
-Yes. The site is funded through occasional donations. The tool will always be free.
+Yes. There is no signup, no watermark and no paid tier.

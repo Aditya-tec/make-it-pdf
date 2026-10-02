@@ -2,6 +2,18 @@ import { PDFDocument, PageSizes } from "pdf-lib";
 
 type PageMode = "fit" | "a4" | "letter";
 
+// pdf-lib only embeds JPG and PNG; WebP/GIF are re-encoded to PNG via the browser's decoder.
+async function embeddable(bytes: Uint8Array): Promise<{ jpg: boolean; bytes: Uint8Array }> {
+  if (bytes[0] === 0xff && bytes[1] === 0xd8) return { jpg: true, bytes };
+  if (bytes[0] === 0x89 && bytes[1] === 0x50) return { jpg: false, bytes };
+  const bmp = await createImageBitmap(new Blob([bytes.buffer as ArrayBuffer]));
+  const canvas = new OffscreenCanvas(bmp.width, bmp.height);
+  canvas.getContext("2d")!.drawImage(bmp, 0, 0);
+  bmp.close();
+  const blob = await canvas.convertToBlob({ type: "image/png" });
+  return { jpg: false, bytes: new Uint8Array(await blob.arrayBuffer()) };
+}
+
 export async function run(
   files: ArrayBuffer[],
   opts: Record<string, unknown>,
@@ -12,14 +24,8 @@ export async function run(
 
   for (let i = 0; i < files.length; i++) {
     onProgress(Math.round((i / files.length) * 90), `Adding image ${i + 1}/${files.length}…`);
-    const bytes = new Uint8Array(files[i]);
-    // detect image type by magic bytes
-    let image;
-    if (bytes[0] === 0xff && bytes[1] === 0xd8) {
-      image = await pdf.embedJpg(bytes);
-    } else {
-      image = await pdf.embedPng(bytes);
-    }
+    const src = await embeddable(new Uint8Array(files[i]));
+    const image = src.jpg ? await pdf.embedJpg(src.bytes) : await pdf.embedPng(src.bytes);
 
     let pageW: number, pageH: number;
     if (mode === "a4") {
