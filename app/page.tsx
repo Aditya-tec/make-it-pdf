@@ -1,69 +1,77 @@
-import Image from "next/image";
+import Link from "next/link";
+import { TOOLS, TOOL_CATEGORIES } from "@/lib/tools";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="max-w-6xl mx-auto px-4 py-12">
+      {/* Hero */}
+      <div className="text-center mb-14">
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
+          Free PDF Tools — No Upload, No Signup
+        </h1>
+        <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
+          Merge, split, compress, convert and more. Every tool runs directly in
+          your browser — your files never leave your device.
+        </p>
+        <div className="mt-4 inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-full px-4 py-1.5 text-sm font-medium">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          100% private · No watermark · Works offline
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+      {/* Tools by category */}
+      {TOOL_CATEGORIES.map((cat) => {
+        const catTools = TOOLS.filter((t) => t.category === cat.id);
+        return (
+          <section key={cat.id} className="mb-12">
+            <h2 className="text-xl font-semibold mb-4 text-slate-700 dark:text-slate-300">
+              {cat.label}
+            </h2>
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {catTools.map((tool) => (
+                <Link
+                  key={tool.slug}
+                  href={`/${tool.slug}`}
+                  className="group flex items-start gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 hover:border-indigo-400 hover:shadow-md transition-all"
+                >
+                  <span className="text-3xl shrink-0">{tool.icon}</span>
+                  <div>
+                    <p className="font-semibold text-sm group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      {tool.name}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">{tool.tagline}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+
+      {/* Trust section */}
+      <section className="mt-16 bg-slate-50 dark:bg-slate-800 rounded-2xl p-8 text-center">
+        <h2 className="text-2xl font-bold mb-4">Why use PDF Tools?</h2>
+        <div className="grid sm:grid-cols-3 gap-6 mt-6 text-sm text-slate-600 dark:text-slate-300">
+          <div>
+            <div className="text-3xl mb-2">🔒</div>
+            <p className="font-semibold mb-1">100% Private</p>
+            <p>All processing happens in your browser. Files are never sent to any server.</p>
+          </div>
+          <div>
+            <div className="text-3xl mb-2">⚡</div>
+            <p className="font-semibold mb-1">Fast &amp; Free</p>
+            <p>No signup, no watermark, no file size tricks. Just PDF tools that work.</p>
+          </div>
+          <div>
+            <div className="text-3xl mb-2">📶</div>
+            <p className="font-semibold mb-1">Works Offline</p>
+            <p>Once the page loads, internet is not required. Process files anywhere.</p>
+          </div>
         </div>
-      </main>
+      </section>
     </div>
   );
 }

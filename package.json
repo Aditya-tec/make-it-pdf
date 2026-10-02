@@ -9,7 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.20",
+    "fflate": "^0.8.3",
+    "gray-matter": "^4.0.3",
+    "mammoth": "^1.13.0",
     "next": "16.3.8",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.3.289",
+    "qpdf-wasm": "^0.1.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
