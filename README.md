@@ -65,6 +65,8 @@ npx tsx engines.check.ts
 
 In the Vercel dashboard → Settings → Domains, add your domain. Vercel provides free HTTPS. You only pay the registrar (~$10–15/year).
 
+**Then set `NEXT_PUBLIC_SITE_URL=https://yourdomain.com`** (Settings → Environment Variables) and redeploy. It feeds `sitemap.xml`, `robots.txt`, JSON-LD and `metadataBase` (via `lib/site.ts`). If unset, those keep pointing at the `*.vercel.app` host (Vercel's `VERCEL_PROJECT_PRODUCTION_URL`, else `make-it-pdf.vercel.app`), so search engines index the wrong domain. Nothing crashes.
+
 ## Project structure
 
 ```
