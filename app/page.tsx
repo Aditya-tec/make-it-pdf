@@ -24,12 +24,13 @@ export default function Home() {
           <span className="inline-block -rotate-2 bg-white text-black border-4 border-black label-mono text-xs px-3 py-1.5 mb-6">
             100% in your browser
           </span>
-          <h1 className="headline text-[32px] sm:text-[56px] lg:text-[76px] xl:text-[88px] text-white [text-shadow:6px_6px_0_#000] break-words">
-            <TypeSiteName />
-            <br />
-            we <span className="text-volt">never</span> see
-            <br />
-            your files
+          <h1 className="text-[32px] sm:text-[56px] lg:text-[76px] xl:text-[88px] [text-shadow:6px_6px_0_#000] break-words">
+            <span className="headline normal-case tracking-[0.06em]! block text-white">
+              <TypeSiteName />
+            </span>
+            <span className="headline block mt-3 sm:mt-5 text-[0.62em] leading-[1.05] text-white">
+              we <span className="text-volt">never</span> see your files
+            </span>
           </h1>
           <p className="mt-6 text-base sm:text-lg italic text-slate-300 max-w-2xl">
             We built tools that don&apos;t need your files to work.
@@ -38,19 +39,19 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-4 sm:gap-5">
+        <div className="flex flex-col gap-3 sm:gap-4 lg:max-w-[320px]">
           {STICKERS.map((s) => (
             <div
               key={s.text}
-              className={`${s.rot} flex items-center gap-3 sm:gap-4 bg-white text-black border-4 border-black p-3 sm:p-4 shadow-[8px_8px_0_#000]`}
+              className={`${s.rot} flex items-center gap-2 sm:gap-3 bg-white text-black border-4 border-black p-2 sm:p-2.5 shadow-[5px_5px_0_#000]`}
             >
               <span
-                className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 bg-volt border-4 border-black flex items-center justify-center text-2xl sm:text-3xl"
+                className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 bg-volt border-4 border-black flex items-center justify-center text-lg sm:text-xl"
                 aria-hidden
               >
                 {s.icon}
               </span>
-              <p className="label-mono text-xs sm:text-sm leading-snug">{s.text}</p>
+              <p className="label-mono text-[10px] sm:text-xs leading-snug">{s.text}</p>
             </div>
           ))}
         </div>

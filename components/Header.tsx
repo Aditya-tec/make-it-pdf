@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { SITE_NAME } from "@/lib/site";
@@ -12,12 +13,14 @@ export default function Header() {
     <header className="sticky top-0 z-40 bg-white text-black border-b-4 border-black">
       <nav className="px-3 sm:px-6 h-16 flex items-center gap-2 sm:gap-3">
         <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label={`${SITE_NAME} home`}>
-          <span className="w-9 h-9 sm:w-10 sm:h-10 bg-black rotate-3 flex items-center justify-center" aria-hidden>
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-              <path d="M6 2h9l5 5v15H6z" strokeLinejoin="miter" />
-              <path d="M15 2v5h5M9 13h6M9 17h6" />
-            </svg>
-          </span>
+          <Image
+            src="/logo.png"
+            alt=""
+            width={40}
+            height={40}
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border-2 border-black rotate-3"
+            priority
+          />
           <span className="font-extrabold text-lg sm:text-2xl lg:text-[30px] tracking-tight leading-none">
             {SITE_NAME}
           </span>

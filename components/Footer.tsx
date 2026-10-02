@@ -16,6 +16,17 @@ export default function Footer() {
           <Link href="/terms" className="underline decoration-4 underline-offset-4 hover:bg-volt">Terms</Link>
         </nav>
       </div>
+      <div className="px-4 sm:px-8 pb-8 label-mono text-xs text-slate-600">
+        Built by{" "}
+        <a
+          href="https://www.adityakalambe.xyz/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline decoration-4 underline-offset-4 text-black hover:bg-volt"
+        >
+          Aditya
+        </a>
+      </div>
     </footer>
   );
 }
