@@ -29,9 +29,12 @@ export const metadata: Metadata = {
   // After verifying the site at https://www.bing.com/webmasters, either:
   //   1) set NEXT_PUBLIC_BING_SITE_VERIFICATION to the msvalidate.01 content value, or
   //   2) drop BingSiteAuth.xml into /public with the XML Bing gives you.
-  verification: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
-    ? { other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } }
-    : undefined,
+  verification: {
+    google: "9SW4TqG019lRHRDzEnQZcBMKjw3oSLK_ugahlsRtB4M",
+    ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } }
+      : {}),
+  },
 };
 
 export default function RootLayout({
