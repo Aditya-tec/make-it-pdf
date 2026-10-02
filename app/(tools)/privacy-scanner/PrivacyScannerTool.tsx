@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import UploadZone from "@/components/upload/UploadZone";
 import SelectedFile from "@/components/upload/SelectedFile";
 import ProgressBar from "@/components/ProgressBar";
@@ -8,33 +8,31 @@ import PrivacyBadge from "@/components/PrivacyBadge";
 import { useWorker } from "@/hooks/useWorker";
 import type { Finding } from "@/lib/workers/engines/privacyScanner";
 
+function parseFindings(bytes: Uint8Array): Finding[] {
+  try {
+    return JSON.parse(new TextDecoder().decode(bytes)).findings || [];
+  } catch {
+    return [];
+  }
+}
+
 export default function PrivacyScannerTool() {
   const [file, setFile] = useState<File | null>(null);
-  const [findings, setFindings] = useState<Finding[] | null>(null);
-  const [phase, setPhase] = useState<"idle" | "scanned" | "stripped">("idle");
   const { job, run, reset } = useWorker();
 
-  useEffect(() => {
-    if (job.status !== "done") return;
-    if (job.files.some((f) => f.name.endsWith(".pdf"))) {
-      setPhase("stripped");
-      return;
-    }
-    const report = job.files.find((f) => f.name.endsWith(".json"));
-    if (report) {
-      try {
-        setFindings(JSON.parse(new TextDecoder().decode(report.bytes)).findings || []);
-      } catch {
-        setFindings([]);
-      }
-      setPhase("scanned");
-    }
-  }, [job]);
+  // Derive UI from the worker result — no effect sync.
+  const done = job.status === "done" ? job : null;
+  const isStripped = !!done && done.files.some((f) => f.name.endsWith(".pdf"));
+  const findings =
+    done && !isStripped
+      ? (() => {
+          const report = done.files.find((f) => f.name.endsWith(".json"));
+          return report ? parseFindings(report.bytes) : null;
+        })()
+      : null;
 
   const scan = async () => {
     if (!file) return;
-    setFindings(null);
-    setPhase("idle");
     run({ tool: "privacy-scanner", files: [await file.arrayBuffer()], options: { strip: false } });
   };
   const strip = async () => {
@@ -44,21 +42,14 @@ export default function PrivacyScannerTool() {
   const handleReset = () => {
     reset();
     setFile(null);
-    setFindings(null);
-    setPhase("idle");
   };
 
   if (job.status === "processing") return <ProgressBar percent={job.percent} message={job.message} />;
 
-  if (phase === "stripped" && job.status === "done") {
-    const pdf = job.files.filter((f) => f.name.endsWith(".pdf"));
-    const removed = job.files.find((f) => f.name === "removed-metadata.json");
-    let removedList: Finding[] = [];
-    if (removed) {
-      try {
-        removedList = JSON.parse(new TextDecoder().decode(removed.bytes)).findings || [];
-      } catch { /* */ }
-    }
+  if (isStripped && done) {
+    const pdf = done.files.filter((f) => f.name.endsWith(".pdf"));
+    const removed = done.files.find((f) => f.name === "removed-metadata.json");
+    const removedList = removed ? parseFindings(removed.bytes) : [];
     return (
       <div className="flex flex-col gap-4">
         {removedList.length > 0 && (
@@ -83,7 +74,7 @@ export default function PrivacyScannerTool() {
     </div>
   );
 
-  if (phase === "scanned" && findings) {
+  if (findings) {
     return (
       <div className="flex flex-col gap-4">
         <PrivacyBadge />
@@ -123,7 +114,6 @@ export default function PrivacyScannerTool() {
         <UploadZone tool="privacy-scanner" accept=".pdf" onFiles={(f) => setFile(f[0])} />
       ) : (
         <>
-
           <SelectedFile
             file={file}
             tool="privacy-scanner"

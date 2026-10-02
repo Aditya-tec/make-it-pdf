@@ -73,11 +73,8 @@ export default function ToolSearch() {
   const recRef = useRef<SpeechRec | null>(null);
   const networkRetries = useRef(0);
   const startingRef = useRef(false);
-  // ponytail: Brave blocks Google speech, so hide the mic there (or after a hard network failure). Upgrade path: on-device Whisper.
+  // Hidden after a hard network failure (Brave / Chromium without Google speech).
   const [noVoice, setNoVoice] = useState(false);
-  useEffect(() => {
-    if ((navigator as Navigator & { brave?: unknown }).brave) setNoVoice(true);
-  }, []);
 
   const setQ = (v: string) => {
     setQRaw(v);
@@ -92,7 +89,9 @@ export default function ToolSearch() {
   useEffect(() => {
     return () => {
       try {
-        recRef.current?.abort?.() ?? recRef.current?.stop();
+        const rec = recRef.current;
+        if (rec?.abort) rec.abort();
+        else rec?.stop();
       } catch {
         /* ignore */
       }
@@ -134,7 +133,9 @@ export default function ToolSearch() {
 
   const stopVoice = () => {
     try {
-      recRef.current?.abort?.() ?? recRef.current?.stop();
+      const rec = recRef.current;
+      if (rec?.abort) rec.abort();
+      else rec?.stop();
     } catch {
       /* ignore */
     }
