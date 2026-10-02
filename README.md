@@ -2,6 +2,8 @@
 
 Privacy-first PDF tools that run entirely in your browser. Your files never leave your device — no uploads, no accounts, no watermarks.
 
+![OfflinePDF homepage](docs/screenshot.png)
+
 **Live site:** hosted on [Vercel](https://vercel.com) (set `NEXT_PUBLIC_SITE_URL` to your production domain).
 
 ---
@@ -13,7 +15,6 @@ Most free PDF sites upload your documents to a server. OfflinePDF does the oppos
 - **20 tools** across merge, convert, edit, and security  
 - **Tiered size limits** (light tools up to 300&nbsp;MB; heavy tools 150&nbsp;MB; OCR 75&nbsp;MB / 75 pages)  
 - **Search + voice** in the header to jump to the best tool  
-- **MIT licensed** — free for personal and commercial use  
 
 ---
 
@@ -105,9 +106,3 @@ scripts/             copy-assets, e2e, check-links
 ## Privacy
 
 Files are read into memory in your browser, processed there, and offered as a download. They are not uploaded to OfflinePDF servers. Passwords used for encrypt/unlock never leave the device. See `/privacy` and `/terms` on the live site.
-
----
-
-## License
-
-MIT — see [LICENSE](LICENSE). Third-party runtime deps are MIT/Apache-2.0/BSD (qpdf-wasm is Apache-2.0). `sharp` (via Next.js) is build-time only and not shipped in `out/` (`images.unoptimized` is enabled).
