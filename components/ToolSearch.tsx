@@ -8,11 +8,14 @@ type SpeechRec = {
   lang: string;
   continuous: boolean;
   interimResults: boolean;
+  maxAlternatives?: number;
   start: () => void;
   stop: () => void;
+  abort?: () => void;
   onresult: ((ev: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
   onerror: ((ev: { error: string }) => void) | null;
   onend: (() => void) | null;
+  onstart?: (() => void) | null;
 };
 
 function getSpeechRecognition(): (new () => SpeechRec) | null {
@@ -25,7 +28,6 @@ function getSpeechRecognition(): (new () => SpeechRec) | null {
 }
 
 function voiceErrorHint(code: string): string | null {
-  // aborted = user stopped / we replaced the session — not a failure
   if (code === "aborted") return null;
   if (code === "no-speech") return "Didn't catch that — speak a bit louder, then try again.";
   if (code === "audio-capture") return "No mic found — plug one in or check OS sound settings.";
@@ -33,9 +35,30 @@ function voiceErrorHint(code: string): string | null {
     return "Mic blocked — click the lock icon in the address bar and allow microphone.";
   }
   if (code === "network") {
-    return "Voice needs a short network hop (browser speech). Check connection, or just type.";
+    // Chrome/Edge ship Web Speech; Brave and Chromium often expose the API but
+    // can't reach Google's transcription service → instant "network".
+    return "Voice isn't available in this browser — just type.";
   }
   return "Couldn't hear that — try again or type instead.";
+}
+
+async function ensureMicAccess(): Promise<string | null> {
+  if (!navigator.mediaDevices?.getUserMedia) return null;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // Permission prompt only — SpeechRecognition opens its own capture.
+    for (const t of stream.getTracks()) t.stop();
+    return null;
+  } catch (err) {
+    const name = err instanceof DOMException ? err.name : "";
+    if (name === "NotAllowedError" || name === "PermissionDeniedError") {
+      return "Mic blocked — click the lock icon in the address bar and allow microphone.";
+    }
+    if (name === "NotFoundError" || name === "DevicesNotFoundError") {
+      return "No mic found — plug one in or check OS sound settings.";
+    }
+    return "Couldn't open the mic — check OS sound settings, or just type.";
+  }
 }
 
 export default function ToolSearch() {
@@ -48,6 +71,13 @@ export default function ToolSearch() {
   const [listening, setListening] = useState(false);
   const [voiceHint, setVoiceHint] = useState<string | null>(null);
   const recRef = useRef<SpeechRec | null>(null);
+  const networkRetries = useRef(0);
+  const startingRef = useRef(false);
+  // ponytail: Brave blocks Google speech, so hide the mic there (or after a hard network failure). Upgrade path: on-device Whisper.
+  const [noVoice, setNoVoice] = useState(false);
+  useEffect(() => {
+    if ((navigator as Navigator & { brave?: unknown }).brave) setNoVoice(true);
+  }, []);
 
   const setQ = (v: string) => {
     setQRaw(v);
@@ -57,12 +87,12 @@ export default function ToolSearch() {
 
   const matches = useMemo(() => rankTools(q), [q]);
   const results = useMemo(() => matches.map((m) => m.tool), [matches]);
-  const [touched, setTouched] = useState(false); // user arrowed/hovered a row
+  const [touched, setTouched] = useState(false);
 
   useEffect(() => {
     return () => {
       try {
-        recRef.current?.stop();
+        recRef.current?.abort?.() ?? recRef.current?.stop();
       } catch {
         /* ignore */
       }
@@ -76,7 +106,6 @@ export default function ToolSearch() {
     router.push(`/${slug}/`);
   };
 
-  /** Enter / Find: jump if the intent is clear, otherwise keep the list open to choose. */
   const submit = () => {
     if (!q.trim()) return;
     if (touched && results[active]) return go(results[active].slug);
@@ -103,33 +132,32 @@ export default function ToolSearch() {
     }
   };
 
-  const toggleVoice = () => {
-    const Ctor = getSpeechRecognition();
-    if (!Ctor) {
-      setVoiceHint("Voice input needs Chrome, Edge, or Safari.");
-      return;
+  const stopVoice = () => {
+    try {
+      recRef.current?.abort?.() ?? recRef.current?.stop();
+    } catch {
+      /* ignore */
     }
-    if (typeof window !== "undefined" && !window.isSecureContext) {
-      setVoiceHint("Voice needs HTTPS (or localhost).");
-      return;
-    }
-    if (listening && recRef.current) {
-      try {
-        recRef.current.stop();
-      } catch {
-        /* ignore */
-      }
-      setListening(false);
-      setVoiceHint(null);
-      return;
-    }
+    recRef.current = null;
+    setListening(false);
+  };
+
+  const startRecognition = (Ctor: new () => SpeechRec) => {
     const rec = new Ctor();
     recRef.current = rec;
-    rec.lang = navigator.language?.startsWith("en") ? navigator.language : "en-US";
+    // en-US is the most reliable Google speech endpoint; regional tags flake more.
+    rec.lang = "en-US";
     rec.continuous = false;
     rec.interimResults = true;
+    rec.maxAlternatives = 1;
+
+    rec.onstart = () => {
+      setListening(true);
+      setVoiceHint("Listening… say what you need (e.g. “compress my PDF”).");
+    };
+
     rec.onresult = (ev) => {
-      // Prefer the final chunk; fall back to the latest interim so UX feels live.
+      networkRetries.current = 0;
       let said = "";
       const list = ev.results;
       for (let i = 0; i < list.length; i++) {
@@ -137,7 +165,6 @@ export default function ToolSearch() {
         const text = row?.[0]?.transcript?.trim() || "";
         if (!text) continue;
         said = text;
-        // SpeechRecognitionResult has isFinal on the real API; optional for our slim type
         if ((row as { isFinal?: boolean }).isFinal) break;
       }
       if (!said) return;
@@ -146,18 +173,79 @@ export default function ToolSearch() {
       setVoiceHint(`Heard: “${said}”`);
       inputRef.current?.focus();
     };
+
     rec.onerror = (ev) => {
+      // One quick retry — Chrome sometimes flaps "network" on the first handshake.
+      if (ev.error === "network" && networkRetries.current < 1) {
+        networkRetries.current += 1;
+        window.setTimeout(() => {
+          try {
+            startRecognition(Ctor);
+          } catch {
+            setListening(false);
+            setVoiceHint(voiceErrorHint("network"));
+            inputRef.current?.focus();
+          }
+        }, 350);
+        return;
+      }
       setListening(false);
-      setVoiceHint(voiceErrorHint(ev.error));
+      recRef.current = null;
+      if (ev.error === "network") setNoVoice(true);
+      const hint = voiceErrorHint(ev.error);
+      setVoiceHint(hint);
+      if (hint) inputRef.current?.focus();
     };
-    rec.onend = () => setListening(false);
+
+    rec.onend = () => {
+      setListening(false);
+      if (recRef.current === rec) recRef.current = null;
+    };
+
+    rec.start();
+  };
+
+  const toggleVoice = async () => {
+    if (startingRef.current) return;
+    const Ctor = getSpeechRecognition();
+    if (!Ctor) {
+      setVoiceHint("Voice input needs Chrome, Edge, or Safari.");
+      return;
+    }
+    if (!window.isSecureContext) {
+      setVoiceHint("Voice needs HTTPS (or localhost).");
+      return;
+    }
+    if (listening || recRef.current) {
+      stopVoice();
+      setVoiceHint(null);
+      networkRetries.current = 0;
+      return;
+    }
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      setVoiceHint("You're offline — voice needs a connection. Type instead.");
+      inputRef.current?.focus();
+      return;
+    }
+
+    startingRef.current = true;
+    setVoiceHint("Allow the mic if asked…");
     try {
-      rec.start();
+      const micErr = await ensureMicAccess();
+      if (micErr) {
+        setVoiceHint(micErr);
+        inputRef.current?.focus();
+        return;
+      }
+      networkRetries.current = 0;
+      startRecognition(Ctor);
       setListening(true);
       setVoiceHint("Listening… say what you need (e.g. “compress my PDF”).");
     } catch {
       setListening(false);
       setVoiceHint("Mic busy — close other tabs using the microphone.");
+    } finally {
+      startingRef.current = false;
     }
   };
 
@@ -175,7 +263,6 @@ export default function ToolSearch() {
           }}
           onFocus={() => q.trim() && setOpen(true)}
           onBlur={() => {
-            // delay so click on a result still registers
             window.setTimeout(() => setOpen(false), 150);
           }}
           onKeyDown={onKeyDown}
@@ -187,12 +274,13 @@ export default function ToolSearch() {
           aria-autocomplete="list"
           autoComplete="off"
         />
+        {!noVoice && (
         <button
           type="button"
-          onClick={toggleVoice}
+          onClick={() => void toggleVoice()}
           aria-pressed={listening}
           aria-label={listening ? "Stop voice input" : "Search by voice"}
-          title="Voice search"
+          title="Voice search (Chrome or Edge)"
           className={`shrink-0 w-11 flex items-center justify-center border-l-2 border-black transition-colors ${
             listening ? "bg-red-500 text-white" : "bg-volt text-black hover:bg-black hover:text-white"
           }`}
@@ -201,6 +289,7 @@ export default function ToolSearch() {
             <path d="M12 14a3 3 0 003-3V6a3 3 0 10-6 0v5a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 0014 0h-2zm-5 9a1 1 0 01-1-1v-2.07a7.002 7.002 0 01-5.9-4.42l1.9-.6A5 5 0 0017 13.93V19a1 1 0 01-1 1h-4z" />
           </svg>
         </button>
+        )}
         <button
           type="button"
           onClick={submit}
