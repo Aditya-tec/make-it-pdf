@@ -10,7 +10,7 @@ type SpeechRec = {
   start: () => void;
   stop: () => void;
   onresult: ((ev: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
-  onerror: (() => void) | null;
+  onerror: ((ev: { error: string }) => void) | null;
   onend: (() => void) | null;
 };
 
@@ -21,6 +21,20 @@ function getSpeechRecognition(): (new () => SpeechRec) | null {
     webkitSpeechRecognition?: new () => SpeechRec;
   };
   return w.SpeechRecognition || w.webkitSpeechRecognition || null;
+}
+
+function voiceErrorHint(code: string): string | null {
+  // aborted = user stopped / we replaced the session — not a failure
+  if (code === "aborted") return null;
+  if (code === "no-speech") return "Didn't catch that — speak a bit louder, then try again.";
+  if (code === "audio-capture") return "No mic found — plug one in or check OS sound settings.";
+  if (code === "not-allowed" || code === "service-not-allowed") {
+    return "Mic blocked — click the lock icon in the address bar and allow microphone.";
+  }
+  if (code === "network") {
+    return "Voice needs a short network hop (browser speech). Check connection, or just type.";
+  }
+  return "Couldn't hear that — try again or type instead.";
 }
 
 export default function ToolSearch() {
@@ -94,27 +108,46 @@ export default function ToolSearch() {
       setVoiceHint("Voice input needs Chrome, Edge, or Safari.");
       return;
     }
+    if (typeof window !== "undefined" && !window.isSecureContext) {
+      setVoiceHint("Voice needs HTTPS (or localhost).");
+      return;
+    }
     if (listening && recRef.current) {
-      recRef.current.stop();
+      try {
+        recRef.current.stop();
+      } catch {
+        /* ignore */
+      }
       setListening(false);
+      setVoiceHint(null);
       return;
     }
     const rec = new Ctor();
     recRef.current = rec;
-    rec.lang = "en-US";
+    rec.lang = navigator.language?.startsWith("en") ? navigator.language : "en-US";
     rec.continuous = false;
-    rec.interimResults = false;
+    rec.interimResults = true;
     rec.onresult = (ev) => {
-      const said = ev.results[0]?.[0]?.transcript?.trim() || "";
+      // Prefer the final chunk; fall back to the latest interim so UX feels live.
+      let said = "";
+      const list = ev.results;
+      for (let i = 0; i < list.length; i++) {
+        const row = list[i];
+        const text = row?.[0]?.transcript?.trim() || "";
+        if (!text) continue;
+        said = text;
+        // SpeechRecognitionResult has isFinal on the real API; optional for our slim type
+        if ((row as { isFinal?: boolean }).isFinal) break;
+      }
       if (!said) return;
       setQ(said);
       setOpen(true);
       setVoiceHint(`Heard: “${said}”`);
       inputRef.current?.focus();
     };
-    rec.onerror = () => {
+    rec.onerror = (ev) => {
       setListening(false);
-      setVoiceHint("Couldn't hear that — try again or type instead.");
+      setVoiceHint(voiceErrorHint(ev.error));
     };
     rec.onend = () => setListening(false);
     try {

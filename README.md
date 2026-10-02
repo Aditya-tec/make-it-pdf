@@ -37,7 +37,7 @@ How-to guides live under `/blog`.
 | App | Next.js 16 (App Router, static `output: "export"`), React 19, TypeScript |
 | UI | Tailwind CSS 4 |
 | PDF | pdf-lib, pdf.js |
-| Encrypt | qpdf-wasm (AES-256; needs COOP/COEP — see `vercel.json`) |
+| Encrypt | qpdf-wasm (AES-256; COOP/COEP only on encrypt/unlock routes — see `vercel.json`) |
 | OCR | tesseract.js (English model bundled; no CDN) |
 | Word | mammoth |
 | Zip | fflate |
