@@ -226,7 +226,102 @@ if (encrypted) {
     await p.goto(BASE + "/extract-text/"); await up(p, [ep]); await p.getByRole("button", { name: "Extract Text" }).click();
     const m = await errText(p); if (!/password-protected/.test(m)) throw new Error(m.slice(0, 200));
   });
+  await t("remove-password: unlocks with correct password", async (p) => {
+    await p.goto(BASE + "/remove-password/"); await up(p, [ep]);
+    await p.locator("input[type=password]").fill("s3cret!");
+    await p.getByRole("button", { name: "Remove Password" }).click(); await done(p);
+    const { buf } = await download(p);
+    if (buf.includes(Buffer.from("/Encrypt"))) throw new Error("still encrypted");
+    await PDFDocument.load(buf); // must open without password
+  });
+  await t("remove-password: wrong password -> clear error", async (p) => {
+    await p.goto(BASE + "/remove-password/"); await up(p, [ep]);
+    await p.locator("input[type=password]").fill("wrong-pass");
+    await p.getByRole("button", { name: "Remove Password" }).click();
+    const m = await errText(p); if (!/Wrong password|password/i.test(m)) throw new Error(m.slice(0, 200));
+  });
 }
+
+await t("rotate: 90 degrees additive", async (p) => {
+  await p.goto(BASE + "/rotate-pdf/"); await up(p, [a]);
+  await p.getByRole("button", { name: "90°" }).click();
+  await p.getByRole("button", { name: "Rotate PDF" }).click(); await done(p);
+  const { buf } = await download(p);
+  const doc = await PDFDocument.load(buf);
+  if (doc.getPage(0).getRotation().angle !== 90) throw new Error("not rotated");
+});
+
+await t("page-numbers: adds numbers", async (p) => {
+  await p.goto(BASE + "/page-numbers/"); await up(p, [b]);
+  await p.getByRole("button", { name: "Add page numbers" }).click(); await done(p);
+  await PDFDocument.load((await download(p)).buf);
+});
+
+await t("privacy-scanner: lists findings then strips", async (p) => {
+  // PDF with author metadata
+  const metaDoc = await PDFDocument.create();
+  metaDoc.addPage([200, 200]).drawText("hi", { x: 20, y: 100 });
+  metaDoc.setAuthor("E2E-Author-XYZ");
+  metaDoc.setTitle("E2E-Title");
+  const metaPath = F("meta.pdf", Buffer.from(await metaDoc.save()));
+  await p.goto(BASE + "/privacy-scanner/"); await up(p, [metaPath]);
+  await p.getByRole("button", { name: "Scan for metadata" }).click();
+  await p.getByText("E2E-Author-XYZ").waitFor({ timeout: 30000 });
+  await p.getByRole("button", { name: /Strip/ }).click(); await done(p);
+  const { buf } = await download(p);
+  const cleaned = await PDFDocument.load(buf);
+  if (cleaned.getAuthor() === "E2E-Author-XYZ") throw new Error("author still present");
+});
+
+await t("redact: text under box cannot be extracted", async (p) => {
+  const secretDoc = await PDFDocument.create();
+  const font = await secretDoc.embedFont(StandardFonts.Helvetica);
+  const pg = secretDoc.addPage([400, 500]);
+  pg.drawText("VISIBLE", { x: 40, y: 400, size: 24, font });
+  pg.drawText("SECRET99", { x: 40, y: 250, size: 24, font });
+  const secretPath = F("secret.pdf", Buffer.from(await secretDoc.save()));
+  await p.goto(BASE + "/redact-pdf/"); await up(p, [secretPath]);
+  const img = p.locator("img[alt='']").first();
+  await img.waitFor({ timeout: 30000 });
+  const box = await img.boundingBox();
+  if (!box) throw new Error("no preview");
+  // Drag over the middle of the page where SECRET99 sits (roughly mid-page)
+  await p.mouse.move(box.x + box.width * 0.05, box.y + box.height * 0.45);
+  await p.mouse.down();
+  await p.mouse.move(box.x + box.width * 0.95, box.y + box.height * 0.65);
+  await p.mouse.up();
+  await p.getByRole("button", { name: /Apply redaction/ }).click(); await done(p);
+  const redactedPath = F("redacted-out.pdf", (await download(p)).buf);
+  // Extract text from redacted output
+  await p.goto(BASE + "/extract-text/"); await up(p, [redactedPath]);
+  await p.getByRole("button", { name: "Extract Text" }).click();
+  // Either scanned/empty (raster page) or text without SECRET99
+  await Promise.race([
+    p.getByLabel("Extracted text").waitFor({ timeout: 60000 }),
+    ERR(p).waitFor({ timeout: 60000 }),
+  ]);
+  if (await p.getByLabel("Extracted text").count()) {
+    const text = await p.getByLabel("Extracted text").inputValue();
+    if (/SECRET99/.test(text)) throw new Error("secret still extractable: " + text.slice(0, 200));
+  } else {
+    const m = await alertText(p);
+    if (!/scanned|No text|OCR/i.test(m)) throw new Error(m);
+  }
+});
+
+await t("invert: runs and produces a PDF", async (p) => {
+  await p.goto(BASE + "/invert-colors/"); await up(p, [one]);
+  await p.getByRole("button", { name: "Convert" }).click(); await done(p);
+  await PDFDocument.load((await download(p)).buf);
+});
+
+await t("new tool pages load", async (p) => {
+  for (const u of ["/rotate-pdf/", "/crop-resize/", "/ocr-pdf/", "/flatten-pdf/", "/headers-footers/"]) {
+    const r = await p.goto(BASE + u);
+    if (!r || r.status() >= 400) throw new Error(u + " status " + r?.status());
+  }
+});
+
 await t("layout at 375px: no horizontal overflow (home + tool)", async (p) => {
   for (const u of ["/", "/merge-pdf/", "/split-pdf/", "/blog/"]) {
     await p.goto(BASE + u); const o = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

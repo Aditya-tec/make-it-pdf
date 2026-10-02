@@ -8,13 +8,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "prebuild": "node scripts/copy-qpdf.mjs",
-    "predev": "node scripts/copy-qpdf.mjs",
+    "prebuild": "node scripts/copy-assets.mjs",
+    "predev": "node scripts/copy-assets.mjs",
     "e2e": "node scripts/e2e.mjs",
     "check-links": "node scripts/check-links.mjs"
   },
   "dependencies": {
     "@tailwindcss/typography": "0.5.20",
+    "@tesseract.js-data/eng": "1.0.0",
     "dompurify": "3.4.16",
     "fflate": "0.8.3",
     "gray-matter": "4.0.3",
@@ -25,7 +26,8 @@
     "pdfjs-dist": "6.3.289",
     "qpdf-wasm": "0.1.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "tesseract.js": "6.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.3",

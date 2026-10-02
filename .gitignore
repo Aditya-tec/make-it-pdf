@@ -40,5 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# copied from node_modules by scripts/copy-qpdf.mjs
+# copied from node_modules by scripts/copy-assets.mjs
 /public/qpdf/
+/public/tess/

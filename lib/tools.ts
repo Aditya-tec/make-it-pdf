@@ -240,14 +240,14 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Can I remove the password later?",
-        a: "Yes — open the encrypted PDF in a PDF viewer, enter the password, and print/save a copy without one.",
+        a: "Yes — use our Remove Password tool with the same password, or open the PDF in a viewer and save/print a copy without one.",
       },
       {
         q: "What encryption standard is used?",
         a: "AES-256. It is processed 100% in your browser.",
       },
     ],
-    related: ["organize-pages", "add-watermark", "extract-text"],
+    related: ["remove-password", "add-watermark", "privacy-scanner"],
   },
   {
     slug: "extract-text",
@@ -266,14 +266,236 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Why is the text empty for my PDF?",
-        a: "Your PDF is likely a scanned image. Use the OCR tool (coming soon) to extract text from scanned documents.",
+        a: "Your PDF is likely a scanned image. Use the OCR tool to make it searchable, then extract text.",
       },
       {
         q: "Is formatting preserved?",
         a: "Basic line breaks and spacing are kept, but complex layouts (columns, tables) may not be perfectly reproduced in plain text.",
       },
     ],
-    related: ["word-to-pdf", "compress-pdf", "encrypt-pdf"],
+    related: ["ocr-pdf", "word-to-pdf", "compress-pdf"],
+  },
+  {
+    slug: "rotate-pdf",
+    name: "Rotate PDF",
+    tagline: "Rotate every page 90°, 180°, or 270°",
+    description:
+      "Rotate an entire PDF in your browser. Rotation is additive — already-rotated pages keep their orientation and get another turn.",
+    icon: "🔄",
+    category: "edit",
+    howTo: [
+      "Upload your PDF.",
+      "Choose 90°, 180°, or 270°.",
+      "Click Rotate and download.",
+    ],
+    faq: [
+      {
+        q: "Does this reset previous rotation?",
+        a: "No. New rotation is added on top of whatever the page already has.",
+      },
+      {
+        q: "Can I rotate single pages?",
+        a: "Use Organize Pages for per-page rotate, reorder, and delete.",
+      },
+    ],
+    related: ["organize-pages", "crop-resize", "split-pdf"],
+  },
+  {
+    slug: "crop-resize",
+    name: "Crop & Resize",
+    tagline: "Crop margins or resize pages to A4/Letter",
+    description:
+      "Trim margins by percentage, or resize every page to A4 or Letter. Choose whether to keep aspect ratio (contain) or stretch to fill.",
+    icon: "✂️",
+    category: "edit",
+    howTo: [
+      "Upload your PDF.",
+      "Pick Crop margins or Resize to page size.",
+      "Set margins or target size and fit mode.",
+      "Download the result.",
+    ],
+    faq: [
+      {
+        q: "Contain vs stretch — what's the difference?",
+        a: "Contain keeps aspect ratio and may leave empty margins. Stretch fills the page and may distort the content.",
+      },
+    ],
+    related: ["rotate-pdf", "organize-pages", "compress-pdf"],
+  },
+  {
+    slug: "page-numbers",
+    name: "Page Numbers",
+    tagline: "Add page numbers with format and position",
+    description:
+      "Number every page (or skip a cover). Choose format, starting number, font size, and position — all in your browser.",
+    icon: "🔢",
+    category: "edit",
+    howTo: [
+      "Upload your PDF.",
+      "Pick format, start number, and position.",
+      "Optionally skip the first (cover) page.",
+      "Apply and download.",
+    ],
+    faq: [
+      {
+        q: "Can I start at a number other than 1?",
+        a: "Yes — set the starting number before applying.",
+      },
+    ],
+    related: ["headers-footers", "add-watermark", "organize-pages"],
+  },
+  {
+    slug: "headers-footers",
+    name: "Headers & Footers",
+    tagline: "Add header and footer text to every page",
+    description:
+      "Put a header and/or footer on every page, with optional date and page numbers. A light band keeps text readable on full-bleed pages.",
+    icon: "📰",
+    category: "edit",
+    howTo: [
+      "Upload your PDF.",
+      "Enter header and/or footer text.",
+      "Toggle date and page numbers if you want them.",
+      "Apply and download.",
+    ],
+    faq: [
+      {
+        q: "Will the header cover my content?",
+        a: "We draw a semi-transparent white band behind the header/footer so it stays readable on dark or full-bleed pages.",
+      },
+    ],
+    related: ["page-numbers", "add-watermark", "organize-pages"],
+  },
+  {
+    slug: "remove-password",
+    name: "Remove Password",
+    tagline: "Unlock a PDF when you know the password",
+    description:
+      "Decrypt a password-protected PDF using the correct password. Processing stays in your browser — the password is never uploaded.",
+    icon: "🔓",
+    category: "security",
+    howTo: [
+      "Upload the encrypted PDF.",
+      "Enter the current password.",
+      "Click Remove Password.",
+      "Download the unlocked file.",
+    ],
+    faq: [
+      {
+        q: "What if the password is wrong?",
+        a: "You'll get a clear error. We never send the password or the file to a server.",
+      },
+    ],
+    related: ["encrypt-pdf", "privacy-scanner", "flatten-pdf"],
+  },
+  {
+    slug: "ocr-pdf",
+    name: "OCR PDF",
+    tagline: "Make a scanned PDF searchable",
+    description:
+      "Run OCR on scanned pages and download a searchable PDF with an invisible text layer. English is bundled locally — nothing is fetched from a CDN.",
+    icon: "👁️",
+    category: "edit",
+    howTo: [
+      "Upload a scanned or image-only PDF.",
+      "Click Run OCR and watch per-page progress.",
+      "Download the searchable PDF.",
+    ],
+    faq: [
+      {
+        q: "Is there a page limit?",
+        a: "OCR is capped at 50 pages for browser memory. Split larger scans first.",
+      },
+      {
+        q: "Does this upload my file?",
+        a: "No. The OCR engine and English language model are served from this site and run on your device.",
+      },
+    ],
+    related: ["extract-text", "pdf-to-jpg", "compress-pdf"],
+  },
+  {
+    slug: "flatten-pdf",
+    name: "Flatten PDF",
+    tagline: "Bake form fields into static page content",
+    description:
+      "Flatten interactive form fields and annotations so values stay visible but can no longer be edited.",
+    icon: "📄",
+    category: "security",
+    howTo: [
+      "Upload a PDF that has form fields.",
+      "Click Flatten.",
+      "Download the static PDF.",
+    ],
+    faq: [
+      {
+        q: "Are filled-in values kept?",
+        a: "Yes — field values are baked into the page appearance, then the interactive fields are removed.",
+      },
+    ],
+    related: ["redact-pdf", "encrypt-pdf", "privacy-scanner"],
+  },
+  {
+    slug: "redact-pdf",
+    name: "Redact PDF",
+    tagline: "Permanently black out sensitive regions",
+    description:
+      "Draw black boxes over sensitive areas. Redacted pages are re-rendered so the underlying text cannot be selected or extracted.",
+    icon: "⬛",
+    category: "security",
+    howTo: [
+      "Upload your PDF.",
+      "Draw boxes over areas to remove.",
+      "Apply redaction and download.",
+    ],
+    faq: [
+      {
+        q: "Is the text really gone?",
+        a: "Yes for redacted pages — they become images with the boxes burned in, so Extract Text cannot recover what was under a box.",
+      },
+    ],
+    related: ["flatten-pdf", "privacy-scanner", "encrypt-pdf"],
+  },
+  {
+    slug: "invert-colors",
+    name: "Invert Colours",
+    tagline: "Dark mode, grayscale, or sepia pages",
+    description:
+      "Re-render pages inverted, grayscale, or sepia. Pages become images (text is no longer selectable) — labeled clearly before you run.",
+    icon: "🌙",
+    category: "convert",
+    howTo: [
+      "Upload your PDF.",
+      "Choose Invert, Grayscale, or Sepia.",
+      "Convert and download.",
+    ],
+    faq: [
+      {
+        q: "Can I still select text afterward?",
+        a: "No. This tool re-renders pages as images so colours can be remapped. Use it for reading comfort, not for editable text.",
+      },
+    ],
+    related: ["compress-pdf", "pdf-to-jpg", "ocr-pdf"],
+  },
+  {
+    slug: "privacy-scanner",
+    name: "Privacy Scanner",
+    tagline: "Find and strip PDF metadata",
+    description:
+      "Scan for author, creator app, timestamps and other metadata, then optionally download a cleaned PDF with those fields removed.",
+    icon: "🕵️",
+    category: "security",
+    howTo: [
+      "Upload your PDF.",
+      "Review the findings list.",
+      "Click Strip & download to remove them.",
+    ],
+    faq: [
+      {
+        q: "What gets removed?",
+        a: "Title, author, subject, keywords, creator/producer apps, and creation/modification dates that pdf-lib can see. Embedded file attachments are out of scope for this version.",
+      },
+    ],
+    related: ["encrypt-pdf", "redact-pdf", "remove-password"],
   },
 ];
 

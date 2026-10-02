@@ -26,6 +26,16 @@ const ENGINE_MAP: Record<string, () => Promise<{ run: EngineRun }>> = {
   "add-watermark": () => import("./engines/addWatermark"),
   "encrypt-pdf": () => import("./engines/encryptPdf"),
   "extract-text": () => import("./engines/extractText"),
+  "rotate-pdf": () => import("./engines/rotatePdf"),
+  "crop-resize": () => import("./engines/cropResize"),
+  "page-numbers": () => import("./engines/pageNumbers"),
+  "headers-footers": () => import("./engines/headersFooters"),
+  "remove-password": () => import("./engines/removePassword"),
+  "ocr-pdf": () => import("./engines/ocrPdf"),
+  "flatten-pdf": () => import("./engines/flattenPdf"),
+  "redact-pdf": () => import("./engines/redactPdf"),
+  "invert-colors": () => import("./engines/invertColors"),
+  "privacy-scanner": () => import("./engines/privacyScanner"),
 };
 
 type ProgressCb = (percent: number, message?: string) => void;

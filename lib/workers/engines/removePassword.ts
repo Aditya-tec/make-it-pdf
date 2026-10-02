@@ -6,30 +6,28 @@ export async function run(
   onProgress: (p: number, m?: string) => void
 ): Promise<{ name: string; bytes: Uint8Array }[]> {
   const password = (opts.password as string) || "";
-  if (!password) throw new Error("Please enter a password.");
+  if (!password) throw new Error("Please enter the current password.");
 
-  onProgress(10, "Initialising encryption engine…");
+  onProgress(10, "Initialising…");
   const qpdf = await loadQpdf();
 
   onProgress(40, "Loading PDF…");
   qpdf.FS.writeFile("/input.pdf", new Uint8Array(files[0]));
 
-  onProgress(60, "Encrypting…");
+  onProgress(60, "Removing password…");
+  // --password= unlocks; omit --encrypt to write an unprotected file
   const exitCode: number = qpdf.callMain([
-    "--encrypt",
-    password,
-    password,
-    "256",
-    "--",
+    `--password=${password}`,
+    "--decrypt",
     "/input.pdf",
     "/output.pdf",
   ]);
   if (exitCode !== 0) {
-    throw new Error("Encryption failed. The PDF may be malformed or already encrypted.");
+    throw new Error("Wrong password, or the PDF is not password-protected / is malformed.");
   }
 
   onProgress(90, "Reading output…");
   const result: Uint8Array = qpdf.FS.readFile("/output.pdf");
   onProgress(100);
-  return [{ name: "encrypted.pdf", bytes: result }];
+  return [{ name: "unlocked.pdf", bytes: result }];
 }

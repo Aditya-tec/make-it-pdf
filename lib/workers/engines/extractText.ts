@@ -29,7 +29,7 @@ export async function run(
 
   if (!hasText) {
     throw new Error(
-      "No text found. This looks like a scanned PDF. Use the OCR tool (coming soon) to extract text from scanned documents."
+      "No text found. This looks like a scanned PDF. Open the OCR PDF tool to make it searchable, then extract text."
     );
   }
 
