@@ -88,13 +88,18 @@ export function useWorker() {
 
       worker.onerror = (err) => {
         const raw = err.message || "";
-        // OOM often kills the worker with an empty or generic "Script error."
-        const looksOom =
-          !raw ||
-          /script error|out of memory|oom|allocation/i.test(raw);
+        // Only claim OOM when the message actually mentions memory.
+        // "Script error." is a browser-masked crash (could be anything: WASM init,
+        // pthread failure, network error) — don't blame file size for that.
+        const isOom = /out of memory|allocation failed|Array buffer allocation|OOM/i.test(raw);
+        const message = isOom
+          ? OOM_USER_MESSAGE
+          : raw && raw !== "Script error."
+          ? raw
+          : "The processing engine crashed unexpectedly. Try reloading the page, or use a different browser.";
         setJob({
           status: "error",
-          message: looksOom ? OOM_USER_MESSAGE : raw,
+          message,
         });
         worker.terminate();
         workerRef.current = null;
