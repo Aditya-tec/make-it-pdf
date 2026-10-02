@@ -73,7 +73,7 @@ export default function Home() {
           <p className="mt-6 text-base sm:text-lg italic text-slate-300 max-w-2xl">
             We built tools that don&apos;t need your files to work.
             <br />
-            Edit, convert, and clean up your documents — 100% private, 100% free.
+            Edit, convert, and clean up your documents. Processes files entirely in your browser — tested with zero third-party network requests during file processing. {TOOLS.length} tools, no account required, no feature behind a paywall.
           </p>
         </div>
 

@@ -16,7 +16,7 @@ export const TOOLS: Tool[] = [
     name: "Merge PDF",
     tagline: "Combine multiple PDFs into one file",
     description:
-      "Drag in your PDFs, rearrange them in any order, and download a single merged PDF. No upload, no watermark, no signup.",
+      "Drag in your PDFs, rearrange them in any order, and download a single merged PDF. Processing stays in the browser — no upload, no watermark, no signup.",
     icon: "🔗",
     category: "essentials",
     howTo: [
@@ -28,15 +28,15 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Is there a file size limit?",
-        a: "Merge allows up to 300 MB per file (600 MB total). Heavier tools like Compress or OCR have lower caps.",
+        a: "OfflinePDF's Merge PDF tool allows up to 300 MB per file and 600 MB total. Heavier tools such as Compress PDF and OCR PDF enforce lower caps because they use more browser memory.",
       },
       {
         q: "Are my files uploaded anywhere?",
-        a: "No. All processing happens in your browser. Your files never leave your device.",
+        a: "OfflinePDF's Merge PDF tool combines files entirely in the browser using WebAssembly; no file is uploaded to any server during the process.",
       },
       {
         q: "What if one of my PDFs is password-protected?",
-        a: "Remove the password first: open it in a PDF viewer, enter the password, save/print a copy without one, then merge.",
+        a: "A password-protected PDF must be unlocked before merging: open it in a PDF viewer, enter the password, save or print a copy without a password, then run OfflinePDF's Merge PDF tool — or use OfflinePDF's Remove Password tool first.",
       },
     ],
     related: ["split-pdf", "compress-pdf", "organize-pages"],
@@ -58,11 +58,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Can I extract a range of pages?",
-        a: "Yes. Type ranges like '1-3, 5, 7-10' in the range input, or click page thumbnails individually.",
+        a: "OfflinePDF's Split PDF tool accepts ranges such as '1-3, 5, 7-10' in the range input, and also lets users click page thumbnails to select individual pages.",
       },
       {
         q: "Will I get one file or many?",
-        a: "Multiple pages are zipped together automatically. A single-page result is a plain PDF.",
+        a: "When OfflinePDF's Split PDF tool extracts multiple pages, the results are zipped automatically; a single-page extract downloads as a plain PDF.",
       },
     ],
     related: ["merge-pdf", "organize-pages", "compress-pdf"],
@@ -84,11 +84,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Why didn't my file shrink much?",
-        a: "Text-only PDFs have little image data to re-encode, so compression gains are small. We'll always show you the real before/after size.",
+        a: "OfflinePDF's Compress PDF tool mainly re-encodes embedded raster images, so text-only PDFs often shrink only a little; the tool always shows the real before-and-after file size before download.",
       },
       {
         q: "Does compression affect text quality?",
-        a: "No. Text and vector content are untouched. Only embedded raster images are re-encoded.",
+        a: "OfflinePDF's Compress PDF tool leaves text and vector content untouched; only embedded raster images are re-encoded.",
       },
     ],
     related: ["merge-pdf", "pdf-to-jpg", "images-to-pdf"],
@@ -110,11 +110,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "What DPI should I choose?",
-        a: "72 DPI for web preview, 150 DPI for general use, 300 DPI for print. Higher DPI = larger files and more memory.",
+        a: "For OfflinePDF's PDF to JPG tool, 72 DPI suits web previews, 150 DPI suits general use, and 300 DPI suits print; higher DPI produces larger files and uses more memory.",
       },
       {
         q: "Why is high DPI slow on mobile?",
-        a: "Rendering a large PDF page at 300 DPI is memory-intensive. We cap memory and warn you if a page is very large.",
+        a: "Rendering a large PDF page at 300 DPI in OfflinePDF's PDF to JPG tool is memory-intensive on phones; the tool caps memory use and warns when a page is very large.",
       },
     ],
     related: ["images-to-pdf", "compress-pdf", "split-pdf"],
@@ -136,11 +136,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "What image formats are supported?",
-        a: "JPG, PNG, WebP, and GIF. Each image becomes one page.",
+        a: "OfflinePDF's Images to PDF tool accepts JPG, PNG, WebP, and GIF, and places each image on its own page.",
       },
       {
         q: "Can I mix portrait and landscape images?",
-        a: "Yes. Each page is sized to the image by default, so mixed orientations work fine.",
+        a: "OfflinePDF's Images to PDF tool sizes each page to the image by default, so mixed portrait and landscape images work without forcing a single orientation.",
       },
     ],
     related: ["pdf-to-jpg", "merge-pdf", "compress-pdf"],
@@ -161,11 +161,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Is the formatting exactly like Word?",
-        a: "Good fidelity for most documents, but complex layouts with exact spacing may differ slightly. This is a browser limitation, not our design.",
+        a: "OfflinePDF's Word to PDF tool reaches good fidelity for most documents, but complex layouts with exact spacing can differ slightly because conversion runs in the browser rather than Microsoft Word.",
       },
       {
         q: "What about .doc files (older Word format)?",
-        a: "Only .docx is supported. Convert your .doc to .docx in Word first.",
+        a: "OfflinePDF's Word to PDF tool supports only .docx; convert an older .doc file to .docx in Word first, then convert with OfflinePDF.",
       },
     ],
     related: ["merge-pdf", "compress-pdf", "extract-text"],
@@ -188,11 +188,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "How many undo steps are available?",
-        a: "Unlimited, we keep the full history in memory until you close the page.",
+        a: "OfflinePDF's Organize Pages tool keeps unlimited undo history in browser memory until the tab is closed.",
       },
       {
         q: "Is there a page limit?",
-        a: "No hard limit. Very large PDFs (300+ pages) may take a moment to render thumbnails.",
+        a: "OfflinePDF's Organize Pages tool has no hard page limit; PDFs with 300 or more pages may take longer to render thumbnails in the browser.",
       },
     ],
     related: ["split-pdf", "merge-pdf", "add-watermark"],
@@ -214,11 +214,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Can I watermark only specific pages?",
-        a: "Currently the watermark is applied to all pages. Page-level control is on the roadmap.",
+        a: "OfflinePDF's Add Watermark tool currently applies the watermark to every page; per-page control is on the roadmap.",
       },
       {
         q: "What image formats work for watermarks?",
-        a: "PNG (with transparency) gives the best results. JPG is also supported.",
+        a: "OfflinePDF's Add Watermark tool accepts PNG (best with transparency) and JPG for image watermarks.",
       },
     ],
     related: ["organize-pages", "encrypt-pdf", "merge-pdf"],
@@ -240,11 +240,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Can I remove the password later?",
-        a: "Yes, use our Remove Password tool with the same password, or open the PDF in a viewer and save/print a copy without one.",
+        a: "A password set with OfflinePDF's Encrypt PDF tool can be removed later with OfflinePDF's Remove Password tool using the same password, or by opening the PDF in a viewer and saving or printing a copy without a password.",
       },
       {
         q: "What encryption standard is used?",
-        a: "AES-256. It is processed 100% in your browser.",
+        a: "OfflinePDF's Encrypt PDF tool uses AES-256 encryption and runs entirely in the browser; the password and file are never sent to a server.",
       },
     ],
     related: ["remove-password", "add-watermark", "privacy-scanner"],
@@ -266,11 +266,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Why is the text empty for my PDF?",
-        a: "Your PDF is likely a scanned image. Use the OCR tool to make it searchable, then extract text.",
+        a: "An empty result from OfflinePDF's Extract Text tool usually means the PDF is a scanned image; run OfflinePDF's OCR PDF tool first to add a searchable text layer, then extract again.",
       },
       {
         q: "Is formatting preserved?",
-        a: "Basic line breaks and spacing are kept, but complex layouts (columns, tables) may not be perfectly reproduced in plain text.",
+        a: "OfflinePDF's Extract Text tool keeps basic line breaks and spacing in plain text, but complex layouts such as columns and tables may not match the original PDF layout.",
       },
     ],
     related: ["ocr-pdf", "word-to-pdf", "compress-pdf"],
@@ -291,11 +291,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Does this reset previous rotation?",
-        a: "No. New rotation is added on top of whatever the page already has.",
+        a: "OfflinePDF's Rotate PDF tool does not reset prior rotation; each new turn is added on top of the page's existing orientation.",
       },
       {
         q: "Can I rotate single pages?",
-        a: "Use Organize Pages for per-page rotate, reorder, and delete.",
+        a: "Per-page rotate, reorder, and delete are available in OfflinePDF's Organize Pages tool; Rotate PDF applies one angle to every page.",
       },
     ],
     related: ["organize-pages", "crop-resize", "split-pdf"],
@@ -317,7 +317,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Contain vs stretch: what's the difference?",
-        a: "Contain keeps aspect ratio and may leave empty margins. Stretch fills the page and may distort the content.",
+        a: "In OfflinePDF's Crop & Resize tool, Contain keeps the page aspect ratio and may leave empty margins, while Stretch fills the target page size and may distort content.",
       },
     ],
     related: ["rotate-pdf", "organize-pages", "compress-pdf"],
@@ -339,7 +339,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Can I start at a number other than 1?",
-        a: "Yes, set the starting number before applying.",
+        a: "OfflinePDF's Page Numbers tool lets the starting number be set to any value before applying numbers to the PDF.",
       },
     ],
     related: ["headers-footers", "add-watermark", "organize-pages"],
@@ -361,7 +361,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Will the header cover my content?",
-        a: "We draw a semi-transparent white band behind the header/footer so it stays readable on dark or full-bleed pages.",
+        a: "OfflinePDF's Headers & Footers tool draws a semi-transparent white band behind header and footer text so the text stays readable on dark or full-bleed pages.",
       },
     ],
     related: ["page-numbers", "add-watermark", "organize-pages"],
@@ -383,7 +383,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "What if the password is wrong?",
-        a: "You'll get a clear error. We never send the password or the file to a server.",
+        a: "OfflinePDF's Remove Password tool shows a clear error when the password is wrong, and never sends the password or the PDF file to a server.",
       },
     ],
     related: ["encrypt-pdf", "privacy-scanner", "flatten-pdf"],
@@ -404,11 +404,11 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Is there a page limit?",
-        a: "OCR is capped at 75 pages for browser memory. Split larger scans first.",
+        a: "OfflinePDF's OCR PDF tool is capped at 75 pages to stay within typical browser memory; larger scans should be split first with OfflinePDF's Split PDF tool.",
       },
       {
         q: "Does this upload my file?",
-        a: "No. The OCR engine and English language model are served from this site and run on your device.",
+        a: "OfflinePDF's OCR PDF tool does not upload the file; the OCR engine and English language model are served from the OfflinePDF site and run entirely on the user's device.",
       },
     ],
     related: ["extract-text", "pdf-to-jpg", "compress-pdf"],
@@ -429,7 +429,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Are filled-in values kept?",
-        a: "Yes, field values are baked into the page appearance, then the interactive fields are removed.",
+        a: "OfflinePDF's Flatten PDF tool bakes filled-in form field values into the page appearance, then removes the interactive fields so the values stay visible but are no longer editable.",
       },
     ],
     related: ["redact-pdf", "encrypt-pdf", "privacy-scanner"],
@@ -450,7 +450,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Is the text really gone?",
-        a: "Yes for redacted pages, they become images with the boxes burned in, so Extract Text cannot recover what was under a box.",
+        a: "OfflinePDF's Redact PDF tool re-renders redacted pages as images with black boxes burned in, so text under a box cannot be selected or recovered with Extract Text.",
       },
     ],
     related: ["flatten-pdf", "privacy-scanner", "encrypt-pdf"],
@@ -471,7 +471,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "Can I still select text afterward?",
-        a: "No. This tool re-renders pages as images so colours can be remapped. Use it for reading comfort, not for editable text.",
+        a: "After OfflinePDF's Invert Colours tool runs, text is no longer selectable because pages are re-rendered as images so colours can be remapped; the tool is intended for reading comfort, not for editable text.",
       },
     ],
     related: ["compress-pdf", "pdf-to-jpg", "ocr-pdf"],
@@ -492,7 +492,7 @@ export const TOOLS: Tool[] = [
     faq: [
       {
         q: "What gets removed?",
-        a: "Title, author, subject, keywords, creator/producer apps, and creation/modification dates that pdf-lib can see. Embedded file attachments are out of scope for this version.",
+        a: "OfflinePDF's Privacy Scanner removes title, author, subject, keywords, creator and producer app fields, and creation and modification dates that pdf-lib can see; embedded file attachments are out of scope in the current version.",
       },
     ],
     related: ["encrypt-pdf", "redact-pdf", "remove-password"],

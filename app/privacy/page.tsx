@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Your PDFs are processed in your browser and are never uploaded.",
+  description:
+    "OfflinePDF processes files entirely in your browser; tested with zero third-party network requests during file processing. Nothing is uploaded.",
 };
 
 export default function Privacy() {
@@ -14,8 +15,10 @@ export default function Privacy() {
       <h2>Your files</h2>
       <p>
         Every tool on this site runs inside your browser. The files you choose are read into your
-        device&apos;s memory, processed there, and handed back to you as a download. They are not
-        uploaded to, stored on, or seen by any server we operate. Closing or reloading the tab discards them.
+        device&apos;s memory, processed there (WebAssembly and Web Workers), and handed back to you as a
+        download. They are not uploaded to, stored on, or seen by any server we operate. File processing
+        has been tested with zero third-party network requests during that work. Closing or reloading
+        the tab discards them.
       </p>
 
       <h2>What we collect</h2>
@@ -33,8 +36,14 @@ export default function Privacy() {
 
       <h2>Third parties</h2>
       <p>
-        The site loads no third-party scripts, fonts or analytics. Links to other sites are governed by
-        those sites&apos; own policies.
+        The site loads no third-party scripts, fonts, or analytics. Fonts are self-hosted at build time.
+        Links to other sites are governed by those sites&apos; own policies.
+      </p>
+
+      <h2>Accounts and paywalls</h2>
+      <p>
+        OfflinePDF offers its tools with no account required and no feature behind a paywall. No email
+        or sign-up is needed to use any tool.
       </p>
 
       <h2>Changes</h2>

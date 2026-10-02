@@ -13,8 +13,9 @@ export default function Terms() {
 
       <h2>Use of the service</h2>
       <p>
-        These tools are free to use for personal and commercial purposes. You are responsible for having the
-        right to process the files you use and for what you do with the results.
+        All OfflinePDF tools are free to use for personal and commercial purposes — no account required,
+        no feature behind a paywall. You are responsible for having the right to process the files you use
+        and for what you do with the results.
       </p>
 
       <h2>No warranty</h2>

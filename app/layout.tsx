@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    "Free browser-based PDF tools. Merge, split, compress, convert and more, all processed on your device. No upload, no signup, no watermark.",
+    "Browser-based PDF tools that process files entirely on your device — tested with zero third-party network requests during file processing. 20 tools, no account required, no feature behind a paywall, no watermark.",
   metadataBase: new URL(SITE_URL),
   openGraph: {
     siteName: SITE_NAME,
@@ -25,6 +25,13 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image" },
   robots: { index: true, follow: true },
+  // Bing Webmaster Tools (ChatGPT Search indexes via Bing, not Google).
+  // After verifying the site at https://www.bing.com/webmasters, either:
+  //   1) set NEXT_PUBLIC_BING_SITE_VERIFICATION to the msvalidate.01 content value, or
+  //   2) drop BingSiteAuth.xml into /public with the XML Bing gives you.
+  verification: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+    ? { other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } }
+    : undefined,
 };
 
 export default function RootLayout({
