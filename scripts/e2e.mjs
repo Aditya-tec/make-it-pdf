@@ -16,8 +16,14 @@ if (!fs.existsSync(path.join(OUT, "index.html"))) {
   console.error("No build found in out/. Run `npm run build` first.");
   process.exit(1);
 }
-const HEADERS = JSON.parse(fs.readFileSync(path.join(ROOT, "vercel.json"), "utf8")).headers[0].headers;
+const vercelBlocks = JSON.parse(fs.readFileSync(path.join(ROOT, "vercel.json"), "utf8")).headers;
 const COI = new Set(["cross-origin-opener-policy", "cross-origin-embedder-policy"]);
+// Catch-all security headers + COOP/COEP from the tool-specific blocks (e2e applies COI site-wide unless dropped).
+const globalHeaders = vercelBlocks.find((b) => b.source === "/(.*)")?.headers ?? [];
+const coiHeaders = vercelBlocks
+  .flatMap((b) => b.headers)
+  .filter((h, i, arr) => COI.has(h.key.toLowerCase()) && arr.findIndex((x) => x.key === h.key) === i);
+const HEADERS = [...globalHeaders, ...coiHeaders];
 const MIME = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".wasm": "application/wasm", ".txt": "text/plain", ".xml": "application/xml", ".ico": "image/x-icon", ".json": "application/json", ".svg": "image/svg+xml" };
 
 function send404(res) {
@@ -281,16 +287,17 @@ await t("redact: text under box cannot be extracted", async (p) => {
   pg.drawText("SECRET99", { x: 40, y: 250, size: 24, font });
   const secretPath = F("secret.pdf", Buffer.from(await secretDoc.save()));
   await p.goto(BASE + "/redact-pdf/"); await up(p, [secretPath]);
-  const img = p.locator("img[alt='']").first();
+  // Don't use img[alt=''] — the site logo also matches that.
+  const img = p.locator("img.select-none").first();
   await img.waitFor({ timeout: 30000 });
   const box = await img.boundingBox();
   if (!box) throw new Error("no preview");
   // Drag over the middle of the page where SECRET99 sits (roughly mid-page)
-  await p.mouse.move(box.x + box.width * 0.05, box.y + box.height * 0.45);
+  await img.hover({ position: { x: box.width * 0.05, y: box.height * 0.45 } });
   await p.mouse.down();
-  await p.mouse.move(box.x + box.width * 0.95, box.y + box.height * 0.65);
+  await p.mouse.move(box.x + box.width * 0.95, box.y + box.height * 0.65, { steps: 8 });
   await p.mouse.up();
-  await p.getByRole("button", { name: /Apply redaction/ }).click(); await done(p);
+  await p.getByRole("button", { name: /Apply redaction/ }).click({ timeout: 30000 }); await done(p);
   const redactedPath = F("redacted-out.pdf", (await download(p)).buf);
   // Extract text from redacted output
   await p.goto(BASE + "/extract-text/"); await up(p, [redactedPath]);
