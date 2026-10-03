@@ -67,7 +67,7 @@ export default function Home() {
               <TypeSiteName />
             </span>
             <span className="headline block mt-2 sm:mt-5 text-[0.62em] leading-[1.05] text-white">
-              <span className="text-volt mr-[0.2em]">!</span>we <span className="text-volt">never</span> see your files
+              we <span className="text-volt">never</span> see your files!
             </span>
           </h1>
           <p className="mt-4 sm:mt-6 text-sm sm:text-lg italic text-slate-300 max-w-2xl leading-relaxed">
