@@ -36,7 +36,7 @@ export default function TypeSiteName() {
 
   return (
     // nowrap keeps caret on this line; max-width + clip avoids horizontal scroll on tiny phones
-    <span className="relative inline-block whitespace-nowrap align-baseline max-w-full">
+    <span className="relative inline-block whitespace-nowrap align-baseline max-w-full pb-[0.28em]">
       <span className="invisible" aria-hidden>
         {SITE_NAME}
         <span className="inline-block w-[0.1em]" />
@@ -52,7 +52,7 @@ export default function TypeSiteName() {
         />
       </span>
       <span
-        className="absolute left-0 bottom-[0.02em] h-[0.06em] bg-white transition-[width] duration-75 ease-linear"
+        className="absolute left-0 bottom-0 h-[0.06em] bg-white transition-[width] duration-75 ease-linear"
         style={{ width: `${(len / SITE_NAME.length) * 100}%` }}
         aria-hidden
       />
