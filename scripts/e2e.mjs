@@ -734,7 +734,8 @@ await t("scan: permission denied -> says how to allow it", async (p) => {
 const camBrowser = await chromium.launch({ args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"] });
 const camRequests = [];
 await t("scan: fake webcam streams, captures 2 pages, builds a 2-page PDF, camera released", async () => {
-  const c = await camBrowser.newContext({ permissions: ["camera"], acceptDownloads: true });
+  // serviceWorkers blocked: the SW's background WASM caching starves the fake webcam and made this test flaky (~25%); offline tests cover the SW.
+  const c = await camBrowser.newContext({ permissions: ["camera"], acceptDownloads: true, serviceWorkers: "block" });
   c.on("request", (r) => camRequests.push(r.url()));
   const p = await c.newPage();
   try {
