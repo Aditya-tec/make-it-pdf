@@ -32,7 +32,7 @@ export default function PdfToAudioTool() {
 
   useEffect(() => () => { if (hasSpeech()) speechSynthesis.cancel(); }, []);
 
-  const voices = voiceKey && hasSpeech() ? speechSynthesis.getVoices().filter((v) => v.localService) : [];
+  const voices = voiceKey && hasSpeech() ? speechSynthesis.getVoices().filter((v) => v.localService).filter((v, i, all) => all.findIndex((x) => x.voiceURI === v.voiceURI) === i) : [];
   const chosen = voices.find((v) => v.voiceURI === voiceURI) ?? voices.find((v) => v.default) ?? voices[0];
 
   const speakFrom = (i: number) => {
