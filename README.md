@@ -12,6 +12,7 @@ Privacy-first PDF tools that run entirely in your browser. Your files never leav
 
 Most free PDF sites upload your documents to a server. OfflinePDF does the opposite: every tool runs locally via WebAssembly and Web Workers. Close the tab and the file is gone.
 
+- **Works offline after one visit:** a service worker (`public/sw.js`, filled with the build's file list by `scripts/make-sw.mjs`) caches the pages, JS, and the qpdf/Tesseract WASM and model files, and the site is installable as a PWA. This covers every tool except **P2P Share and Whiteboard**, which need a live connection by design and show an "unavailable offline" page. The large WASM/model files are cached in the background after first load, so the first offline use is only safe once that finishes (a few seconds on a normal connection). Verified by `npm run e2e` (Merge, Compress, and Encrypt run with the network cut).
 - **42 tools** across essentials, edit & organize, security, convert, and capture & share
 - **Tiered size limits** (light tools up to 300&nbsp;MB; heavy tools 150&nbsp;MB; OCR 75&nbsp;MB / 75 pages)  
 - **Search + voice** in the header to jump to the best tool  

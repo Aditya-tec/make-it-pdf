@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { TOOLS } from "@/lib/tools";
 import { Analytics } from "@vercel/analytics/react";
+import PwaClient from "@/components/PwaClient";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
   description:
     `Browser-based PDF tools that process files entirely on your device — tested with zero third-party network requests during file processing. ${TOOLS.length} tools, no account required, no feature behind a paywall, no watermark.`,
   metadataBase: new URL(SITE_URL),
+  manifest: "/manifest.webmanifest",
   openGraph: {
     siteName: SITE_NAME,
     type: "website",
@@ -54,6 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${ranchers.variable} ${spaceMono.variable} ${jakarta.variable}`}>
       <body className="min-h-screen flex flex-col">
+        <PwaClient />
         <Header />
         <div className="flex-1 flex flex-col overflow-x-clip">
           <main className="flex-1">{children}</main>

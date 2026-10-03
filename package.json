@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "prebuild": "node scripts/copy-assets.mjs",
+    "postbuild": "node scripts/make-sw.mjs",
     "predev": "node scripts/copy-assets.mjs",
     "check:limits": "npx tsx lib/pdf/toolLimits.check.ts && npx tsx lib/toolSearch.check.ts",
     "check:engines": "npx tsx engines.check.ts",

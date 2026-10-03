@@ -915,6 +915,47 @@ await t("pdf-to-audio: browser without speech synthesis gets the unsupported mes
   await p.goto(BASE + "/pdf-to-audio/");
   await p.getByText(/can't read text aloud|can.t read text aloud/).waitFor({ timeout: 10000 });
 });
+// ================= Group 6: offline (service worker) =================
+// Fresh context: visit online once so the SW installs and caches everything, then cut the network and run real jobs.
+{
+  const oc = await browser.newContext({ acceptDownloads: true, viewport: { width: 375, height: 800 } });
+  const step = async (name, fn) => {
+    const p = await oc.newPage();
+    try { await fn(p); results.push(["PASS", name]); }
+    catch (e) { results.push(["FAIL", name + " :: " + String(e.message).split("\n").filter((l) => l.trim()).slice(0, 4).join(" | ")]); }
+    finally { await p.close(); }
+  };
+  await step("offline: SW installs and caches core + heavy (qpdf/tess) files", async (p) => {
+    await p.goto(BASE + "/");
+    await p.waitForFunction(async () => (await navigator.serviceWorker?.getRegistration())?.active && (await caches.keys()).length, null, { timeout: 30000 });
+    await p.waitForFunction(async () => { const c = await caches.open((await caches.keys())[0]); return !!(await c.match("/qpdf/qpdf.wasm")) && !!(await c.match("/tess/lang/eng.traineddata.gz")); }, null, { timeout: 60000 });
+    await p.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 10000 });
+  });
+  await oc.setOffline(true);
+  await step("offline: banner shown; merge completes with zero network", async (p) => {
+    await p.goto(BASE + "/merge-pdf/");
+    await p.getByText(/You're offline/).waitFor({ timeout: 10000 });
+    await up(p, [a, b]); await p.getByRole("button", { name: /Merge 2 PDFs/ }).click(); await done(p);
+    if ((await PDFDocument.load((await download(p)).buf)).getPageCount() !== 5) throw new Error("bad merge");
+  });
+  await step("offline: compress completes with zero network", async (p) => {
+    await p.goto(BASE + "/compress-pdf/"); await up(p, [imgPdf]);
+    await p.getByRole("button", { name: "Compress PDF" }).click(); await done(p); await PDFDocument.load((await download(p)).buf);
+  });
+  await step("offline: encrypt (qpdf WASM) completes with zero network", async (p) => {
+    await p.goto(BASE + "/encrypt-pdf/"); await up(p, [a]);
+    await p.locator("input[type=password]").nth(0).fill("s3cret!"); await p.locator("input[type=password]").nth(1).fill("s3cret!");
+    await p.getByRole("button", { name: "Encrypt PDF" }).click(); await done(p);
+    if (!(await download(p)).buf.includes(Buffer.from("/Encrypt"))) throw new Error("no /Encrypt");
+  });
+  await step("offline: P2P Share and Whiteboard say they're unavailable instead of hanging", async (p) => {
+    for (const r of ["/p2p-share/", "/whiteboard/"]) {
+      await p.goto(BASE + r);
+      await p.getByText(/needs a live connection/).first().waitFor({ timeout: 5000 });
+    }
+  });
+  await oc.close();
+}
 await camBrowser.close();
 
 // ---------- report ----------

@@ -73,7 +73,7 @@ export default function Home() {
           <p className="mt-4 sm:mt-6 text-sm sm:text-lg italic text-slate-300 max-w-2xl leading-relaxed">
             We built tools that don&apos;t need your files to work.
             <br className="hidden sm:block" />
-            {" "}Edit, convert, and clean up your documents. Processes files entirely in your browser — tested with zero third-party network requests during file processing. {TOOLS.length} tools, no account required, no feature behind a paywall.
+            {" "}Edit, convert, and clean up your documents. Processes files entirely in your browser — tested with zero third-party network requests during file processing. {TOOLS.length} tools, no account required, no feature behind a paywall. After one visit, all tools except P2P Share and Whiteboard also work offline, and the site can be installed as an app.
           </p>
         </div>
 

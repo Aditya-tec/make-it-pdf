@@ -8,3 +8,6 @@ export const SITE_URL = (
   (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "") ||
   "https://offlinepdf-woad.vercel.app"
 ).replace(/\/$/, "");
+
+// Tools that need a live connection by design; excluded from the service worker (public/sw.js, scripts/make-sw.mjs).
+export const ONLINE_ONLY_ROUTES = ["/p2p-share", "/whiteboard"];
