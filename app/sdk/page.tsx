@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "SDK",
   description:
-    "offlinepdf-sdk: 10 lightweight, zero-native-dependency PDF functions extracted from OfflinePDF. Install, a decision table for which function to use, a full reference with runnable examples, and what's deliberately left out.",
+    "offlinepdf-sdk: 12 lightweight, zero-native-dependency PDF functions extracted from OfflinePDF. Install, a decision table for which function to use, a full reference with runnable examples, and what's deliberately left out.",
 };
 
 const NPM_URL = "https://www.npmjs.com/package/offlinepdf-sdk";
@@ -31,8 +31,8 @@ fs.writeFileSync("merged.pdf", merged);`}</code></pre>
       <p>
         offlinepdf-sdk is extracted from OfflinePDF&apos;s own 42 browser-based PDF tools — the same logic
         that runs inside the website&apos;s Web Workers, pulled out of that wrapper and given a plain async
-        API. It has only two dependencies, <code>pdf-lib</code> and <code>fflate</code>, both pure JavaScript
-        with no native bindings, so it stays small and runs the same way in Node and in the browser.
+        API. Just <code>npm install</code> — everything it needs comes along automatically, with nothing
+        native to compile, so it stays small and runs the same way in Node and in the browser.
       </p>
 
       <h2>Which function do I need?</h2>
@@ -51,6 +51,9 @@ fs.writeFileSync("merged.pdf", merged);`}</code></pre>
           <tr><td>Add a running header/footer, with date and page count</td><td><code>addHeaderFooter</code></td></tr>
           <tr><td>Trim margins, or resize every page to A4/Letter</td><td><code>cropPdf</code></td></tr>
           <tr><td>Bake a filled-in form&apos;s values in and make it read-only</td><td><code>flattenPdf</code></td></tr>
+          <tr><td>See what author/app/timestamp metadata a PDF is carrying</td><td><code>scanPdfMetadata</code></td></tr>
+          <tr><td>Remove that metadata before sharing a file</td><td><code>stripPdfMetadata</code></td></tr>
+          <tr><td>Turn a CSV export into a paginated PDF table</td><td><code>csvToPdf</code></td></tr>
         </tbody>
       </table>
       <p>
@@ -206,6 +209,50 @@ console.log("fingerprint ID:", id); // write this down — it's shown once and s
 
 const out = await flattenPdf(file);`}</code></pre>
 
+      <h3><code>scanPdfMetadata(file: Uint8Array): Promise&lt;{`{ findings: MetadataFinding[]; pageCount: number }`}&gt;</code></h3>
+      <p>
+        Scan a PDF for author, creator app, timestamps, and other metadata, without modifying
+        it. Read-only — pair with <code>stripPdfMetadata</code> below once you know what&apos;s
+        there.
+      </p>
+      <pre><code>{`import { scanPdfMetadata } from "offlinepdf-sdk";
+
+const { findings, pageCount } = await scanPdfMetadata(file);
+for (const f of findings) console.log(f.key, f.value, f.risk); // risk: "low" | "medium" | "high"`}</code></pre>
+
+      <h3><code>stripPdfMetadata(file: Uint8Array): Promise&lt;{`{ bytes: Uint8Array; findings: MetadataFinding[] }`}&gt;</code></h3>
+      <p>
+        Strip the metadata <code>scanPdfMetadata</code> finds — title, author, subject,
+        keywords, creator/producer app fields, creation/modification dates — plus page-level
+        <code>/Metadata</code>, <code>/PieceInfo</code>, and <code>FileAttachment</code>{" "}
+        annotations (and their embedded-file streams) that a naive page copy would otherwise
+        silently carry over. Verified at the byte level: the test suite builds a PDF with
+        hidden XMP, an embedded file, and a file-attachment annotation, runs the strip, then
+        inspects every indirect object of the output to confirm nothing survives.
+      </p>
+      <blockquote>
+        <p>
+          <strong>Return shape is different here too.</strong> Like <code>fingerprintPdf</code>,
+          this returns <code>{`{ bytes, findings }`}</code> rather than bare bytes, so you can
+          show the caller what was removed.
+        </p>
+      </blockquote>
+      <pre><code>{`import { stripPdfMetadata } from "offlinepdf-sdk";
+
+const { bytes, findings } = await stripPdfMetadata(file);
+console.log("removed:", findings.map((f) => f.key));`}</code></pre>
+
+      <h3><code>csvToPdf(file: Uint8Array, options?: CsvToPdfOptions): Promise&lt;Uint8Array&gt;</code></h3>
+      <p>
+        Convert a CSV file into a paginated PDF table. The first row becomes a bold header
+        repeated on every page; remaining rows continue onto new A4 pages instead of one
+        endless page. Handles quoted fields with embedded commas. Supports up to 20,000 rows
+        and 40 columns.
+      </p>
+      <pre><code>{`import { csvToPdf } from "offlinepdf-sdk";
+
+const out = await csvToPdf(file, { title: "Q3 Export" });`}</code></pre>
+
       <h2>Limits</h2>
       <p>
         Each function enforces the same sane safety caps the website uses: PDFs over 750 pages are
@@ -215,12 +262,16 @@ const out = await flattenPdf(file);`}</code></pre>
 
       <h2>Not yet included</h2>
       <p>
-        This package covers 10 of OfflinePDF&apos;s 42 tools. <strong>Compress, Encrypt PDF, Remove
-        Password, OCR, and the other 32 tools on the website are not in this package</strong> — most of
-        them depend on WASM binaries (qpdf for encryption) or browser-only APIs (<code>OffscreenCanvas</code>{" "}
-        for image compression) that don&apos;t belong in a lightweight, zero-native-dependency package. They
-        may ship as separate add-on packages later; this page and the npm README will stay honest about
-        what&apos;s actually in the box rather than imply more than these 10 functions.
+        This package covers 12 of OfflinePDF&apos;s 42 tools. <strong>Compress, Encrypt PDF, Remove
+        Password, OCR, Images to PDF, and the other 30 tools on the website are not in this package</strong>{" "}
+        — most depend on WASM binaries (qpdf for encryption) or browser-only APIs (<code>OffscreenCanvas</code>{" "}
+        for image compression and format conversion) that don&apos;t belong in a lightweight,
+        zero-native-dependency package. Images to PDF is a deliberate exclusion rather than an oversight:
+        its JPEG/PNG path is clean, but the website tool also accepts WebP/GIF via browser canvas, and
+        shipping a version with quietly narrower format support than the name implies is worse than not
+        shipping it — same reasoning as Compress and Encrypt. These may ship as separate add-on packages
+        later; this page and the npm README will stay honest about what&apos;s actually in the box rather
+        than imply more than these 12 functions.
       </p>
       <p>
         For everything else — compress, convert, OCR, redact, and the rest — use the full site, free, no

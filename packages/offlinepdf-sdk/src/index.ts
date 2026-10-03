@@ -19,3 +19,11 @@ export {
   type FingerprintOptions,
   type FingerprintResult,
 } from "./fingerprint";
+export {
+  scanPdfMetadata,
+  stripPdfMetadata,
+  type MetadataFinding,
+  type ScanResult,
+  type StripResult,
+} from "./privacyScanner";
+export { csvToPdf, type CsvToPdfOptions } from "./csvToPdf";

@@ -1,6 +1,6 @@
 # offlinepdf-sdk
 
-**10 lightweight, zero-native-dependency PDF functions: merge, split, rotate, organize pages, watermark, page numbers, flatten, headers/footers, crop & resize, fingerprint.**
+**12 lightweight, zero-native-dependency PDF functions: merge, split, rotate, organize pages, watermark, page numbers, flatten, headers/footers, crop & resize, fingerprint, scan/strip metadata, CSV to PDF.**
 
 Extracted from [OfflinePDF](https://offlinepdf-woad.vercel.app) — the full tool suite this is extracted from, which has 42 browser-based PDF tools. This package is the subset of that logic that needed no native binaries or WASM to run anywhere Node or a browser can run `pdf-lib`.
 
@@ -16,7 +16,7 @@ Full usage guide (a "which function do I need" table, plus this same reference):
 
 ## Why this exists
 
-OfflinePDF's website tools run inside Web Workers behind a `postMessage` protocol. These functions are the same logic, pulled out of that wrapper and given a plain async API, so you can use them directly in a script, a server, or your own app — with only `pdf-lib` and `fflate` as dependencies, both pure JavaScript with no native bindings.
+OfflinePDF's website tools run inside Web Workers behind a `postMessage` protocol. These functions are the same logic, pulled out of that wrapper and given a plain async API, so you can use them directly in a script, a server, or your own app. `npm install` pulls in everything it needs automatically — nothing native to compile, so it installs the same way on every platform.
 
 ## Functions
 
@@ -169,13 +169,47 @@ const { bytes, id } = await fingerprintPdf(file, { label: "sent to Acme Corp" })
 console.log("fingerprint ID:", id); // write this down — it's shown once and stored nowhere
 ```
 
+### `scanPdfMetadata(file: Uint8Array): Promise<{ findings: MetadataFinding[]; pageCount: number }>`
+
+Scan a PDF for author, creator app, timestamps, and other metadata, without modifying it. Read-only — pair with `stripPdfMetadata` below once you know what's there.
+
+```ts
+import { scanPdfMetadata } from "offlinepdf-sdk";
+
+const { findings, pageCount } = await scanPdfMetadata(file);
+for (const f of findings) console.log(f.key, f.value, f.risk); // risk: "low" | "medium" | "high"
+```
+
+### `stripPdfMetadata(file: Uint8Array): Promise<{ bytes: Uint8Array; findings: MetadataFinding[] }>`
+
+Strip the metadata `scanPdfMetadata` finds — title, author, subject, keywords, creator/producer app fields, creation/modification dates — plus page-level `/Metadata`, `/PieceInfo`, and `FileAttachment` annotations (and their embedded-file streams) that a naive page copy would otherwise silently carry over. Verified at the byte level: the test suite builds a PDF with hidden XMP, an embedded file, and a file-attachment annotation, runs the strip, then inspects every indirect object of the output to confirm nothing survives.
+
+Like `fingerprintPdf`, this returns `{ bytes, findings }` rather than bare bytes, so you can show the caller what was removed.
+
+```ts
+import { stripPdfMetadata } from "offlinepdf-sdk";
+
+const { bytes, findings } = await stripPdfMetadata(file);
+console.log("removed:", findings.map((f) => f.key));
+```
+
+### `csvToPdf(file: Uint8Array, options?: CsvToPdfOptions): Promise<Uint8Array>`
+
+Convert a CSV file into a paginated PDF table. The first row becomes a bold header repeated on every page; remaining rows continue onto new A4 pages instead of one endless page. Handles quoted fields with embedded commas. Supports up to 20,000 rows and 40 columns.
+
+```ts
+import { csvToPdf } from "offlinepdf-sdk";
+
+const out = await csvToPdf(file, { title: "Q3 Export" });
+```
+
 ## Limits
 
 Each function enforces the same sane safety caps the website uses: PDFs over 750 pages are rejected, and an operation that would produce output over 750 MB throws rather than exhausting memory. These aren't configurable yet.
 
 ## Not yet included
 
-This package covers 10 of OfflinePDF's 42 tools. **Compress, Encrypt PDF, Remove Password, OCR, and the other 32 tools on the website are not in this package** — most of them depend on WASM binaries (qpdf for encryption) or browser-only APIs (`OffscreenCanvas` for image compression) that don't belong in a lightweight, zero-native-dependency package. They may ship as separate add-on packages later; this package will stay honest about what it actually contains rather than imply more than these 10 functions.
+This package covers 12 of OfflinePDF's 42 tools. **Compress, Encrypt PDF, Remove Password, OCR, Images to PDF, and the other 30 tools on the website are not in this package** — most depend on WASM binaries (qpdf for encryption) or browser-only APIs (`OffscreenCanvas` for image compression and format conversion) that don't belong in a lightweight, zero-native-dependency package. Images to PDF is a deliberate exclusion rather than an oversight: its JPEG/PNG path is clean, but the website tool also accepts WebP/GIF via browser canvas, and shipping a version with quietly narrower format support than the name implies is worse than not shipping it — same reasoning as Compress and Encrypt. These may ship as separate add-on packages later; this package will stay honest about what it actually contains rather than imply more than these 12 functions.
 
 For everything else — compress, convert, OCR, redact, and the rest — use the full site: **[offlinepdf-woad.vercel.app](https://offlinepdf-woad.vercel.app)**, free, no account, nothing uploaded.
 

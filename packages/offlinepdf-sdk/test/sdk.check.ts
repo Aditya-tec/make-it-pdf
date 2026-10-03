@@ -6,7 +6,16 @@
  * (page counts, rotation angles, file names) rather than just "did not throw".
  */
 import assert from "node:assert/strict";
-import { PDFDocument, PageSizes } from "pdf-lib";
+import {
+  PDFArray,
+  PDFDict,
+  PDFDocument,
+  PageSizes,
+  PDFName,
+  PDFRawStream,
+  PDFStream,
+  PDFString,
+} from "pdf-lib";
 import { unzipSync } from "fflate";
 import {
   mergePdfs,
@@ -21,6 +30,9 @@ import {
   fingerprintPdf,
   generateFingerprintId,
   FINGERPRINT_ID_PATTERN,
+  scanPdfMetadata,
+  stripPdfMetadata,
+  csvToPdf,
 } from "../src/index";
 
 async function makePdf(pages = 1): Promise<Uint8Array> {
@@ -197,6 +209,91 @@ async function testFingerprintRejectsBadId() {
   console.log("✓ fingerprintPdf rejects a malformed ID");
 }
 
+async function testScanPdfMetadata() {
+  const doc = await PDFDocument.create();
+  doc.addPage(PageSizes.A4);
+  doc.setAuthor("Jane Secret");
+  doc.setTitle("Confidential Draft");
+  const bytes = await doc.save();
+
+  const { findings, pageCount } = await scanPdfMetadata(bytes);
+  assert.equal(pageCount, 1, "scan: page count should match the source");
+  assert(findings.some((f) => f.key === "Author" && f.value === "Jane Secret"), "scan: should find Author");
+  assert(findings.some((f) => f.key === "Title" && f.value === "Confidential Draft"), "scan: should find Title");
+  console.log("✓ scanPdfMetadata finds author and title");
+}
+
+async function testStripPdfMetadataByteLevel() {
+  // Byte-level verification, ported from the website's lib/privacyScanner.check.mts: builds a
+  // PDF carrying XMP, an embedded file, a file-attachment annotation, and page-level metadata —
+  // all with marker strings — then inspects every indirect object of the STRIPPED output.
+  const SECRET = "SECRET-XMP-MARKER";
+  const ATTACH = "SECRET-ATTACHMENT-MARKER";
+
+  const src = await PDFDocument.create();
+  const page = src.addPage([200, 200]);
+  src.setAuthor("Jane Secret");
+  const stream = (ctx: typeof src.context, text: string, dict: Record<string, string>) => {
+    const s = PDFRawStream.of(ctx.obj({ Type: "Metadata", Subtype: "XML", ...dict }), new TextEncoder().encode(text));
+    return ctx.register(s);
+  };
+  const xmp = stream(src.context, `<x:xmpmeta>${SECRET}</x:xmpmeta>`, {});
+  src.catalog.set(PDFName.of("Metadata"), xmp);
+  page.node.set(PDFName.of("Metadata"), stream(src.context, `<x>${SECRET}-PAGE</x>`, {}));
+  await src.attach(new TextEncoder().encode(ATTACH), "secret.txt", { mimeType: "text/plain" }); // catalog /Names /EmbeddedFiles
+  // file-attachment annotation on the page
+  const fileRef = src.context.register(PDFRawStream.of(src.context.obj({ Type: "EmbeddedFile" }), new TextEncoder().encode(ATTACH + "-ANNOT")));
+  const spec = src.context.obj({ Type: "Filespec", F: PDFString.of("annot.txt"), EF: { F: fileRef } });
+  const annot = src.context.register(src.context.obj({ Type: "Annot", Subtype: "FileAttachment", Rect: [0, 0, 10, 10], FS: spec }));
+  page.node.set(PDFName.of("Annots"), src.context.obj([annot]));
+  src.catalog.set(PDFName.of("PieceInfo"), src.context.obj({ App: { Private: PDFString.of(SECRET) } }));
+
+  const inBytes = await src.save();
+  const { bytes, findings } = await stripPdfMetadata(inBytes);
+  assert(findings.some((f) => f.key === "Author"), "strip: findings should report the Author that was removed");
+
+  // Inspect the output's real structure: every object, decoded to text.
+  const out = await PDFDocument.load(bytes);
+  const found: string[] = [];
+  for (const [, obj] of out.context.enumerateIndirectObjects()) {
+    const text = obj instanceof PDFStream ? new TextDecoder("latin1").decode((obj as PDFRawStream).getContents()) : "";
+    const dict = obj instanceof PDFStream ? obj.dict : obj instanceof PDFDict ? obj : undefined;
+    const repr = String(obj) + text;
+    if (repr.includes(SECRET) || repr.includes(ATTACH)) found.push("marker string");
+    if (dict?.get(PDFName.of("Type"))?.toString() === "/Metadata") found.push("Metadata stream");
+    if (dict?.get(PDFName.of("Type"))?.toString() === "/EmbeddedFile") found.push("EmbeddedFile stream");
+    if (dict?.get(PDFName.of("Type"))?.toString() === "/Filespec") found.push("Filespec");
+    if (dict?.get(PDFName.of("Subtype"))?.toString() === "/FileAttachment") found.push("FileAttachment annot");
+  }
+  for (const k of ["Metadata", "Names", "PieceInfo"]) if (out.catalog.has(PDFName.of(k))) found.push(`catalog /${k}`);
+  const p = out.getPage(0).node;
+  for (const k of ["Metadata", "PieceInfo"]) if (p.has(PDFName.of(k))) found.push(`page /${k}`);
+  const annots = p.lookupMaybe(PDFName.of("Annots"), PDFArray);
+  if (annots?.size()) found.push("page /Annots present");
+
+  assert.deepEqual([...new Set(found)], [], "strip left privacy-relevant structures behind: " + found.join(", "));
+  console.log("✓ stripPdfMetadata byte-level check: no XMP, embedded files, or FileAttachment annots survive");
+}
+
+async function testCsvToPdf() {
+  // Multi-page pagination and a quoted-comma field, matching what was verified empirically
+  // during v0.3 scoping.
+  const header = "Name,Email,Notes\n";
+  const rows = Array.from({ length: 150 }, (_, i) => `"Person, ${i}",person${i}@example.com,Row number ${i}\n`).join("");
+  const csv = new TextEncoder().encode(header + rows);
+
+  const bytes = await csvToPdf(csv);
+  const doc = await PDFDocument.load(bytes);
+  assert(doc.getPageCount() >= 2, "csvToPdf: 151 rows should paginate across multiple pages");
+  console.log(`✓ csvToPdf paginates (${doc.getPageCount()} pages) and handles quoted commas`);
+}
+
+async function testCsvToPdfRejectsEmpty() {
+  const csv = new TextEncoder().encode("\n\n");
+  await assert.rejects(() => csvToPdf(csv), /no rows found/i);
+  console.log("✓ csvToPdf rejects an empty CSV");
+}
+
 async function main() {
   await testMerge();
   await testMergeRejectsEmpty();
@@ -217,6 +314,10 @@ async function main() {
   await testFingerprintGeneratesId();
   await testFingerprintCustomId();
   await testFingerprintRejectsBadId();
+  await testScanPdfMetadata();
+  await testStripPdfMetadataByteLevel();
+  await testCsvToPdf();
+  await testCsvToPdfRejectsEmpty();
   console.log("\nAll offlinepdf-sdk checks passed.");
 }
 
