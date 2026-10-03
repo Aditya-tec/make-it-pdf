@@ -12,6 +12,8 @@ Every function takes raw bytes (`Uint8Array`) in and returns raw bytes out. No f
 npm install offlinepdf-sdk
 ```
 
+Full usage guide (a "which function do I need" table, plus this same reference): [offlinepdf-woad.vercel.app/sdk](https://offlinepdf-woad.vercel.app/sdk)
+
 ## Why this exists
 
 OfflinePDF's website tools run inside Web Workers behind a `postMessage` protocol. These functions are the same logic, pulled out of that wrapper and given a plain async API, so you can use them directly in a script, a server, or your own app — with only `pdf-lib` and `fflate` as dependencies, both pure JavaScript with no native bindings.
