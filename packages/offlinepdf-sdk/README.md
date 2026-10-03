@@ -1,6 +1,6 @@
 # offlinepdf-sdk
 
-**7 lightweight, zero-native-dependency PDF functions: merge, split, rotate, organize pages, watermark, page numbers, flatten.**
+**10 lightweight, zero-native-dependency PDF functions: merge, split, rotate, organize pages, watermark, page numbers, flatten, headers/footers, crop & resize, fingerprint.**
 
 Extracted from [OfflinePDF](https://offlinepdf-woad.vercel.app) — the full tool suite this is extracted from, which has 42 browser-based PDF tools. This package is the subset of that logic that needed no native binaries or WASM to run anywhere Node or a browser can run `pdf-lib`.
 
@@ -14,7 +14,7 @@ npm install offlinepdf-sdk
 
 ## Why this exists
 
-OfflinePDF's website tools run inside Web Workers behind a `postMessage` protocol. These 7 functions are the same logic, pulled out of that wrapper and given a plain async API, so you can use them directly in a script, a server, or your own app — with only `pdf-lib` and `fflate` as dependencies, both pure JavaScript with no native bindings.
+OfflinePDF's website tools run inside Web Workers behind a `postMessage` protocol. These functions are the same logic, pulled out of that wrapper and given a plain async API, so you can use them directly in a script, a server, or your own app — with only `pdf-lib` and `fflate` as dependencies, both pure JavaScript with no native bindings.
 
 ## Functions
 
@@ -123,13 +123,57 @@ import { flattenPdf } from "offlinepdf-sdk";
 const out = await flattenPdf(file);
 ```
 
+### `addHeaderFooter(file: Uint8Array, options?: HeaderFooterOptions): Promise<Uint8Array>`
+
+Add a header and/or footer to every page, with an optional date and page number. A semi-transparent white band is drawn behind the text so it stays readable on dark or full-bleed pages.
+
+```ts
+import { addHeaderFooter } from "offlinepdf-sdk";
+
+const out = await addHeaderFooter(file, {
+  header: "Q3 Report",
+  footer: "Confidential",
+  includePageNumber: true,
+  includeDate: true,
+});
+```
+
+### `cropPdf(file: Uint8Array, options?: CropOptions): Promise<Uint8Array>`
+
+Crop margins by percentage, or resize every page to a target page size (A4, Letter, or the first page's own size).
+
+```ts
+import { cropPdf } from "offlinepdf-sdk";
+
+// Trim a 5% margin on every side:
+const trimmed = await cropPdf(file, {
+  marginTop: 0.05, marginRight: 0.05, marginBottom: 0.05, marginLeft: 0.05,
+});
+
+// Resize every page to A4, preserving aspect ratio:
+const resized = await cropPdf(file, { mode: "resize", target: "a4", fit: "contain" });
+```
+
+### `fingerprintPdf(file: Uint8Array, options?: FingerprintOptions): Promise<{ bytes: Uint8Array; id: string }>`
+
+Stamp a PDF with a unique ID: a deterrent against leaks, not forensic-grade tracking. The ID sits in the metadata and as near-invisible text on every page, so a leaked copy can be matched back to who received it. A print-to-PDF, flatten, or screenshot can remove it.
+
+Unlike the other functions here, this one returns `{ bytes, id }` rather than just bytes — the ID is the point of running it, and it isn't recoverable from the file by looking at it, so you need to save it yourself.
+
+```ts
+import { fingerprintPdf } from "offlinepdf-sdk";
+
+const { bytes, id } = await fingerprintPdf(file, { label: "sent to Acme Corp" });
+console.log("fingerprint ID:", id); // write this down — it's shown once and stored nowhere
+```
+
 ## Limits
 
 Each function enforces the same sane safety caps the website uses: PDFs over 750 pages are rejected, and an operation that would produce output over 750 MB throws rather than exhausting memory. These aren't configurable yet.
 
 ## Not yet included
 
-This package covers 7 of OfflinePDF's 42 tools. **Compress, Encrypt PDF, Remove Password, OCR, and the other 35 tools on the website are not in this package** — most of them depend on WASM binaries (qpdf for encryption) or browser-only APIs (`OffscreenCanvas` for image compression) that don't belong in a lightweight, zero-native-dependency package. They may ship as separate add-on packages later; this package will stay honest about what it actually contains rather than imply more than these 7 functions.
+This package covers 10 of OfflinePDF's 42 tools. **Compress, Encrypt PDF, Remove Password, OCR, and the other 32 tools on the website are not in this package** — most of them depend on WASM binaries (qpdf for encryption) or browser-only APIs (`OffscreenCanvas` for image compression) that don't belong in a lightweight, zero-native-dependency package. They may ship as separate add-on packages later; this package will stay honest about what it actually contains rather than imply more than these 10 functions.
 
 For everything else — compress, convert, OCR, redact, and the rest — use the full site: **[offlinepdf-woad.vercel.app](https://offlinepdf-woad.vercel.app)**, free, no account, nothing uploaded.
 

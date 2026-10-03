@@ -16,6 +16,11 @@ import {
   addWatermark,
   addPageNumbers,
   flattenPdf,
+  addHeaderFooter,
+  cropPdf,
+  fingerprintPdf,
+  generateFingerprintId,
+  FINGERPRINT_ID_PATTERN,
 } from "../src/index";
 
 async function makePdf(pages = 1): Promise<Uint8Array> {
@@ -127,6 +132,71 @@ async function testFlatten() {
   console.log("✓ flattenPdf");
 }
 
+async function testHeaderFooter() {
+  const src = await makePdf(2);
+  const out = await addHeaderFooter(src, {
+    header: "Q3 Report",
+    footer: "Confidential",
+    includePageNumber: true,
+    includeDate: true,
+  });
+  const doc = await PDFDocument.load(out);
+  assert.equal(doc.getPageCount(), 2, "header/footer: page count should be unchanged");
+  console.log("✓ addHeaderFooter");
+}
+
+async function testHeaderFooterNoOptions() {
+  const src = await makePdf(1);
+  const out = await addHeaderFooter(src); // no header/footer/date/page-number at all
+  await PDFDocument.load(out);
+  console.log("✓ addHeaderFooter with no options draws nothing but still saves");
+}
+
+async function testCropMargins() {
+  const src = await makePdf(1);
+  const original = (await PDFDocument.load(src)).getPage(0).getSize();
+  const out = await cropPdf(src, { marginTop: 0.1, marginRight: 0.1, marginBottom: 0.1, marginLeft: 0.1 });
+  const doc = await PDFDocument.load(out);
+  const cropped = doc.getPage(0).getSize();
+  assert(cropped.width < original.width, "crop: width should shrink after margin crop");
+  assert(cropped.height < original.height, "crop: height should shrink after margin crop");
+  console.log("✓ cropPdf (margins)");
+}
+
+async function testCropResize() {
+  const src = await makePdf(2);
+  const out = await cropPdf(src, { mode: "resize", target: "letter", fit: "contain" });
+  const doc = await PDFDocument.load(out);
+  const [lw, lh] = PageSizes.Letter;
+  const size = doc.getPage(0).getSize();
+  assert.equal(size.width, lw, "crop: resize should match Letter width");
+  assert.equal(size.height, lh, "crop: resize should match Letter height");
+  assert.equal(doc.getPageCount(), 2, "crop: resize should keep page count");
+  console.log("✓ cropPdf (resize)");
+}
+
+async function testFingerprintGeneratesId() {
+  const src = await makePdf(1);
+  const { bytes, id } = await fingerprintPdf(src, { label: "sent to Acme Corp" });
+  assert.match(id, FINGERPRINT_ID_PATTERN, "fingerprint: generated ID should match the expected pattern");
+  await PDFDocument.load(bytes);
+  console.log("✓ fingerprintPdf generates and stamps an ID");
+}
+
+async function testFingerprintCustomId() {
+  const src = await makePdf(1);
+  const customId = generateFingerprintId();
+  const { id } = await fingerprintPdf(src, { id: customId });
+  assert.equal(id, customId, "fingerprint: should use the caller-supplied ID verbatim");
+  console.log("✓ fingerprintPdf accepts a caller-supplied ID");
+}
+
+async function testFingerprintRejectsBadId() {
+  const src = await makePdf(1);
+  await assert.rejects(() => fingerprintPdf(src, { id: "not-a-valid-id" }), /invalid fingerprint id/i);
+  console.log("✓ fingerprintPdf rejects a malformed ID");
+}
+
 async function main() {
   await testMerge();
   await testMergeRejectsEmpty();
@@ -140,6 +210,13 @@ async function main() {
   await testWatermark();
   await testPageNumbers();
   await testFlatten();
+  await testHeaderFooter();
+  await testHeaderFooterNoOptions();
+  await testCropMargins();
+  await testCropResize();
+  await testFingerprintGeneratesId();
+  await testFingerprintCustomId();
+  await testFingerprintRejectsBadId();
   console.log("\nAll offlinepdf-sdk checks passed.");
 }
 

@@ -10,3 +10,12 @@ export {
   type PageNumberPosition,
 } from "./pageNumbers";
 export { flattenPdf } from "./flatten";
+export { addHeaderFooter, type HeaderFooterOptions } from "./headerFooter";
+export { cropPdf, type CropOptions, type CropMode, type CropFit, type CropTarget } from "./crop";
+export {
+  fingerprintPdf,
+  generateFingerprintId,
+  FINGERPRINT_ID_PATTERN,
+  type FingerprintOptions,
+  type FingerprintResult,
+} from "./fingerprint";

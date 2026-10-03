@@ -1,7 +1,7 @@
 {
   "name": "offlinepdf-sdk",
-  "version": "0.1.1",
-  "description": "7 lightweight, zero-native-dependency PDF functions: merge, split, rotate, organize pages, watermark, page numbers, flatten. Extracted from OfflinePDF.",
+  "version": "0.2.0",
+  "description": "10 lightweight, zero-native-dependency PDF functions: merge, split, rotate, organize pages, watermark, page numbers, flatten, headers/footers, crop & resize, fingerprint. Extracted from OfflinePDF.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -49,6 +49,9 @@
     "watermark",
     "page-numbers",
     "flatten-pdf",
+    "headers-footers",
+    "crop-pdf",
+    "fingerprint-pdf",
     "pdf-sdk"
   ],
   "repository": {
