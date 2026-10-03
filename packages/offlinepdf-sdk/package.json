@@ -1,6 +1,6 @@
 {
   "name": "offlinepdf-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "7 lightweight, zero-native-dependency PDF functions: merge, split, rotate, organize pages, watermark, page numbers, flatten. Extracted from OfflinePDF.",
   "license": "MIT",
   "main": "./dist/index.js",
