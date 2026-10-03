@@ -9,7 +9,7 @@ const HEAVY = (rel, size) => /^(qpdf|tess)\//.test(rel) || size > 2 * 1024 * 102
 
 const core = [], heavy = [], hash = createHash("sha1");
 (function walk(dir) {
-  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
     const full = path.join(dir, ent.name);
     if (ent.isDirectory()) { walk(full); continue; }
     const rel = path.relative(OUT, full).split(path.sep).join("/");

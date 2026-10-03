@@ -928,9 +928,16 @@ await t("pdf-to-audio: browser without speech synthesis gets the unsupported mes
   };
   await step("offline: SW installs and caches core + heavy (qpdf/tess) files", async (p) => {
     await p.goto(BASE + "/");
-    await p.waitForFunction(async () => (await navigator.serviceWorker?.getRegistration())?.active && (await caches.keys()).length, null, { timeout: 30000 });
-    await p.waitForFunction(async () => { const c = await caches.open((await caches.keys())[0]); return !!(await c.match("/qpdf/qpdf.wasm")) && !!(await c.match("/tess/lang/eng.traineddata.gz")); }, null, { timeout: 60000 });
-    await p.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 10000 });
+    // Poll from Node: page.waitForFunction does NOT await an async predicate (a pending Promise is truthy, so it returns at once).
+    // Wait for EVERY heavy file; readdir order differs per OS, so on Linux CI qpdf.wasm can be cached before qpdf.js.
+    const cachedAll = () => p.evaluate(async () => {
+      if (!navigator.serviceWorker.controller) return false;
+      const m = JSON.parse((await (await fetch("/sw.js")).text()).match(/const MANIFEST = (\{.*\});/)[1]);
+      const c = await caches.open((await caches.keys())[0]);
+      for (const u of m.core.concat(m.heavy)) if (!(await c.match(u))) return false;
+      return m.heavy.length > 0;
+    }).catch(() => false);
+    for (let t = Date.now(); !(await cachedAll()); await p.waitForTimeout(500)) if (Date.now() - t > 90000) throw new Error("SW did not finish caching");
   });
   await oc.setOffline(true);
   await step("offline: banner shown; merge completes with zero network", async (p) => {
