@@ -21,6 +21,20 @@ export default function Privacy() {
         the tab discards them.
       </p>
 
+      <h2>Exceptions: P2P Share and Whiteboard</h2>
+      <p>
+        These two tools connect two browsers directly, so they do use the network. Your browser contacts
+        the free public PeerJS signaling service (0.peerjs.com) and Google&apos;s public STUN servers
+        (stun.l.google.com), which can see IP addresses and a random room ID. Files and drawings travel
+        directly between the browsers and are not stored by us or by those services. The connection
+        requests are only made on those two pages, and only after you start or join a session.
+      </p>
+
+      <h2>Camera</h2>
+      <p>
+        Scan to PDF asks for camera access, only on its own page. Frames stay in the tab and are never uploaded.
+      </p>
+
       <h2>What we collect</h2>
       <p>
         We do not require an account and do not ask for personal information. We do not use advertising or

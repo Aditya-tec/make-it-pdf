@@ -31,12 +31,34 @@ const TOOL_WEIGHT: Record<string, ToolWeight> = {
   "extract-text": "light",
   "privacy-scanner": "light",
   "word-to-pdf": "light",
+  "markdown-to-pdf": "light",
+  "html-to-pdf": "light",
+  "csv-to-pdf": "light",
+  "excel-to-pdf": "light",
+  "repair-pdf": "light",
+  "create-pdf": "light",
+  "pdf-to-epub": "light",
+  "powerpoint-to-pdf": "light", // text + inlined images; slides capped at 300, zip entries capped
+  "ebook-to-pdf": "light",
+  "pdf-to-html": "light",
+  "pdf-to-excel": "light",
+  "fingerprint-pdf": "light",
+  "pos-billing": "light",
+  "pdf-to-audio": "light",
+  "p2p-share": "light", // held in memory on the receiving side
+  "whiteboard": "light",
 
   "compress-pdf": "heavy",
   "pdf-to-jpg": "heavy",
+  "pdf-to-zip": "heavy",
   "images-to-pdf": "heavy",
   "redact-pdf": "heavy",
   "invert-colors": "heavy",
+  "compare-pdfs": "heavy",
+  "pdf-to-word": "heavy",
+  "pdf-to-powerpoint": "heavy", // every page rendered + base64'd
+  "scan-to-pdf": "heavy", // camera frames are large JPEGs
+  "edit-pdf-text": "heavy", // page canvas + pdf.js text layer on the main thread
 
   "ocr-pdf": "ocr",
 };

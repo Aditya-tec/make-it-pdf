@@ -30,7 +30,7 @@ export default function ToolPage({ tool, children }: Props) {
             <ToolIcon slug={tool.slug} className="w-6 h-6 sm:w-7 sm:h-7" />
           </span>
           <span className="bg-white text-black border-2 border-black rounded-md label-mono text-[10px] sm:text-[11px] px-2 py-1 max-w-full">
-            {category} / runs on your device
+            {category} / {["p2p-share", "whiteboard"].includes(tool.slug) ? "direct browser-to-browser" : "runs on your device"}
           </span>
         </div>
         <h1 className="headline text-[1.75rem] sm:text-4xl text-white [text-shadow:3px_3px_0_rgba(0,0,0,0.55)] break-words">

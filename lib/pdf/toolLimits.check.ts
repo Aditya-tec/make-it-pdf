@@ -14,6 +14,10 @@ assert(getToolLimits("compress-pdf").maxFileBytes === 150 * MB, "compress should
 assert(getToolLimits("compress-pdf").maxTotalBytes === 250 * MB, "compress total 250MB");
 assert(getToolLimits("pdf-to-jpg").weight === "heavy", "pdf-to-jpg is heavy");
 assert(getToolLimits("ocr-pdf").maxFileBytes === 75 * MB, "ocr should be 75MB");
+assert(getToolLimits("csv-to-pdf").weight === "light", "csv is light");
+assert(getToolLimits("compare-pdfs").weight === "heavy", "compare is heavy");
+assert(getToolLimits("pdf-to-word").weight === "heavy", "pdf-to-word is heavy");
+assert(getToolLimits("pdf-to-zip").maxFileBytes === 150 * MB, "pdf-to-zip is heavy");
 assert(getToolLimits("unknown-tool").weight === "heavy", "unknown defaults heavy");
 assert(mbLabel(100 * MB) === 100, "mbLabel");
 

@@ -21,6 +21,19 @@ const cases: [string, string][] = [
   ["dark mode", "invert-colors"],
   ["delete pages", "organize-pages"],
   ["extract text", "extract-text"],
+  ["markdown to pdf", "markdown-to-pdf"],
+  ["compare two pdfs", "compare-pdfs"],
+  ["repair broken pdf", "repair-pdf"],
+  ["csv to pdf", "csv-to-pdf"],
+  ["epub", "pdf-to-epub"],
+  ["pdf to word", "pdf-to-word"],
+  ["convert powerpoint to pdf", "powerpoint-to-pdf"],
+  ["turn my pdf into slides", "pdf-to-powerpoint"],
+  ["scan documents with camera", "scan-to-pdf"],
+  ["read aloud", "pdf-to-audio"],
+  ["edit text in pdf", "edit-pdf-text"],
+  ["whiteboard", "whiteboard"],
+  ["send a file to a friend", "p2p-share"],
 ];
 for (const [q, slug] of cases) {
   const got = rankTools(q)[0]?.tool.slug;

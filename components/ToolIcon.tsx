@@ -165,6 +165,156 @@ const ICONS: Record<string, (c?: string) => ReactNode> = {
       <path d="M11 16l3 3 7-7" fill="none" stroke={V} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </Svg>
   ),
+  "pdf-to-zip": (c) => (
+    <Svg className={c}>
+      <path d="M8 4h12v8H8z" fill={K} />
+      <path d="M6 14h20v14H6z" fill={K} />
+      <rect x="10" y="18" width="12" height="3" rx="1" fill={V} />
+      <rect x="13" y="22" width="6" height="3" rx="1" fill={V} />
+    </Svg>
+  ),
+  "markdown-to-pdf": (c) => (
+    <Svg className={c}>
+      <rect x="4" y="6" width="24" height="20" rx="2" fill={K} />
+      <path d="M8 20V12l4 5 4-5v8" fill="none" stroke={V} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M20 12v8M20 16l3 4 3-4" fill="none" stroke={V} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  ),
+  "html-to-pdf": (c) => (
+    <Svg className={c}>
+      <rect x="4" y="5" width="24" height="22" rx="2" fill={K} />
+      <path d="M11 13l-3 3 3 3M21 13l3 3-3 3M14 21l4-10" fill="none" stroke={V} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  ),
+  "csv-to-pdf": (c) => (
+    <Svg className={c}>
+      <rect x="4" y="4" width="24" height="24" rx="2" fill={K} />
+      <path d="M4 12h24M4 20h24M12 4v24M20 4v24" stroke={V} strokeWidth="1.6" />
+    </Svg>
+  ),
+  "excel-to-pdf": (c) => (
+    <Svg className={c}>
+      <rect x="5" y="3" width="22" height="26" rx="2" fill={K} />
+      <path d="M11 11l10 10M21 11L11 21" stroke={V} strokeWidth="2.4" strokeLinecap="round" />
+    </Svg>
+  ),
+  "compare-pdfs": (c) => (
+    <Svg className={c}>
+      <rect x="2" y="5" width="12" height="22" rx="2" fill={K} />
+      <rect x="18" y="5" width="12" height="22" rx="2" fill={K} />
+      <rect x="15" y="14" width="2" height="4" fill={V} />
+    </Svg>
+  ),
+  "repair-pdf": (c) => (
+    <Svg className={c}>
+      <path d="M8 3h10l6 6v18H8V3z" fill={K} />
+      <path d="M18 3v6h6" fill={V} />
+      <path d="M12 18h8M16 14v8" stroke={V} strokeWidth="2" strokeLinecap="round" />
+    </Svg>
+  ),
+  "pdf-to-word": (c) => (
+    <Svg className={c}>
+      <path d="M6 3h12l6 6v18H6V3z" fill={K} />
+      <path d="M18 3v6h6" fill={V} />
+      <path d="M10 16l2 6 2-4 2 4 2-6" fill="none" stroke={V} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  ),
+  "create-pdf": (c) => (
+    <Svg className={c}>
+      <path d="M8 3h10l6 6v18H8V3z" fill={K} />
+      <path d="M18 3v6h6" fill={V} />
+      <path d="M12 20l6-8 2 2" fill="none" stroke={V} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  ),
+  "powerpoint-to-pdf": (c) => (
+    <Svg className={c}>
+      <rect x="3" y="6" width="26" height="17" rx="2" fill={K} />
+      <path d="M16 23v5M10 28h12" stroke={K} strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M12 11h5a3 3 0 010 6h-5z" fill="none" stroke={V} strokeWidth="2" strokeLinejoin="round" />
+    </Svg>
+  ),
+  "pdf-to-powerpoint": (c) => (
+    <Svg className={c}>
+      <rect x="3" y="6" width="26" height="17" rx="2" fill={K} />
+      <path d="M16 23v5M10 28h12" stroke={K} strokeWidth="2.4" strokeLinecap="round" />
+      <rect x="9" y="10" width="14" height="9" rx="1" fill={V} />
+    </Svg>
+  ),
+  "pdf-to-excel": (c) => (
+    <Svg className={c}>
+      <rect x="4" y="4" width="24" height="24" rx="2" fill={K} />
+      <path d="M4 12h24M12 4v24" stroke={V} strokeWidth="1.8" />
+      <rect x="14" y="14" width="12" height="4" fill={V} />
+    </Svg>
+  ),
+  "pdf-to-html": (c) => (
+    <Svg className={c}>
+      <rect x="4" y="5" width="24" height="22" rx="2" fill={K} />
+      <path d="M13 12l-4 4 4 4M19 12l4 4-4 4" fill="none" stroke={V} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  ),
+  "ebook-to-pdf": (c) => (
+    <Svg className={c}>
+      <path d="M4 6h10a2 2 0 012 2v20a2 2 0 00-2-2H4zM28 6H18a2 2 0 00-2 2v20a2 2 0 012-2h10z" fill={K} />
+      <rect x="7" y="11" width="6" height="2" rx="1" fill={V} />
+      <rect x="19" y="11" width="6" height="2" rx="1" fill={V} />
+    </Svg>
+  ),
+  "fingerprint-pdf": (c) => (
+    <Svg className={c}>
+      <rect x="6" y="3" width="20" height="26" rx="3" fill={K} />
+      <path d="M11 20a5 5 0 0110 0M13 24a3 3 0 016 0M16 12a4 4 0 014 4" fill="none" stroke={V} strokeWidth="1.8" strokeLinecap="round" />
+    </Svg>
+  ),
+  "pos-billing": (c) => (
+    <Svg className={c}>
+      <path d="M7 3h18v25l-3-2-3 2-3-2-3 2-3-2-3 2z" fill={K} />
+      <rect x="11" y="9" width="10" height="2" rx="1" fill={V} />
+      <rect x="11" y="14" width="10" height="2" rx="1" fill={V} />
+      <rect x="11" y="19" width="6" height="2" rx="1" fill={V} />
+    </Svg>
+  ),
+  "scan-to-pdf": (c) => (
+    <Svg className={c}>
+      <path d="M4 10a2 2 0 012-2h4l2-3h8l2 3h4a2 2 0 012 2v15a2 2 0 01-2 2H6a2 2 0 01-2-2z" fill={K} />
+      <circle cx="16" cy="17" r="5" fill={V} />
+      <circle cx="16" cy="17" r="2" fill={K} />
+    </Svg>
+  ),
+  "p2p-share": (c) => (
+    <Svg className={c}>
+      <circle cx="7" cy="16" r="4" fill={K} />
+      <circle cx="25" cy="16" r="4" fill={K} />
+      <path d="M11 16h10M18 12l4 4-4 4" fill="none" stroke={V} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  ),
+  whiteboard: (c) => (
+    <Svg className={c}>
+      <rect x="3" y="5" width="26" height="19" rx="2" fill={K} />
+      <path d="M8 18c3-8 5 2 8-4s5 4 8-2" fill="none" stroke={V} strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M11 28l5-4 5 4" stroke={K} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </Svg>
+  ),
+  "edit-pdf-text": (c) => (
+    <Svg className={c}>
+      <path d="M7 3h12l6 6v20H7z" fill={K} />
+      <path d="M19 3v6h6" fill={V} />
+      <path d="M11 22l1-4 8-8 3 3-8 8z" fill={V} />
+    </Svg>
+  ),
+  "pdf-to-audio": (c) => (
+    <Svg className={c}>
+      <path d="M4 12h5l7-6v20l-7-6H4z" fill={K} />
+      <path d="M20 11a7 7 0 010 10M23 7a12 12 0 010 18" fill="none" stroke={V} strokeWidth="2.2" strokeLinecap="round" />
+    </Svg>
+  ),
+  "pdf-to-epub": (c) => (
+    <Svg className={c}>
+      <path d="M6 4h8a6 6 0 016 6v18H10a4 4 0 01-4-4V4z" fill={K} />
+      <path d="M14 4v20" stroke={V} strokeWidth="2" />
+      <path d="M8 10h4M8 14h4" stroke={V} strokeWidth="1.6" strokeLinecap="round" />
+    </Svg>
+  ),
 };
 
 export default function ToolIcon({

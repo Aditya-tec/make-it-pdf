@@ -20,7 +20,20 @@ const SIGNATURES: Record<string, (b: Uint8Array) => boolean> = {
   ".gif": (b) => starts(b, [0x47, 0x49, 0x46, 0x38]),
   ".webp": (b) => starts(b, [0x52, 0x49, 0x46, 0x46]) && starts(b, [0x57, 0x45, 0x42, 0x50], 8),
   ".docx": (b) => starts(b, [0x50, 0x4b, 0x03, 0x04]),
+  ".xlsx": (b) => starts(b, [0x50, 0x4b, 0x03, 0x04]),
+  ".xls": (b) => starts(b, [0xd0, 0xcf, 0x11, 0xe0]),
+  ".pptx": (b) => starts(b, [0x50, 0x4b, 0x03, 0x04]),
+  ".epub": (b) => starts(b, [0x50, 0x4b, 0x03, 0x04]),
+  ".html": textFile,
+  ".htm": textFile,
+  ".md": textFile,
+  ".csv": textFile,
 };
+
+// Text uploads: reject NULs so a renamed binary can't sneak in.
+function textFile(b: Uint8Array) {
+  return !b.includes(0);
+}
 
 /** Returns an error message, or null if the file is acceptable. */
 export async function checkFile(f: File, maxFileBytes = MAX_FILE_BYTES): Promise<string | null> {

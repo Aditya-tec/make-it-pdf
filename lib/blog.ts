@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { Marked } from "marked";
+import { markdownToHtml } from "./markdown";
 
 const BLOG_DIR = path.join(process.cwd(), "content/blog");
 
@@ -15,11 +15,6 @@ export interface PostMeta {
 export interface Post extends PostMeta {
   contentHtml: string;
 }
-
-const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-// Raw HTML in a .md file is escaped, never passed through.
-const md = new Marked({ renderer: { html: ({ text }) => esc(text) } });
 
 export function getAllPosts(): PostMeta[] {
   if (!fs.existsSync(BLOG_DIR)) return [];
@@ -50,6 +45,6 @@ export function getPost(slug: string): Post | null {
     title: data.title as string,
     excerpt: data.excerpt as string,
     relatedTools: data.relatedTools as string[] | undefined,
-    contentHtml: md.parse(content, { async: false }),
+    contentHtml: markdownToHtml(content),
   };
 }

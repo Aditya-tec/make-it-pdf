@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { TOOLS } from "@/lib/tools";
 import { Analytics } from "@vercel/analytics/react";
 
 export const viewport: Viewport = {
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    "Browser-based PDF tools that process files entirely on your device — tested with zero third-party network requests during file processing. 20 tools, no account required, no feature behind a paywall, no watermark.",
+    `Browser-based PDF tools that process files entirely on your device — tested with zero third-party network requests during file processing. ${TOOLS.length} tools, no account required, no feature behind a paywall, no watermark.`,
   metadataBase: new URL(SITE_URL),
   openGraph: {
     siteName: SITE_NAME,

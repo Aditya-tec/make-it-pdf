@@ -4,7 +4,7 @@ export interface Tool {
   tagline: string;
   description: string;
   icon: string; // emoji or SVG path name
-  category: "essentials" | "edit" | "security" | "convert";
+  category: "essentials" | "edit" | "security" | "convert" | "more";
   howTo: string[];
   faq: { q: string; a: string }[];
   related: string[]; // slugs
@@ -117,7 +117,7 @@ export const TOOLS: Tool[] = [
         a: "Rendering a large PDF page at 300 DPI in OfflinePDF's PDF to JPG tool is memory-intensive on phones; the tool caps memory use and warns when a page is very large.",
       },
     ],
-    related: ["images-to-pdf", "compress-pdf", "split-pdf"],
+    related: ["pdf-to-zip", "images-to-pdf", "compress-pdf"],
   },
   {
     slug: "images-to-pdf",
@@ -143,7 +143,7 @@ export const TOOLS: Tool[] = [
         a: "OfflinePDF's Images to PDF tool sizes each page to the image by default, so mixed portrait and landscape images work without forcing a single orientation.",
       },
     ],
-    related: ["pdf-to-jpg", "merge-pdf", "compress-pdf"],
+    related: ["scan-to-pdf", "pdf-to-jpg", "merge-pdf"],
   },
   {
     slug: "word-to-pdf",
@@ -168,7 +168,7 @@ export const TOOLS: Tool[] = [
         a: "OfflinePDF's Word to PDF tool supports only .docx; convert an older .doc file to .docx in Word first, then convert with OfflinePDF.",
       },
     ],
-    related: ["merge-pdf", "compress-pdf", "extract-text"],
+    related: ["pdf-to-word", "powerpoint-to-pdf", "extract-text"],
   },
   {
     slug: "organize-pages",
@@ -221,7 +221,7 @@ export const TOOLS: Tool[] = [
         a: "OfflinePDF's Add Watermark tool accepts PNG (best with transparency) and JPG for image watermarks.",
       },
     ],
-    related: ["organize-pages", "encrypt-pdf", "merge-pdf"],
+    related: ["fingerprint-pdf", "organize-pages", "encrypt-pdf"],
   },
   {
     slug: "encrypt-pdf",
@@ -273,7 +273,7 @@ export const TOOLS: Tool[] = [
         a: "OfflinePDF's Extract Text tool keeps basic line breaks and spacing in plain text, but complex layouts such as columns and tables may not match the original PDF layout.",
       },
     ],
-    related: ["ocr-pdf", "word-to-pdf", "compress-pdf"],
+    related: ["pdf-to-word", "pdf-to-epub", "ocr-pdf"],
   },
   {
     slug: "rotate-pdf",
@@ -411,7 +411,7 @@ export const TOOLS: Tool[] = [
         a: "OfflinePDF's OCR PDF tool does not upload the file; the OCR engine and English language model are served from the OfflinePDF site and run entirely on the user's device.",
       },
     ],
-    related: ["extract-text", "pdf-to-jpg", "compress-pdf"],
+    related: ["extract-text", "pdf-to-epub", "pdf-to-jpg"],
   },
   {
     slug: "flatten-pdf",
@@ -453,7 +453,7 @@ export const TOOLS: Tool[] = [
         a: "OfflinePDF's Redact PDF tool re-renders redacted pages as images with black boxes burned in, so text under a box cannot be selected or recovered with Extract Text.",
       },
     ],
-    related: ["flatten-pdf", "privacy-scanner", "encrypt-pdf"],
+    related: ["compare-pdfs", "edit-pdf-text", "privacy-scanner"],
   },
   {
     slug: "invert-colors",
@@ -497,6 +497,561 @@ export const TOOLS: Tool[] = [
     ],
     related: ["encrypt-pdf", "redact-pdf", "remove-password"],
   },
+  {
+    slug: "pdf-to-zip",
+    name: "PDF to ZIP",
+    tagline: "Save every page as a JPG or PNG inside a zip",
+    description:
+      "Render each PDF page to a JPG or PNG and download them as one zip file. Same page limit as the other render tools. Processing stays in the browser.",
+    icon: "🗜️",
+    category: "convert",
+    howTo: [
+      "Upload your PDF.",
+      "Choose JPG or PNG, and a DPI.",
+      "Click Create ZIP.",
+      "Download pages.zip.",
+    ],
+    faq: [
+      {
+        q: "How is this different from PDF to JPG?",
+        a: "OfflinePDF's PDF to ZIP tool always packages the pages into one zip, including a single-page PDF. PDF to JPG downloads a lone image when the PDF has one page.",
+      },
+      {
+        q: "Is there a page limit?",
+        a: "OfflinePDF's PDF to ZIP tool uses the same page cap as the other render tools (750 pages) and a 150 MB file cap, because each page is drawn to a canvas.",
+      },
+    ],
+    related: ["pdf-to-jpg", "images-to-pdf", "split-pdf"],
+  },
+  {
+    slug: "markdown-to-pdf",
+    name: "Markdown to PDF",
+    tagline: "Turn a README-style Markdown file into a PDF",
+    description:
+      "Upload a .md file. Headings, lists, tables, and code blocks are rendered in the browser, then you save the print preview as a PDF. Code and tables wrap instead of running off the page.",
+    icon: "Ⓜ️",
+    category: "convert",
+    howTo: [
+      "Upload a .md file.",
+      "Click Convert to PDF.",
+      "Check the preview, especially code blocks and tables.",
+      "Click Save as PDF and choose Save as PDF in the print dialog.",
+    ],
+    faq: [
+      {
+        q: "Will a long code line run off the page?",
+        a: "OfflinePDF's Markdown to PDF tool wraps code blocks and table cells so they stay within the page width. Very wide tables are squeezed, not given a giant page.",
+      },
+      {
+        q: "Is raw HTML in the Markdown executed?",
+        a: "OfflinePDF's Markdown to PDF tool escapes raw HTML in the file, then sanitizes the result before preview. It is not a way to run scripts.",
+      },
+    ],
+    related: ["html-to-pdf", "word-to-pdf", "create-pdf"],
+  },
+  {
+    slug: "html-to-pdf",
+    name: "HTML to PDF",
+    tagline: "Print pasted or uploaded HTML to a PDF",
+    description:
+      "Paste HTML or upload an .html file. It is sanitized in your browser, shown in a locked-down preview, and saved through the print dialog. Scripts and remote images are removed.",
+    icon: "🌐",
+    category: "convert",
+    howTo: [
+      "Paste HTML into the box, or upload an .html file.",
+      "Click Convert to PDF.",
+      "Review the preview.",
+      "Click Save as PDF and choose Save as PDF in the print dialog.",
+    ],
+    faq: [
+      {
+        q: "Can the HTML run scripts?",
+        a: "OfflinePDF's HTML to PDF tool strips scripts, event handlers, and javascript: links, and the preview cannot run scripts. Remote images are removed so the preview does not contact other sites.",
+      },
+      {
+        q: "Where is the file saved?",
+        a: "OfflinePDF's HTML to PDF tool uses your browser's print dialog. Choose Save as PDF as the destination. Nothing is uploaded.",
+      },
+    ],
+    related: ["markdown-to-pdf", "word-to-pdf", "create-pdf"],
+  },
+  {
+    slug: "csv-to-pdf",
+    name: "CSV to PDF",
+    tagline: "Turn a spreadsheet export into a paginated table",
+    description:
+      "Upload a CSV. The first row becomes the header, and rows continue onto new A4 pages instead of one endless page. Header text is bold and cells have borders.",
+    icon: "📊",
+    category: "convert",
+    howTo: [
+      "Upload a .csv file.",
+      "Click Convert to PDF.",
+      "Download the paginated table.",
+    ],
+    faq: [
+      {
+        q: "What happens with thousands of rows?",
+        a: "OfflinePDF's CSV to PDF tool paginates across A4 pages and repeats the header. Files over 20,000 rows or 40 columns are rejected so the tab does not lock up.",
+      },
+      {
+        q: "Are quotes and commas handled?",
+        a: "OfflinePDF's CSV to PDF tool treats a quoted field as one cell, including commas and doubled quotes inside the quotes.",
+      },
+    ],
+    related: ["excel-to-pdf", "create-pdf", "merge-pdf"],
+  },
+  {
+    slug: "excel-to-pdf",
+    name: "Excel to PDF",
+    tagline: "Export the first sheet of an Excel file",
+    description:
+      "Upload .xlsx or .xls. Only the first sheet is exported, as a bordered table with a bold header row. Other sheets are listed in the title so you know they were skipped. Merged cells keep their value in the top-left cell.",
+    icon: "📗",
+    category: "convert",
+    howTo: [
+      "Upload an .xlsx or .xls file.",
+      "Click Convert to PDF.",
+      "Download the PDF of the first sheet.",
+    ],
+    faq: [
+      {
+        q: "Are all sheets included?",
+        a: "OfflinePDF's Excel to PDF tool exports the first sheet only. If the workbook has more sheets, the PDF title says so. Move the sheet you want to the front, or save that sheet as CSV and use CSV to PDF.",
+      },
+      {
+        q: "Do colors, fonts, and merged cells survive?",
+        a: "OfflinePDF's Excel to PDF tool keeps a bold header row and cell borders. It does not copy Excel fonts, colors, or merged-cell spans. A merged value shows in the top-left cell only.",
+      },
+    ],
+    related: ["csv-to-pdf", "pdf-to-excel", "create-pdf"],
+  },
+  {
+    slug: "compare-pdfs",
+    name: "Compare PDFs",
+    tagline: "See two PDFs side by side, page by page",
+    description:
+      "Render both PDFs and scroll them together. Optionally mark pixels that differ in red. This is a visual diff, not an AI review of the wording.",
+    icon: "⚖️",
+    category: "edit",
+    howTo: [
+      "Upload the first PDF, then the second.",
+      "Turn on highlight if you want changed pixels in red.",
+      "Click Compare PDFs.",
+      "Scroll the paired pages. Download the zip if you want the images.",
+    ],
+    faq: [
+      {
+        q: "Does this use AI?",
+        a: "OfflinePDF's Compare PDFs tool does not use AI. It draws both pages and, if you ask, paints pixels that differ. It will not summarize what changed in words.",
+      },
+      {
+        q: "How many pages can I compare?",
+        a: "OfflinePDF's Compare PDFs tool compares up to 100 pages and uses the heavy file-size cap, because every page is rendered to an image.",
+      },
+    ],
+    related: ["redact-pdf", "extract-text", "privacy-scanner"],
+  },
+  {
+    slug: "repair-pdf",
+    name: "Repair PDF",
+    tagline: "Rebuild a damaged PDF, or salvage what still opens",
+    description:
+      "Tries a clean rebuild, then a looser parse that skips broken objects, then a structural rebuild. If only part of the file can be saved, the download is labeled partially recovered.",
+    icon: "🛠️",
+    category: "edit",
+    howTo: [
+      "Upload the PDF that will not open.",
+      "Click Repair PDF.",
+      "Read the result line: rebuilt, or partially recovered.",
+      "Download and check the pages.",
+    ],
+    faq: [
+      {
+        q: "Will every broken PDF come back whole?",
+        a: "No. OfflinePDF's Repair PDF tool says rebuilt when the file parsed cleanly, and partially recovered when damaged objects were skipped. Some files are too damaged to recover at all.",
+      },
+      {
+        q: "Is a password-protected PDF 'damaged'?",
+        a: "OfflinePDF's Repair PDF tool does not unlock files. Remove the password with Remove Password first if you know it.",
+      },
+    ],
+    related: ["compress-pdf", "merge-pdf", "remove-password"],
+  },
+  {
+    slug: "pdf-to-word",
+    name: "PDF to Word",
+    tagline: "Rebuild the text of a PDF as a .docx",
+    description:
+      "Pull text and a rough layout from each page and save a Word file. Headings are guessed from font size. Fidelity is good, not perfect. Scanned pages need OCR first.",
+    icon: "📘",
+    category: "convert",
+    howTo: [
+      "Upload a PDF that has real text (not a scan).",
+      "Click Convert to Word.",
+      "Download the .docx and open it in Word or another editor.",
+    ],
+    faq: [
+      {
+        q: "Will it look exactly like the PDF?",
+        a: "OfflinePDF's PDF to Word tool keeps paragraphs and approximates headings from font size. Columns, exact spacing, and complex layout will not match. Fidelity is good, not perfect.",
+      },
+      {
+        q: "What about a scanned PDF?",
+        a: "OfflinePDF's PDF to Word tool needs a text layer. If the PDF is a scan, run OCR PDF first, then convert.",
+      },
+    ],
+    related: ["word-to-pdf", "extract-text", "ocr-pdf"],
+  },
+  {
+    slug: "create-pdf",
+    name: "Create PDF",
+    tagline: "Write a short document and save it as a PDF",
+    description:
+      "A small editor for bold, italic, headings, and lists. It is not a full word processor. When you are done, the same print-to-PDF path as HTML to PDF saves the file.",
+    icon: "✍️",
+    category: "convert",
+    howTo: [
+      "Type in the editor. Use the buttons for bold, italic, a heading, or a list.",
+      "Click Create PDF.",
+      "Click Save as PDF and choose Save as PDF in the print dialog.",
+    ],
+    faq: [
+      {
+        q: "Is this a replacement for Google Docs?",
+        a: "No. OfflinePDF's Create PDF tool is for a short note or letter: bold, italic, headings, and lists. For a long document, write it elsewhere and use Word to PDF or Markdown to PDF.",
+      },
+      {
+        q: "Does pasted text keep its formatting?",
+        a: "Paste comes in as plain text so a copied page cannot run code in the editor. Apply bold, italic, headings, and lists with the buttons.",
+      },
+    ],
+    related: ["html-to-pdf", "markdown-to-pdf", "word-to-pdf"],
+  },
+  {
+    slug: "pdf-to-epub",
+    name: "PDF to EPUB",
+    tagline: "Wrap a PDF's text in an EPUB ebook",
+    description:
+      "Extract the text of each page and pack a minimal EPUB (XHTML plus a manifest). Layout from the PDF is not preserved. Scanned PDFs are refused — run OCR first.",
+    icon: "📚",
+    category: "convert",
+    howTo: [
+      "Upload a text-based PDF.",
+      "Click Convert to EPUB.",
+      "Download book.epub and open it in an ebook reader.",
+    ],
+    faq: [
+      {
+        q: "Why is my EPUB empty or refused?",
+        a: "OfflinePDF's PDF to EPUB tool refuses image-only PDFs, the same way Extract Text does. Run OCR PDF first so there is text to wrap.",
+      },
+      {
+        q: "Will chapters and images match the PDF?",
+        a: "OfflinePDF's PDF to EPUB tool writes one section per page of extracted text. It does not rebuild columns, images, or the original line layout.",
+      },
+    ],
+    related: ["ebook-to-pdf", "extract-text", "ocr-pdf"],
+  },
+  {
+    slug: "powerpoint-to-pdf",
+    name: "PowerPoint to PDF",
+    tagline: "Convert a .pptx deck to PDF in your browser",
+    description:
+      "Upload a .pptx file. Slide text and images are kept and laid out one slide per page; exact positioning is approximate and animations, charts, and some image types are left out.",
+    icon: "📙",
+    category: "convert",
+    howTo: [
+      "Upload a .pptx file.",
+      "Click Convert to PDF and check the preview.",
+      "Click Save as PDF and choose Save as PDF in the print dialog.",
+    ],
+    faq: [
+      {
+        q: "Will it look like PowerPoint?",
+        a: "OfflinePDF's PowerPoint to PDF tool keeps slide text and PNG, JPG, GIF, and WebP images, placed from each shape's position. Exact positioning, theme fonts, colors, charts, SmartArt, and animations are not reproduced, so complex slides will differ.",
+      },
+      {
+        q: "What about .ppt files?",
+        a: "OfflinePDF's PowerPoint to PDF tool supports only .pptx. Save an older .ppt file as .pptx in PowerPoint first.",
+      },
+    ],
+    related: ["word-to-pdf", "pdf-to-powerpoint", "merge-pdf"],
+  },
+  {
+    slug: "pdf-to-powerpoint",
+    name: "PDF to PowerPoint",
+    tagline: "Turn each PDF page into a slide image",
+    description:
+      "Each PDF page becomes one full-bleed picture on a slide. The result is image-based: the text on the slides is not editable.",
+    icon: "📽️",
+    category: "convert",
+    howTo: [
+      "Upload your PDF (up to 200 pages).",
+      "Click Convert to PowerPoint.",
+      "Download slides.pptx.",
+    ],
+    faq: [
+      {
+        q: "Can I edit the text on the slides?",
+        a: "No. OfflinePDF's PDF to PowerPoint tool places each page as a picture, so the slides look right but the text is not editable. For editable text, use PDF to Word.",
+      },
+      {
+        q: "Is there a page limit?",
+        a: "OfflinePDF's PDF to PowerPoint tool converts up to 200 pages and uses the heavy 150 MB file cap, because every page is rendered and embedded as an image.",
+      },
+    ],
+    related: ["powerpoint-to-pdf", "pdf-to-word", "pdf-to-jpg"],
+  },
+  {
+    slug: "pdf-to-excel",
+    name: "PDF to Excel",
+    tagline: "Best-effort tables from a PDF into .xlsx",
+    description:
+      "Reads text positions and guesses rows and columns, one sheet per page. Works best on clean, grid-like tables. Best effort: merged cells, borders, and messy layouts will need checking.",
+    icon: "📈",
+    category: "convert",
+    howTo: [
+      "Upload a text-based PDF with a table.",
+      "Click Convert to Excel.",
+      "Download tables.xlsx and check the columns.",
+    ],
+    faq: [
+      {
+        q: "How accurate is the table detection?",
+        a: "OfflinePDF's PDF to Excel tool is best effort. It groups text by line and aligns columns from x positions, which works for clean grids. Wrapped cells, merged cells, and columns that do not line up can land in the wrong place.",
+      },
+      {
+        q: "What about scanned PDFs?",
+        a: "OfflinePDF's PDF to Excel tool needs a text layer. If the PDF is a scan, run OCR PDF first.",
+      },
+    ],
+    related: ["excel-to-pdf", "extract-text", "ocr-pdf"],
+  },
+  {
+    slug: "pdf-to-html",
+    name: "PDF to HTML",
+    tagline: "Get real, selectable text in a single HTML page",
+    description:
+      "Each page becomes a positioned layer of actual text, so you can select, search, and copy it. Images and vector graphics are not included, and the file contains no scripts.",
+    icon: "🧾",
+    category: "convert",
+    howTo: [
+      "Upload a text-based PDF.",
+      "Click Convert to HTML.",
+      "Preview, then download document.html.",
+    ],
+    faq: [
+      {
+        q: "Is the text selectable?",
+        a: "Yes. OfflinePDF's PDF to HTML tool writes the PDF's text as real HTML text at each position, not as a picture. Images and vector drawings from the PDF are not included.",
+      },
+      {
+        q: "Is the HTML file safe to open?",
+        a: "OfflinePDF's PDF to HTML tool escapes all text and adds a content security policy that forbids scripts and network requests inside the file.",
+      },
+    ],
+    related: ["extract-text", "pdf-to-word", "html-to-pdf"],
+  },
+  {
+    slug: "ebook-to-pdf",
+    name: "eBook to PDF",
+    tagline: "Convert an EPUB to PDF (EPUB only)",
+    description:
+      "Upload a DRM-free .epub. Chapters are laid out in reading order with their images, then saved through the print dialog. Only EPUB is supported — not MOBI or AZW3.",
+    icon: "📖",
+    category: "convert",
+    howTo: [
+      "Upload a DRM-free .epub file.",
+      "Click Convert to PDF and check the preview.",
+      "Click Save as PDF and choose Save as PDF in the print dialog.",
+    ],
+    faq: [
+      {
+        q: "Does this support MOBI or AZW3?",
+        a: "No. OfflinePDF's eBook to PDF tool supports EPUB only. MOBI and AZW3 are Amazon formats that cannot be read reliably in the browser; convert them to EPUB first, for example with a desktop tool such as Calibre.",
+      },
+      {
+        q: "Why was my EPUB refused?",
+        a: "OfflinePDF's eBook to PDF tool refuses DRM-protected EPUBs rather than trying to break the protection. Use a copy you have the right to convert that has no DRM.",
+      },
+    ],
+    related: ["pdf-to-epub", "html-to-pdf", "word-to-pdf"],
+  },
+  {
+    slug: "fingerprint-pdf",
+    name: "Fingerprint PDF",
+    tagline: "Stamp each copy with a hidden ID to trace leaks",
+    description:
+      "Adds a unique ID to the PDF's metadata and as near-invisible text on every page. It is a deterrent so a leaked copy can be matched to who got it — not forensic-grade tracking.",
+    icon: "🧬",
+    category: "security",
+    howTo: [
+      "Upload the PDF.",
+      "Optionally name the recipient, then click Add fingerprint.",
+      "Download the copy and write down the ID shown.",
+    ],
+    faq: [
+      {
+        q: "How strong is this?",
+        a: "OfflinePDF's Fingerprint PDF tool is a deterrent. The ID sits in the metadata and as near-invisible text, so Extract Text can read it. Printing to a new PDF, flattening, screenshots, or stripping metadata with the Privacy Scanner can remove it.",
+      },
+      {
+        q: "Where is the ID stored?",
+        a: "OfflinePDF's Fingerprint PDF tool shows the ID on screen once and does not store it anywhere. Write it down next to the recipient's name — nothing is saved on a server.",
+      },
+    ],
+    related: ["add-watermark", "privacy-scanner", "flatten-pdf"],
+  },
+  {
+    slug: "pos-billing",
+    name: "POS Billing",
+    tagline: "Quick receipts with simple GST, as a PDF",
+    description:
+      "Keep a small product list, build a cart, and print a receipt as a PDF in A4 or thermal 58/80 mm width. GST maths is simplified: this is a receipt tool, not a GST invoice generator.",
+    icon: "🧾",
+    category: "more",
+    howTo: [
+      "Add products with a price and GST %.",
+      "Tap products to build the cart.",
+      "Choose receipt width and tax mode, then click Make receipt.",
+    ],
+    faq: [
+      {
+        q: "Is this a GST invoice?",
+        a: "No. OfflinePDF's POS Billing tool prints a simple receipt. It splits GST into CGST/SGST (or IGST) per rate, but has no HSN codes, GSTIN checks, cess, or invoice numbering rules, so it is not a compliance document.",
+      },
+      {
+        q: "Where is my product list stored?",
+        a: "OfflinePDF's POS Billing tool keeps the product list in your browser's local storage. It is never sent anywhere, and clearing site data erases it.",
+      },
+    ],
+    related: ["csv-to-pdf", "create-pdf", "images-to-pdf"],
+  },
+  {
+    slug: "scan-to-pdf",
+    name: "Scan to PDF",
+    tagline: "Photograph pages with your camera and make a PDF",
+    description:
+      "Use your phone or webcam to capture pages, auto-crop the paper edges, and save one PDF. Photos never leave the device. If the camera is blocked, you can add photos from your gallery instead.",
+    icon: "📷",
+    category: "more",
+    howTo: [
+      "Click Start camera and allow access.",
+      "Capture each page. Auto-crop trims around the paper.",
+      "Click Create PDF and download.",
+    ],
+    faq: [
+      {
+        q: "What if I block the camera?",
+        a: "OfflinePDF's Scan to PDF tool shows what happened and offers an option to add photos from your device instead. Nothing is uploaded either way.",
+      },
+      {
+        q: "Does it straighten tilted pages?",
+        a: "No. OfflinePDF's Scan to PDF tool crops to the paper edges but does not correct perspective or rotation. Hold the phone square to the page.",
+      },
+    ],
+    related: ["images-to-pdf", "ocr-pdf", "compress-pdf"],
+  },
+  {
+    slug: "p2p-share",
+    name: "P2P Share",
+    tagline: "Send a file straight to another browser",
+    description:
+      "Create a link or QR code; the other person opens it and the file goes directly browser to browser with no server storage. A free public service helps the two browsers find each other and sees their IP addresses, never the file.",
+    icon: "🔁",
+    category: "more",
+    howTo: [
+      "Choose a file and click Create link.",
+      "Send the link or show the QR code. Keep this tab open.",
+      "When they open it, the transfer starts. They download the file at the end.",
+    ],
+    faq: [
+      {
+        q: "Does anything leave my device?",
+        a: "The file itself goes directly to the other browser and is never stored on a server. To connect, OfflinePDF's P2P Share tool contacts the public PeerJS service and Google's public STUN servers, which can see IP addresses and a random room ID — so this is the one tool where the page does make outside connections.",
+      },
+      {
+        q: "Why did the transfer stop?",
+        a: "OfflinePDF's P2P Share tool shows a Connection lost message if the link drops. Both people must keep their tabs open, and some strict networks block direct connections because no relay server is used.",
+      },
+    ],
+    related: ["whiteboard", "encrypt-pdf", "compress-pdf"],
+  },
+  {
+    slug: "whiteboard",
+    name: "Collaborative Whiteboard",
+    tagline: "Draw together in a shared board, peer to peer",
+    description:
+      "Start a board and share the link. Strokes travel directly between browsers; nothing is stored on a server. A free public service helps browsers find each other and sees IP addresses, never your drawing.",
+    icon: "🖍️",
+    category: "more",
+    howTo: [
+      "Click Start a shared whiteboard and send the link or QR code.",
+      "Draw. Everyone with the link sees strokes live.",
+      "Click Download PNG to keep a copy before closing the tab.",
+    ],
+    faq: [
+      {
+        q: "Is my drawing stored anywhere?",
+        a: "No. OfflinePDF's Whiteboard sends strokes directly between browsers and keeps nothing on a server. Closing the host's tab ends the board, so download the PNG first.",
+      },
+      {
+        q: "Does anything leave my device?",
+        a: "To find each other, OfflinePDF's Whiteboard contacts the public PeerJS service and Google's public STUN servers, which can see IP addresses and a random room ID. The drawing itself is sent only to the people with the link.",
+      },
+    ],
+    related: ["p2p-share", "create-pdf", "images-to-pdf"],
+  },
+  {
+    slug: "edit-pdf-text",
+    name: "Edit PDF Text",
+    tagline: "Change text on a page by covering and redrawing it",
+    description:
+      "Click text, retype it, and save. It covers the old text with a white box and draws the new text on top — an approximation: fonts will not match exactly, and the old text stays in the file underneath.",
+    icon: "✏️",
+    category: "edit",
+    howTo: [
+      "Upload a text-based PDF.",
+      "Click a line of text on the page and retype it.",
+      "Click Save PDF. Use Redact PDF if the old text must be gone for real.",
+    ],
+    faq: [
+      {
+        q: "Is the original text really replaced?",
+        a: "No. OfflinePDF's Edit PDF Text tool draws a white box over the old text and writes the new text on top. The original text is still inside the file, so Extract Text can still find it. To remove text permanently, use Redact PDF.",
+      },
+      {
+        q: "Will the font match?",
+        a: "Not exactly. OfflinePDF's Edit PDF Text tool redraws with a standard serif, sans-serif, or monospace font at the original size. Exact font and spacing are not guaranteed, and only Latin letters are supported for new text.",
+      },
+    ],
+    related: ["redact-pdf", "extract-text", "add-watermark"],
+  },
+  {
+    slug: "pdf-to-audio",
+    name: "PDF to Audio",
+    tagline: "Listen to a PDF read aloud in your browser",
+    description:
+      "Extracts the text and reads it with a voice installed on your device. Listening only: there is no audio file download, because browsers do not reliably allow recording speech synthesis.",
+    icon: "🔊",
+    category: "convert",
+    howTo: [
+      "Upload a text-based PDF.",
+      "Click Prepare, then choose a voice and speed.",
+      "Press Play. Pause or stop any time.",
+    ],
+    faq: [
+      {
+        q: "Can I download the audio?",
+        a: "No. OfflinePDF's PDF to Audio tool plays speech live only. Browsers do not provide a dependable way to capture speech synthesis as an audio file, so a download would work in some browsers and silently fail in others.",
+      },
+      {
+        q: "Is my text sent to a speech service?",
+        a: "OfflinePDF's PDF to Audio tool lists only voices stored on your device. Some browsers also offer online voices that send text to a cloud service; this tool hides them to keep your document local.",
+      },
+    ],
+    related: ["extract-text", "ocr-pdf", "pdf-to-epub"],
+  },
 ];
 
 export function getTool(slug: string): Tool | undefined {
@@ -508,4 +1063,5 @@ export const TOOL_CATEGORIES = [
   { id: "edit", label: "Edit & Organize" },
   { id: "security", label: "Security" },
   { id: "convert", label: "Convert" },
+  { id: "more", label: "Capture, Share & Create" },
 ] as const;

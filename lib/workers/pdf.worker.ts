@@ -2,7 +2,7 @@
 import { friendlyError } from "@/lib/pdf/validate";
 
 // ponytail: single worker entry that lazy-imports the right engine per tool.
-// If tool count grows past 20, consider one worker per tool family instead.
+// If tool count grows past 40, consider one worker per tool family instead.
 
 export type WorkerRequest = {
   tool: string;
@@ -36,6 +36,26 @@ const ENGINE_MAP: Record<string, () => Promise<{ run: EngineRun }>> = {
   "redact-pdf": () => import("./engines/redactPdf"),
   "invert-colors": () => import("./engines/invertColors"),
   "privacy-scanner": () => import("./engines/privacyScanner"),
+  "pdf-to-zip": () => import("./engines/pdfToZip"),
+  "markdown-to-pdf": () => import("./engines/markdownToPdf"),
+  "html-to-pdf": () => import("./engines/htmlToPdf"),
+  "csv-to-pdf": () => import("./engines/csvToPdf"),
+  "excel-to-pdf": () => import("./engines/excelToPdf"),
+  "compare-pdfs": () => import("./engines/comparePdfs"),
+  "repair-pdf": () => import("./engines/repairPdf"),
+  "pdf-to-word": () => import("./engines/pdfToWord"),
+  "create-pdf": () => import("./engines/htmlToPdf"),
+  "pdf-to-epub": () => import("./engines/pdfToEpub"),
+  "powerpoint-to-pdf": () => import("./engines/pptxToPdf"),
+  "pdf-to-powerpoint": () => import("./engines/pdfToPowerpoint"),
+  "pdf-to-excel": () => import("./engines/pdfToExcel"),
+  "pdf-to-html": () => import("./engines/pdfToHtml"),
+  "ebook-to-pdf": () => import("./engines/epubToPdf"),
+  "fingerprint-pdf": () => import("./engines/fingerprintPdf"),
+  "pos-billing": () => import("./engines/posBilling"),
+  "scan-to-pdf": () => import("./engines/imagesToPdf"),
+  "edit-pdf-text": () => import("./engines/editPdfText"),
+  "pdf-to-audio": () => import("./engines/extractText"),
 };
 
 type ProgressCb = (percent: number, message?: string) => void;

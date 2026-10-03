@@ -12,7 +12,7 @@ Privacy-first PDF tools that run entirely in your browser. Your files never leav
 
 Most free PDF sites upload your documents to a server. OfflinePDF does the opposite: every tool runs locally via WebAssembly and Web Workers. Close the tab and the file is gone.
 
-- **20 tools** across merge, convert, edit, and security  
+- **42 tools** across merge, convert, edit, and security  
 - **Tiered size limits** (light tools up to 300&nbsp;MB; heavy tools 150&nbsp;MB; OCR 75&nbsp;MB / 75 pages)  
 - **Search + voice** in the header to jump to the best tool  
 
@@ -23,8 +23,9 @@ Most free PDF sites upload your documents to a server. OfflinePDF does the oppos
 | Category | Tools |
 |----------|--------|
 | **Essentials** | [Merge](/merge-pdf), [Split](/split-pdf), [Compress](/compress-pdf) |
-| **Convert** | [PDF → JPG](/pdf-to-jpg), [Images → PDF](/images-to-pdf), [Word → PDF](/word-to-pdf), [Invert Colours](/invert-colors) |
-| **Edit** | [Organize](/organize-pages), [Watermark](/add-watermark), [Extract Text](/extract-text), [Rotate](/rotate-pdf), [Crop & Resize](/crop-resize), [Page Numbers](/page-numbers), [Headers & Footers](/headers-footers), [OCR](/ocr-pdf) |
+| **Convert** | [PDF → JPG](/pdf-to-jpg), [PDF → ZIP](/pdf-to-zip), [Images → PDF](/images-to-pdf), [Word → PDF](/word-to-pdf), [PDF → Word](/pdf-to-word), [HTML → PDF](/html-to-pdf), [Markdown → PDF](/markdown-to-pdf), [CSV → PDF](/csv-to-pdf), [Excel → PDF](/excel-to-pdf), [Create PDF](/create-pdf), [PDF → EPUB](/pdf-to-epub), [Invert Colours](/invert-colors) |
+| **Edit** | [Organize](/organize-pages), [Watermark](/add-watermark), [Extract Text](/extract-text), [Rotate](/rotate-pdf), [Crop & Resize](/crop-resize), [Page Numbers](/page-numbers), [Headers & Footers](/headers-footers), [OCR](/ocr-pdf), [Compare PDFs](/compare-pdfs), [Repair PDF](/repair-pdf) |
+| **More** | [PowerPoint to PDF](/powerpoint-to-pdf), [PDF to PowerPoint](/pdf-to-powerpoint), [PDF to Excel](/pdf-to-excel), [PDF to HTML](/pdf-to-html), [eBook (EPUB) to PDF](/ebook-to-pdf), [Edit PDF Text](/edit-pdf-text), [Fingerprint PDF](/fingerprint-pdf), [POS Billing](/pos-billing), [Scan to PDF](/scan-to-pdf), [PDF to Audio](/pdf-to-audio) (listen only), **[P2P Share](/p2p-share) and [Whiteboard](/whiteboard)** (the only two that use the network: WebRTC via PeerJS signaling + Google STUN) |
 | **Security** | [Encrypt](/encrypt-pdf), [Remove Password](/remove-password), [Flatten](/flatten-pdf), [Redact](/redact-pdf), [Privacy Scanner](/privacy-scanner) |
 
 How-to guides live under `/blog`.
@@ -40,7 +41,9 @@ How-to guides live under `/blog`.
 | PDF | pdf-lib, pdf.js |
 | Encrypt | qpdf-wasm (AES-256; COOP/COEP only on encrypt/unlock routes — see `vercel.json`) |
 | OCR | tesseract.js (English model bundled; no CDN) |
-| Word | mammoth |
+| Word | mammoth (Word → PDF), docx (PDF → Word) |
+| HTML / Markdown | DOMPurify, marked |
+| Spreadsheets | SheetJS (`xlsx`) for the first sheet only |
 | Zip | fflate |
 | Hosting | Vercel (auto-deploy from `main`) |
 
@@ -81,6 +84,8 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull request 
 3. Production build  
 4. Link check on `out/`  
 5. Playwright e2e (Chromium)
+
+**Install-time network requirement:** `npm install` / `npm ci` must be able to reach **`https://cdn.sheetjs.com`**. The `xlsx` dependency is the patched SheetJS build (0.20.3), which SheetJS publishes only on its own CDN, not on npm (the npm copy, 0.18.5, has unpatched high-severity advisories). This applies to local setup, GitHub Actions, and the Vercel build. If you run behind a proxy or allow-list, add that host, or mirror the tarball and change the URL in `package.json`. Because it's installed from a URL, `npm audit` can't check it; when upgrading, check the [SheetJS changelog](https://docs.sheetjs.com/docs/miscellany/changelog) and update the version in the URL by hand. The lockfile pins the tarball's integrity hash.
 
 **Deploy:** Vercel builds and hosts from this repo. Pushing to `main` triggers production deploy; PRs get preview URLs. CI is the gate for code quality; Vercel remains the host.
 
