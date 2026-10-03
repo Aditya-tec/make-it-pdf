@@ -20,11 +20,16 @@ export default function PdfToWordTool() {
       <button onClick={handleReset} className="text-sm underline text-slate-500">Try again</button>
     </div>
   );
-  if (job.status === "done") return <DownloadResult files={job.files} onReset={handleReset} />;
+  if (job.status === "done") return (
+    <div className="flex flex-col gap-4">
+      {job.warning && <p role="alert" className="rounded-lg border border-amber-300 bg-amber-50 text-amber-900 text-sm p-3">{job.warning}</p>}
+      <DownloadResult files={job.files} onReset={handleReset} />
+    </div>
+  );
   return (
     <div className="flex flex-col gap-5">
       <p className="text-xs text-slate-500">
-        Formatting fidelity is good, not perfect. Headings are guessed from font size. Columns and exact spacing will differ. Scanned PDFs need OCR first.
+        Formatting fidelity is good, not perfect. Headings are guessed from font size. Images and tables are not included, only text. Columns and exact spacing will differ. Scanned PDFs need OCR first.
       </p>
       {!file ? (
         <UploadZone tool="pdf-to-word" accept=".pdf" onFiles={(f) => setFile(f[0])} />

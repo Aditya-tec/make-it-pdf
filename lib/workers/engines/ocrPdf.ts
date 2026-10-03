@@ -10,7 +10,8 @@ const OCR_PAGE_CAP = 75; // ponytail: OCR is heavy; 75 pages covers most scans. 
 export async function run(
   files: ArrayBuffer[],
   opts: Record<string, unknown>,
-  onProgress: (p: number, m?: string) => void
+  onProgress: (p: number, m?: string) => void,
+  warn?: (message: string) => void
 ): Promise<{ name: string; bytes: Uint8Array }[]> {
   const lang = (opts.lang as string) || "eng";
   onProgress(2, "Loading PDF…");
@@ -33,6 +34,7 @@ export async function run(
   const out = await PDFDocument.create();
   const font = await out.embedFont(StandardFonts.Helvetica);
   const scale = 2;
+  let skipped = 0;
 
   try {
     for (let i = 1; i <= pdf.numPages; i++) {
@@ -84,7 +86,7 @@ export async function run(
             maxWidth: Math.max(w, 1),
           });
         } catch {
-          // skip glyphs Helvetica can't encode
+          skipped++; // Helvetica can't encode this word
         }
       }
     }
@@ -92,6 +94,7 @@ export async function run(
     await worker.terminate();
   }
 
+  if (skipped) warn?.(`${skipped} word${skipped > 1 ? "s" : ""} couldn't be made searchable due to unsupported characters. The page is still readable, but searching for those words won't find them.`);
   onProgress(98, "Saving…");
   const bytes = await out.save();
   onProgress(100);

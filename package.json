@@ -13,10 +13,11 @@
     "predev": "node scripts/copy-assets.mjs",
     "check:limits": "npx tsx lib/pdf/toolLimits.check.ts && npx tsx lib/toolSearch.check.ts",
     "check:report": "npx tsx lib/report.check.mts",
+    "check:privacy": "npx tsx lib/privacyScanner.check.mts",
     "check:engines": "npx tsx engines.check.ts",
     "e2e": "node scripts/e2e.mjs",
     "check-links": "node scripts/check-links.mjs",
-    "ci": "npm run lint && npm run check:limits && npm run check:engines && npm run check:report && npm run build && npm run check-links"
+    "ci": "npm run lint && npm run check:limits && npm run check:engines && npm run check:report && npm run check:privacy && npm run build && npm run check-links"
   },
   "dependencies": {
     "@sentry/browser": "^11.4.0",

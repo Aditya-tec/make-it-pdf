@@ -5,14 +5,15 @@ import * as pdfjsLib from "pdfjs-dist";
 import { assertPageCount } from "@/lib/pdf/validate";
 import { escHtml } from "@/lib/pdf/unzipSafe";
 import { SCANNED_PDF_MESSAGE } from "./extractText";
-import { pageItems } from "./textItems";
+import { emptyPagesWarning, pageItems } from "./textItems";
 
 const MAX_PAGES = 300;
 
 export async function run(
   files: ArrayBuffer[],
   _opts: Record<string, unknown>,
-  onProgress: (p: number, m?: string) => void
+  onProgress: (p: number, m?: string) => void,
+  warn?: (message: string) => void
 ): Promise<{ name: string; bytes: Uint8Array }[]> {
   onProgress(8, "Loading PDF…");
   const pdf = await pdfjsLib.getDocument({ data: files[0] }).promise;
@@ -21,6 +22,7 @@ export async function run(
 
   const pages: string[] = [];
   let any = false;
+  const empty: number[] = [];
   for (let i = 1; i <= pdf.numPages; i++) {
     onProgress(8 + Math.round((i / pdf.numPages) * 85), `Page ${i}/${pdf.numPages}…`);
     const page = await pdf.getPage(i);
@@ -31,9 +33,11 @@ export async function run(
       const size = Math.max(it.h, 1);
       return `<span style="left:${vx.toFixed(1)}pt;top:${(vy - size * 0.85).toFixed(1)}pt;font-size:${size.toFixed(1)}pt;font-family:${it.family}">${escHtml(it.str)}</span>`;
     });
+    if (!spans.length) empty.push(i);
     pages.push(`<section style="width:${vp.width.toFixed(0)}pt;height:${vp.height.toFixed(0)}pt" aria-label="Page ${i}">${spans.join("")}</section>`);
   }
   if (!any) throw new Error(SCANNED_PDF_MESSAGE);
+  if (empty.length) warn?.(emptyPagesWarning(empty, pdf.numPages));
 
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'"><title>Converted PDF</title><style>
 body{background:#ddd;margin:0;padding:12pt}

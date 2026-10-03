@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 import { assertPageCount } from "@/lib/pdf/validate";
 import { boxesToRows } from "@/lib/pdf/tableDetect";
 import { SCANNED_PDF_MESSAGE } from "./extractText";
-import { pageItems } from "./textItems";
+import { emptyPagesWarning, pageItems } from "./textItems";
 
 const MAX_PAGES = 200;
 
@@ -12,7 +12,8 @@ const MAX_PAGES = 200;
 export async function run(
   files: ArrayBuffer[],
   _opts: Record<string, unknown>,
-  onProgress: (p: number, m?: string) => void
+  onProgress: (p: number, m?: string) => void,
+  warn?: (message: string) => void
 ): Promise<{ name: string; bytes: Uint8Array }[]> {
   onProgress(8, "Loading PDF…");
   const pdf = await pdfjsLib.getDocument({ data: files[0] }).promise;
@@ -21,13 +22,15 @@ export async function run(
 
   const wb = XLSX.utils.book_new();
   let any = false;
+  const empty: number[] = [];
   for (let i = 1; i <= pdf.numPages; i++) {
     onProgress(8 + Math.round((i / pdf.numPages) * 85), `Reading page ${i}/${pdf.numPages}…`);
     const rows = boxesToRows(await pageItems(await pdf.getPage(i)));
-    if (rows.length) any = true;
+    if (rows.length) any = true; else empty.push(i);
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows.length ? rows : [[""]]), `Page ${i}`);
   }
   if (!any) throw new Error(SCANNED_PDF_MESSAGE);
+  if (empty.length) warn?.(emptyPagesWarning(empty, pdf.numPages));
 
   onProgress(96, "Writing workbook…");
   const bytes = new Uint8Array(XLSX.write(wb, { type: "array", bookType: "xlsx" }) as ArrayBuffer);

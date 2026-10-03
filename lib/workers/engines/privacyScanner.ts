@@ -1,4 +1,4 @@
-import { PDFDocument } from "pdf-lib";
+import { PDFArray, PDFDict, PDFDocument, PDFName, PDFRef } from "pdf-lib";
 import { loadPdf } from "@/lib/pdf/load";
 import { assertPageCount } from "@/lib/pdf/validate";
 
@@ -43,6 +43,27 @@ export async function run(
   const out = await PDFDocument.create();
   const pages = await out.copyPages(src, src.getPageIndices());
   pages.forEach((p) => out.addPage(p));
+  // copyPages drops catalog-level XMP / EmbeddedFiles / PieceInfo, but copies per-page /Metadata, /PieceInfo and
+  // FileAttachment annotations. Remove those, and delete the objects too: pdf-lib saves unreferenced objects.
+  const ctx = out.context;
+  const drop = (ref: unknown) => { if (ref instanceof PDFRef) ctx.delete(ref); };
+  for (const p of pages) {
+    for (const k of ["Metadata", "PieceInfo"]) { drop(p.node.get(PDFName.of(k))); p.node.delete(PDFName.of(k)); }
+    const annots = p.node.lookupMaybe(PDFName.of("Annots"), PDFArray);
+    if (!annots) continue;
+    const keep: PDFRef[] = [];
+    for (let i = 0; i < annots.size(); i++) {
+      const ref = annots.get(i);
+      const a = annots.lookupMaybe(i, PDFDict);
+      if (a?.get(PDFName.of("Subtype")) !== PDFName.of("FileAttachment")) { if (ref instanceof PDFRef) keep.push(ref); continue; }
+      const spec = a.lookupMaybe(PDFName.of("FS"), PDFDict);
+      const ef = spec?.lookupMaybe(PDFName.of("EF"), PDFDict);
+      ef?.keys().forEach((k) => drop(ef.get(k)));
+      drop(a.get(PDFName.of("FS")));
+      drop(ref);
+    }
+    p.node.set(PDFName.of("Annots"), ctx.obj(keep));
+  }
   // Explicitly clear common fields
   out.setTitle("");
   out.setAuthor("");

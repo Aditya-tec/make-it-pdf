@@ -13,7 +13,7 @@ import {
 export type JobState =
   | { status: "idle" }
   | { status: "processing"; percent: number; message: string }
-  | { status: "done"; files: { name: string; bytes: Uint8Array }[] }
+  | { status: "done"; files: { name: string; bytes: Uint8Array }[]; warning?: string }
   | { status: "error"; message: string };
 
 export function useWorker() {
@@ -77,7 +77,7 @@ export function useWorker() {
         if (msg.type === "progress") {
           setJob({ status: "processing", percent: msg.percent, message: msg.message || "" });
         } else if (msg.type === "done") {
-          setJob({ status: "done", files: msg.files });
+          setJob({ status: "done", files: msg.files, warning: msg.warning });
           worker.terminate();
           workerRef.current = null;
         } else if (msg.type === "error") {

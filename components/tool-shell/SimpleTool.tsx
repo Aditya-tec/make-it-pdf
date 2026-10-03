@@ -53,6 +53,7 @@ export default function SimpleTool({ tool, accept, button, intro, options, print
     }
     return (
       <div className="flex flex-col gap-4">
+        {job.warning && <p role="alert" className="rounded-lg border border-amber-300 bg-amber-50 text-amber-900 text-sm p-3">{job.warning}</p>}
         {renderDone?.(job.files)}
         <DownloadResult files={job.files} onReset={handleReset} />
       </div>

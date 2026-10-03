@@ -80,7 +80,7 @@ export default function PrivacyScannerTool() {
         <PrivacyBadge />
         <h3 className="font-semibold">Scan results</h3>
         {findings.length === 0 ? (
-          <p className="text-sm text-slate-500">No metadata fields found. Your PDF looks clean.</p>
+          <p className="text-sm text-slate-500">No document-info fields found.</p>
         ) : (
           <ul className="space-y-2 text-sm">
             {findings.map((f, i) => (
@@ -96,6 +96,9 @@ export default function PrivacyScannerTool() {
             ))}
           </ul>
         )}
+        <p className="text-xs text-slate-500">
+          This scan only reads the standard document-info fields (title, author, apps, dates). It does not check XMP metadata, embedded files, or text and images inside pages, so it is not a guarantee the file is clean.
+        </p>
         <div className="flex gap-3 flex-wrap">
           {findings.length > 0 && (
             <button onClick={strip} className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl">

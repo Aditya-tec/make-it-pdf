@@ -13,7 +13,7 @@ export type WorkerRequest = {
 
 export type WorkerResponse =
   | { type: "progress"; percent: number; message?: string }
-  | { type: "done"; files: { name: string; bytes: Uint8Array }[] }
+  | { type: "done"; files: { name: string; bytes: Uint8Array }[]; warning?: string }
   | { type: "error"; message: string; report?: ErrorReport };
 
 const ENGINE_MAP: Record<string, () => Promise<{ run: EngineRun }>> = {
@@ -63,7 +63,8 @@ type ProgressCb = (percent: number, message?: string) => void;
 type EngineRun = (
   files: ArrayBuffer[],
   options: Record<string, unknown>,
-  onProgress: ProgressCb
+  onProgress: ProgressCb,
+  warn?: (message: string) => void // partial-success notice, shown above the download
 ) => Promise<{ name: string; bytes: Uint8Array }[]>;
 
 self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
@@ -78,12 +79,13 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 
   try {
     const { run } = await loader();
+    let warning: string | undefined;
     const result = await run(files, options, (percent, message) => {
       post({ type: "progress", percent, message });
-    });
+    }, (m) => { warning = m; });
     // Transfer ownership of underlying ArrayBuffers to avoid copying
     const transferList = result.map((f) => f.bytes.buffer as ArrayBuffer);
-    (self as unknown as Worker).postMessage({ type: "done", files: result }, transferList);
+    (self as unknown as Worker).postMessage({ type: "done", files: result, warning }, transferList);
   } catch (err) {
     // Uncaught OOM often bypasses this; when it does land here, friendlyError maps it.
     // report only unexpected failures: friendlyError maps known user-input problems (password, corrupt, OOM) to a different text

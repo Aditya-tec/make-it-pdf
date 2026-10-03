@@ -75,8 +75,7 @@ export default function Privacy() {
         extracted text or option values. The message cleaning is a heuristic: an unquoted word inside a
         library error message is not removed, which is why only a short message is kept and reports are
         limited to five per tab session. Known user-input problems (password-protected or corrupt files,
-        out of memory) are not reported.
-      </p>
+        out of memory) are not reported.      </p>
       <p>Links to other sites are governed by those sites&apos; own policies.</p>
 
       <h2>Accounts and paywalls</h2>

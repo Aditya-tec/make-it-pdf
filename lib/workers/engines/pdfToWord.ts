@@ -3,6 +3,7 @@ import * as pdfjsLib from "pdfjs-dist";
 import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx";
 import { assertPageCount } from "@/lib/pdf/validate";
 import { SCANNED_PDF_MESSAGE } from "./extractText";
+import { emptyPagesWarning } from "./textItems";
 
 type Line = { text: string; size: number; bold: boolean };
 
@@ -42,7 +43,8 @@ function linesOf(items: unknown[]): Line[] {
 export async function run(
   files: ArrayBuffer[],
   _opts: Record<string, unknown>,
-  onProgress: (p: number, m?: string) => void
+  onProgress: (p: number, m?: string) => void,
+  warn?: (message: string) => void
 ): Promise<{ name: string; bytes: Uint8Array }[]> {
   onProgress(8, "Loading PDF…");
   const pdf = await pdfjsLib.getDocument({ data: files[0] }).promise;
@@ -50,11 +52,12 @@ export async function run(
   const children: Paragraph[] = [];
   let any = false;
   let pageBreak = false;
+  const empty: number[] = [];
   for (let i = 1; i <= pdf.numPages; i++) {
     onProgress(10 + Math.round((i / pdf.numPages) * 75), `Reading page ${i}/${pdf.numPages}…`);
     const content = await (await pdf.getPage(i)).getTextContent();
     const lines = linesOf(content.items);
-    if (!lines.length) continue;
+    if (!lines.length) { empty.push(i); continue; }
     any = true;
     lines.forEach((line, idx) => {
       const heading = line.size >= 16 ? HeadingLevel.HEADING_1 : line.size >= 13 ? HeadingLevel.HEADING_2 : undefined;
@@ -75,6 +78,7 @@ export async function run(
     pageBreak = true;
   }
   if (!any) throw new Error(SCANNED_PDF_MESSAGE);
+  if (empty.length) warn?.(emptyPagesWarning(empty, pdf.numPages));
 
   onProgress(90, "Building Word document…");
   const doc = new Document({ sections: [{ children }] });

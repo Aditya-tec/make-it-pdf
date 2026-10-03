@@ -22,3 +22,7 @@ export async function pageItems(page: PDFPageProxy): Promise<PageItem[]> {
   }
   return out;
 }
+
+/** Warning for pages that yielded no text in an otherwise-readable PDF (mixed scanned/text files). */
+export const emptyPagesWarning = (empty: number[], total: number) =>
+  `${empty.length} of ${total} pages had no readable text (likely scanned images or drawings) and came out empty: page${empty.length > 1 ? "s" : ""} ${empty.join(", ")}. Run OCR PDF on the original first if you need those pages.`;
