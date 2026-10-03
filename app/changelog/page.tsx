@@ -54,10 +54,58 @@ export default function Changelog() {
           tools, a tightened CSP, and flaky e2e tests fixed.</li>
       </ul>
 
+      <h2>SDK package — offlinepdf-sdk (2026-10-03 to 2026-10-04)</h2>
+      <p>
+        A subset of the browser-worker engines, extracted into a standalone npm package with only{" "}
+        <code>pdf-lib</code> and <code>fflate</code> as dependencies — zero native binaries, zero
+        WASM, runs the same in Node and the browser. Lives in this repo as an npm workspace; the
+        website&apos;s own worker engines for every extracted tool import directly from it, so
+        there&apos;s one source of truth. Versioned independently of the website (currently 0.x,
+        since the API may still evolve). See the{" "}
+        <a href="https://www.npmjs.com/package/offlinepdf-sdk" target="_blank" rel="noopener noreferrer">
+          npm package
+        </a>{" "}
+        or the <a href="/sdk">usage guide</a>.
+      </p>
+      <ul>
+        <li><strong>v0.1.0</strong> — merge, split, rotate, organize pages, watermark, page
+          numbers, flatten: the 7 engines with no WASM/canvas dependency at all, identified by a
+          standalone scoping pass before extraction.</li>
+        <li><strong>v0.1.1</strong> — added a standalone <code>LICENSE</code> file (the 0.1.0
+          tarball was missing one).</li>
+        <li><strong>v0.2.0</strong> — +3 functions: headers/footers, crop &amp; resize, fingerprint
+          (10 total). Also shipped this guide&apos;s companion page at <a href="/sdk">/sdk</a> — a
+          task-to-function decision table plus a full runnable reference, distinct from the package
+          README&apos;s bare API listing.</li>
+        <li><strong>v0.3.0 → v0.3.1</strong> — +2 functions: <code>scanPdfMetadata</code>/
+          <code>stripPdfMetadata</code> (split from one engine per a design review, rather than kept
+          as a single function with a strip flag) and <code>csvToPdf</code> (12 total). The
+          byte-level metadata-strip verification — a PDF carrying hidden XMP, an embedded file, and
+          a file-attachment annotation, asserting zero leftover objects in the output — was ported
+          into the package&apos;s own test suite, not left only in the website&apos;s. 0.3.0
+          published with a stale README paragraph from an edit that landed after that tarball was
+          already packed; caught by downloading the actual published tarball rather than trusting
+          the version number, then corrected in 0.3.1.</li>
+      </ul>
+      <p>
+        Images to PDF was scoped and deliberately excluded: its JPEG/PNG path is clean{" "}
+        <code>pdf-lib</code>, but the website tool also accepts WebP/GIF via browser canvas, and
+        shipping a quietly narrower version under a name that implies full capability was judged
+        worse than not shipping it — same reasoning as Compress and Encrypt.
+      </p>
+
       <h2>Roadmap / Planned</h2>
       <p>
-        <strong>SDK package</strong> — extracting a subset of the browser-worker engines into a
-        standalone, installable package for programmatic use outside this site. Not yet built.
+        <strong>SDK: more engines</strong> — Privacy Scanner and CSV to PDF were the two clean
+        candidates from the v0.3 scoping pass; Images to PDF was scoped and excluded (above). No
+        further candidates scoped yet.
+      </p>
+      <p>
+        <strong>Extract Text in the SDK</strong> — scoped, not built. <code>pdf.js</code>&apos;s
+        legacy Node build can extract text with zero DOM/canvas (verified empirically), but installs
+        at roughly 35&nbsp;MB versus the SDK&apos;s current ~190&nbsp;KB, which conflicts with its
+        lightweight positioning. Would ship as a separate package if it happens, not folded into the
+        core.
       </p>
     </article>
   );
