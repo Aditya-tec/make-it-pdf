@@ -51,6 +51,11 @@ export default function TypeSiteName() {
           aria-hidden
         />
       </span>
+      <span
+        className="absolute left-0 bottom-[0.02em] h-[0.06em] bg-white transition-[width] duration-75 ease-linear"
+        style={{ width: `${(len / SITE_NAME.length) * 100}%` }}
+        aria-hidden
+      />
     </span>
   );
 }
