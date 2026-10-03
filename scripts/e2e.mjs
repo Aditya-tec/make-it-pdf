@@ -136,7 +136,7 @@ async function t(name, fn) {
   page.on("console", (m) => { if (m.type() === "error") consoleErrors.push(`[${name}] ${m.text()}`); });
   page.on("pageerror", (e) => consoleErrors.push(`[${name}] pageerror: ${e.message}`));
   try { await fn(page); results.push(["PASS", name]); }
-  catch (e) { results.push(["FAIL", name + " :: " + String(e.message).split("\n")[0]]); }
+  catch (e) { results.push(["FAIL", name + " :: " + String(e.message).split("\n").filter((l) => l.trim()).slice(0, 4).join(" | ")]); }
   finally { await page.close(); }
 }
 const up = (page, files) => page.setInputFiles("input[type=file]", files);
