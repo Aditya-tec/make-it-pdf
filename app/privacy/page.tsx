@@ -42,15 +42,6 @@ export default function Privacy() {
         (such as IP address and requested page) for operating and securing the service.
       </p>
 
-      <h2>Error reports</h2>
-      <p>
-        If a tool fails unexpectedly, the page may send an error report to Sentry (sentry.io). It contains the
-        tool name, the error type, a shortened error message with quoted text and filenames removed, the
-        code location of the failure, the page address without any query or fragment, and your browser&apos;s
-        user-agent string. It never contains your files, filenames, extracted text, or option values, and it
-        is only sent when something actually breaks, never while a tool works normally.
-      </p>
-
       <h2>Passwords</h2>
       <p>
         A password you enter in the Encrypt PDF tool is used only in your browser to encrypt your file.
@@ -59,9 +50,34 @@ export default function Privacy() {
 
       <h2>Third parties</h2>
       <p>
-        The site loads no third-party scripts, fonts, or analytics. Fonts are self-hosted at build time.
-        Links to other sites are governed by those sites&apos; own policies.
+        Two services receive data from this site. Fonts are self-hosted at build time, and no ads,
+        trackers or other third-party scripts are loaded. Neither service ever receives your files.
       </p>
+      <h3>Vercel Web Analytics (page views)</h3>
+      <p>
+        We use Vercel Web Analytics for anonymous page-view counts. It sets no cookies. Vercel identifies a
+        visitor only by a hash made from the incoming request, which Vercel discards after 24 hours. Per
+        Vercel&apos;s documentation, each page view can record: timestamp, page path, referrer, filtered
+        query parameters, approximate location (country/region/city), device type, operating system and
+        browser with versions, and the analytics script version. The script loads from this site&apos;s own
+        domain (<code>/_vercel/insights/</code>) and reports to Vercel only when you load or navigate to a
+        page, never while a tool processes a file. It is a standard setup with no custom events, and we use
+        no query strings or personal identifiers in page addresses. We rely on Vercel&apos;s published
+        description of what it collects, which we cannot independently audit.
+      </p>
+      <h3>Sentry (error reports)</h3>
+      <p>
+        Sentry (sentry.io) receives a report only when a tool fails unexpectedly, and only on deployments
+        where it is switched on. A report contains: the tool name, the error type, an error message that is
+        shortened to 160 characters with quoted text, filenames and email-like text removed, the code
+        locations (stack trace) of the failure, the page address as origin and path only (no query or
+        fragment), and your browser&apos;s user-agent string. It never contains file content, filenames,
+        extracted text or option values. The message cleaning is a heuristic: an unquoted word inside a
+        library error message is not removed, which is why only a short message is kept and reports are
+        limited to five per tab session. Known user-input problems (password-protected or corrupt files,
+        out of memory) are not reported.
+      </p>
+      <p>Links to other sites are governed by those sites&apos; own policies.</p>
 
       <h2>Accounts and paywalls</h2>
       <p>
