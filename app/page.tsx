@@ -67,7 +67,7 @@ export default function Home() {
               <TypeSiteName />
             </span>
             <span className="headline block mt-2 sm:mt-5 text-[0.62em] leading-[1.05] text-white">
-              we <span className="text-volt">never</span> see your files<span className="inline-block ml-[0.18em] animate-[mark-blink_0.9s_steps(1,end)_infinite]">!</span>
+              we <span className="text-volt">never</span> see your files<span className="inline-block ml-[0.18em] animate-[mark-blink_0.9s_steps(1,end)_infinite]">!</span><span className="inline-block ml-[0.12em] animate-[mark-blink_0.9s_steps(1,end)_infinite]">!</span>
             </span>
           </h1>
           <p className="mt-4 sm:mt-6 text-sm sm:text-lg italic text-slate-300 max-w-2xl leading-relaxed">
