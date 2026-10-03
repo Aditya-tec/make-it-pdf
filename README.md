@@ -12,7 +12,7 @@ Privacy-first PDF tools that run entirely in your browser. Your files never leav
 
 Most free PDF sites upload your documents to a server. OfflinePDF does the opposite: every tool runs locally via WebAssembly and Web Workers. Close the tab and the file is gone.
 
-- **42 tools** across merge, convert, edit, and security  
+- **42 tools** across essentials, edit & organize, security, convert, and capture & share
 - **Tiered size limits** (light tools up to 300&nbsp;MB; heavy tools 150&nbsp;MB; OCR 75&nbsp;MB / 75 pages)  
 - **Search + voice** in the header to jump to the best tool  
 
@@ -22,11 +22,13 @@ Most free PDF sites upload your documents to a server. OfflinePDF does the oppos
 
 | Category | Tools |
 |----------|--------|
-| **Essentials** | [Merge](/merge-pdf), [Split](/split-pdf), [Compress](/compress-pdf) |
-| **Convert** | [PDF → JPG](/pdf-to-jpg), [PDF → ZIP](/pdf-to-zip), [Images → PDF](/images-to-pdf), [Word → PDF](/word-to-pdf), [PDF → Word](/pdf-to-word), [HTML → PDF](/html-to-pdf), [Markdown → PDF](/markdown-to-pdf), [CSV → PDF](/csv-to-pdf), [Excel → PDF](/excel-to-pdf), [Create PDF](/create-pdf), [PDF → EPUB](/pdf-to-epub), [Invert Colours](/invert-colors) |
-| **Edit** | [Organize](/organize-pages), [Watermark](/add-watermark), [Extract Text](/extract-text), [Rotate](/rotate-pdf), [Crop & Resize](/crop-resize), [Page Numbers](/page-numbers), [Headers & Footers](/headers-footers), [OCR](/ocr-pdf), [Compare PDFs](/compare-pdfs), [Repair PDF](/repair-pdf) |
-| **More** | [PowerPoint to PDF](/powerpoint-to-pdf), [PDF to PowerPoint](/pdf-to-powerpoint), [PDF to Excel](/pdf-to-excel), [PDF to HTML](/pdf-to-html), [eBook (EPUB) to PDF](/ebook-to-pdf), [Edit PDF Text](/edit-pdf-text), [Fingerprint PDF](/fingerprint-pdf), [POS Billing](/pos-billing), [Scan to PDF](/scan-to-pdf), [PDF to Audio](/pdf-to-audio) (listen only), **[P2P Share](/p2p-share) and [Whiteboard](/whiteboard)** (the only two that use the network: WebRTC via PeerJS signaling + Google STUN) |
-| **Security** | [Encrypt](/encrypt-pdf), [Remove Password](/remove-password), [Flatten](/flatten-pdf), [Redact](/redact-pdf), [Privacy Scanner](/privacy-scanner) |
+| **Essentials** | [Merge PDF](/merge-pdf), [Split PDF](/split-pdf), [Compress PDF](/compress-pdf) |
+| **Edit & Organize** | [Organize Pages](/organize-pages), [Add Watermark](/add-watermark), [Extract Text](/extract-text), [Rotate PDF](/rotate-pdf), [Crop & Resize](/crop-resize), [Page Numbers](/page-numbers), [Headers & Footers](/headers-footers), [OCR PDF](/ocr-pdf), [Compare PDFs](/compare-pdfs), [Repair PDF](/repair-pdf), [Edit PDF Text](/edit-pdf-text) |
+| **Security** | [Encrypt PDF](/encrypt-pdf), [Remove Password](/remove-password), [Flatten PDF](/flatten-pdf), [Redact PDF](/redact-pdf), [Privacy Scanner](/privacy-scanner), [Fingerprint PDF](/fingerprint-pdf) |
+| **Convert** | [PDF to JPG](/pdf-to-jpg), [Images to PDF](/images-to-pdf), [Word to PDF](/word-to-pdf), [Invert Colours](/invert-colors), [PDF to ZIP](/pdf-to-zip), [Markdown to PDF](/markdown-to-pdf), [HTML to PDF](/html-to-pdf), [CSV to PDF](/csv-to-pdf), [Excel to PDF](/excel-to-pdf), [PDF to Word](/pdf-to-word), [Create PDF](/create-pdf), [PDF to EPUB](/pdf-to-epub), [PowerPoint to PDF](/powerpoint-to-pdf), [PDF to PowerPoint](/pdf-to-powerpoint), [PDF to Excel](/pdf-to-excel), [PDF to HTML](/pdf-to-html), [eBook to PDF](/ebook-to-pdf), [PDF to Audio](/pdf-to-audio) *(listen only)* |
+| **Capture, Share & Create** | [POS Billing](/pos-billing), [Scan to PDF](/scan-to-pdf), [P2P Share](/p2p-share)\*, [Collaborative Whiteboard](/whiteboard)\* |
+
+*\* P2P Share and Whiteboard connect two browsers directly peer-to-peer using WebRTC DataChannel (PeerJS signaling + Google STUN). No files or drawings are ever stored on any server.*
 
 How-to guides live under `/blog`.
 
@@ -37,14 +39,18 @@ How-to guides live under `/blog`.
 | Layer | Stack |
 |-------|--------|
 | App | Next.js 16 (App Router, static `output: "export"`), React 19, TypeScript |
-| UI | Tailwind CSS 4 |
+| UI | Tailwind CSS 4, `@tailwindcss/typography` |
 | PDF | pdf-lib, pdf.js |
 | Encrypt | qpdf-wasm (AES-256; COOP/COEP only on encrypt/unlock routes — see `vercel.json`) |
 | OCR | tesseract.js (English model bundled; no CDN) |
 | Word | mammoth (Word → PDF), docx (PDF → Word) |
+| PowerPoint | pptxgenjs (PDF → PowerPoint), fflate XML parser (PowerPoint → PDF) |
+| Spreadsheets | SheetJS (`xlsx` v0.20.3 via CDN) for Excel → PDF and PDF → Excel |
 | HTML / Markdown | DOMPurify, marked |
-| Spreadsheets | SheetJS (`xlsx`) for the first sheet only |
 | Zip | fflate |
+| Realtime & P2P | PeerJS (WebRTC DataChannel), Google STUN (`p2p-share`, `whiteboard`) |
+| Camera & Audio | Web MediaDevices (`scan-to-pdf`), Web Speech Synthesis (`pdf-to-audio`) |
+| QR Codes | qrcode-generator (`p2p-share`, `whiteboard`) |
 | Hosting | Vercel (auto-deploy from `main`) |
 
 All processing runs in a single Web Worker entry (`lib/workers/pdf.worker.ts`) that lazy-loads per-tool engines.
@@ -72,6 +78,7 @@ npm run build    # static site → out/
 | `npm run check-links` | Every internal link in `out/` resolves |
 | `npm run e2e` | Playwright against `out/` with prod headers; asserts no external requests |
 | `npm run ci` | lint → limits → engines → build → check-links |
+| `node scripts/capture-screenshot.mjs` | Capture fresh homepage screenshot for README (`docs/screenshot.png`) |
 
 ---
 
@@ -100,14 +107,22 @@ app/                 Home, tool routes, blog, privacy, terms
 components/          Header (search + voice), upload, download, tool shell
 lib/tools.ts         Tool registry (SEO, FAQ, how-to)
 lib/pdf/             Validation, limits, load/render helpers
+lib/p2p/             WebRTC room signaling & data transfer (P2P Share & Whiteboard)
 lib/workers/         Worker entry + engines/
 content/blog/        Markdown how-to posts
-scripts/             copy-assets, e2e, check-links
+scripts/             copy-assets, capture-screenshot, e2e, check-links
 .github/workflows/   CI
+docs/                Documentation assets (screenshot.png)
 ```
 
 ---
 
 ## Privacy
 
-Files are read into memory in your browser, processed there, and offered as a download. They are not uploaded to OfflinePDF servers. Passwords used for encrypt/unlock never leave the device. See `/privacy` and `/terms` on the live site.
+Files are read into memory in your browser, processed there, and offered as a download. They are not uploaded to OfflinePDF servers. Passwords used for encrypt/unlock never leave the device.
+
+- **Client-only by default:** 40 of 42 tools run with zero external network requests during processing.
+- **P2P Share & Whiteboard network disclosure:** These two tools connect browsers directly via WebRTC DataChannel. The browser contacts the public PeerJS signaling service (`0.peerjs.com`) and Google STUN servers to broker the peer connection (seeing IP addresses and room IDs, never file contents or drawings). Content flows directly between browsers and is never stored on any server.
+- **Camera:** Scan to PDF accesses your device camera strictly in-tab with no uploads.
+
+See `/privacy` and `/terms` on the live site for details.
