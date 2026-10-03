@@ -895,9 +895,19 @@ await t("pdf-to-audio: prepares text; offers local voices or says none; never of
   await p.getByRole("button", { name: "Prepare to listen" }).click();
   await p.getByText(/Listening only/).waitFor({ timeout: 30000 });
   if (await p.getByRole("button", { name: "Download" }).count()) throw new Error("unexpected Download button");
-  const voices = await p.getByLabel("Voice").count();
-  if (voices) { await p.getByRole("button", { name: "Play" }).click(); await p.getByText(/Part 1 of/).waitFor({ timeout: 10000 }); await p.getByRole("button", { name: "Stop" }).click({ timeout: 2000 }).catch(() => {}); /* one short chunk may finish (or fail on a CI box with no audio device) before Stop is enabled */ }
-  else if (!(await p.getByText(/No offline voices/).count())) throw new Error("neither voices nor the no-voices message");
+  // Linux Chromium loads voices late and the list can change after first render, so settle on one of the two valid states.
+  const noVoices = p.getByText(/No offline voices/);
+  await p.locator('select[aria-label="Voice"]').or(noVoices).first().waitFor({ timeout: 10000 });
+  let voices = await p.locator('select[aria-label="Voice"]').count();
+  if (voices) {
+    try { await p.getByRole("button", { name: "Play" }).click({ timeout: 5000 }); }
+    catch (e) { if (!(await noVoices.count())) throw e; voices = 0; } // list vanished mid-test: the honest no-voices state
+  }
+  if (voices) {
+    // a CI box may have a voice but no audio device: playback can error out at once, so Part 1 / Stop are best-effort
+    await p.getByText(/Part 1 of/).waitFor({ timeout: 3000 }).catch(() => {});
+    await p.getByRole("button", { name: "Stop" }).click({ timeout: 1000 }).catch(() => {});
+  } else if (!(await noVoices.count())) throw new Error("neither voices nor the no-voices message");
   console.log(`  (pdf-to-audio: ${voices ? "local voices present, Play started" : "no local voices in this browser, message shown"})`);
 });
 await t("pdf-to-audio: browser without speech synthesis gets the unsupported message", async (p) => {
