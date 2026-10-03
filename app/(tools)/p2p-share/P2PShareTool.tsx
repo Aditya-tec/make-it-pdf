@@ -5,7 +5,7 @@ import type { DataConnection } from "peerjs";
 import QrCode from "@/components/QrCode";
 import { connectTo, safeName, newRoomId, openPeer, roomFromHash, roomLink, watchLost } from "@/lib/p2p/room";
 import { formatBytes } from "@/lib/pdf/load";
-import { getToolLimits } from "@/lib/pdf/toolLimits";
+import { getToolLimits, mbLabel } from "@/lib/pdf/toolLimits";
 
 const CHUNK = 16 * 1024;
 const HIGH_WATER = 1024 * 1024;
@@ -27,8 +27,10 @@ export default function P2PShareTool() {
   const [pct, setPct] = useState(0);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [url, setUrl] = useState("");
+  const [dragOver, setDragOver] = useState(false);
   const peerRef = useRef<Peer | null>(null);
   const finished = useRef(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const cleanup = () => {
     peerRef.current?.destroy();
@@ -178,10 +180,37 @@ export default function P2PShareTool() {
       {disclosure}
       {phase === "idle" && (
         <>
-          <label className="block">
-            <span className="text-sm font-medium">Choose a file (up to {Math.round(maxFileBytes / 1024 / 1024)} MB)</span>
-            <input type="file" onChange={(e) => pick(e.target.files?.[0])} className="block mt-1 text-sm" />
-          </label>
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Choose a file to send"
+            className={`border-2 border-dashed border-black rounded-xl p-4 sm:p-6 flex flex-col items-center justify-center gap-2.5 cursor-pointer transition-colors min-h-[120px] sm:min-h-[140px]
+              ${dragOver ? "bg-volt border-solid" : "bg-white hover:border-solid"}`}
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => { e.preventDefault(); setDragOver(false); pick(e.dataTransfer.files?.[0]); }}
+            onClick={() => inputRef.current?.click()}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); inputRef.current?.click(); } }}
+          >
+            <span className="w-12 h-12 bg-volt border-2 border-black rounded-lg flex items-center justify-center" aria-hidden>
+              <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="square" strokeWidth={3} d="M12 19V5m-6 6l6-6 6 6" />
+              </svg>
+            </span>
+            <p className="label-mono text-xs sm:text-sm text-black text-center px-1">
+              {file ? file.name : <>Drop a file here, or <span className="underline decoration-2 underline-offset-4">tap to browse</span></>}
+            </p>
+            <p className="text-[11px] sm:text-xs text-slate-600 text-center px-1 leading-snug">
+              {file ? formatBytes(file.size) : `Any file type · Max ${mbLabel(maxFileBytes)} MB`}
+            </p>
+          </div>
+          <input
+            ref={inputRef}
+            type="file"
+            className="hidden"
+            onChange={(e) => { pick(e.target.files?.[0]); e.target.value = ""; }}
+            aria-hidden="true"
+          />
           {message && <p role="alert" className="text-sm text-red-600">{message}</p>}
           {file && (
             <button onClick={share} className="self-start bg-indigo-600 text-white font-semibold px-6 py-3 rounded-xl">

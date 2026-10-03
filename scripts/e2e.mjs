@@ -767,8 +767,15 @@ await t("p2p: disclosure shown; CSP allows the signaling host ONLY on p2p/whiteb
   if (!(await p.getByText(/does use the network/i).count())) throw new Error("p2p page lacks network disclosure");
   await p.goto(BASE + "/whiteboard/");
   if (!(await p.getByText(/does use the network/i).count())) throw new Error("whiteboard page lacks network disclosure");
-  for (const u of ["/p2p-share/", "/whiteboard/"]) if (!/0\.peerjs\.com/.test(await headerOf(u, "content-security-policy"))) throw new Error(u + " CSP");
-  for (const u of ["/merge-pdf/", "/scan-to-pdf/", "/"]) if (/peerjs/.test(await headerOf(u, "content-security-policy"))) throw new Error(u + " CSP too loose");
+  for (const u of ["/p2p-share/", "/whiteboard/"]) {
+    const csp = await headerOf(u, "content-security-policy");
+    if (!/wss:\/\/0\.peerjs\.com/.test(csp) || !/ingest\.sentry\.io/.test(csp)) throw new Error(u + " CSP");
+  }
+  for (const u of ["/merge-pdf/", "/scan-to-pdf/", "/"]) {
+    const csp = await headerOf(u, "content-security-policy");
+    if (/peerjs/.test(csp)) throw new Error(u + " CSP too loose");
+    if (!/ingest\.sentry\.io/.test(csp)) throw new Error(u + " CSP missing Sentry");
+  }
 });
 
 await t("p2p: real transfer between two browsers is byte-identical, with progress", async () => {
