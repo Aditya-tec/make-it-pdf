@@ -35,6 +35,18 @@ How-to guides live under `/blog`.
 
 ---
 
+## SDK package
+
+7 of these tools — merge, split, rotate, organize pages, watermark, page numbers, and flatten — are also published as a standalone, zero-native-dependency npm package: **[offlinepdf-sdk](https://www.npmjs.com/package/offlinepdf-sdk)**.
+
+```bash
+npm install offlinepdf-sdk
+```
+
+It lives in this repo as an npm workspace at [`packages/offlinepdf-sdk`](packages/offlinepdf-sdk); the website's own worker engines for those 7 tools import directly from it, so there's one source of truth rather than a forked copy. See that package's [README](packages/offlinepdf-sdk/README.md) for the full API and what's intentionally not included yet.
+
+---
+
 ## Tech stack
 
 | Layer | Stack |

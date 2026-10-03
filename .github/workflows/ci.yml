@@ -29,6 +29,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build SDK package (offlinepdf-sdk)
+        run: npm run build --workspace=offlinepdf-sdk
+
+      - name: Test SDK package (offlinepdf-sdk, standalone)
+        run: npm test --workspace=offlinepdf-sdk
+
       - name: Lint
         run: npm run lint
 

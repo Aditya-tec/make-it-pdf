@@ -14,6 +14,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "public/qpdf/**", // vendored third-party build, copied by scripts/copy-qpdf.mjs
     "public/tess/**", // vendored tesseract build, copied by scripts/copy-assets.mjs
+    "packages/*/dist/**", // built workspace package output
   ]),
 ]);
 

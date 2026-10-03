@@ -1,0 +1,59 @@
+{
+  "name": "offlinepdf-sdk",
+  "version": "0.1.0",
+  "description": "7 lightweight, zero-native-dependency PDF functions: merge, split, rotate, organize pages, watermark, page numbers, flatten. Extracted from OfflinePDF.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "npx tsx test/sdk.check.ts",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "dependencies": {
+    "pdf-lib": "1.17.1",
+    "fflate": "0.8.3"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "5.9.3"
+  },
+  "keywords": [
+    "pdf",
+    "pdf-lib",
+    "merge-pdf",
+    "split-pdf",
+    "rotate-pdf",
+    "organize-pages",
+    "watermark",
+    "page-numbers",
+    "flatten-pdf",
+    "pdf-sdk"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aditya-tec/make-it-pdf.git",
+    "directory": "packages/offlinepdf-sdk"
+  },
+  "homepage": "https://offlinepdf-woad.vercel.app"
+}

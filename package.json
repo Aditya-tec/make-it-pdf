@@ -3,14 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "prebuild": "node scripts/copy-assets.mjs",
+    "prebuild": "npm run build --workspace=offlinepdf-sdk && node scripts/copy-assets.mjs",
     "postbuild": "node scripts/make-sw.mjs",
-    "predev": "node scripts/copy-assets.mjs",
+    "predev": "npm run build --workspace=offlinepdf-sdk && node scripts/copy-assets.mjs",
     "check:limits": "npx tsx lib/pdf/toolLimits.check.ts && npx tsx lib/toolSearch.check.ts",
     "check:report": "npx tsx lib/report.check.mts",
     "check:privacy": "npx tsx lib/privacyScanner.check.mts",
