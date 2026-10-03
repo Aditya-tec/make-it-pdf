@@ -38,6 +38,9 @@ jobs:
       - name: Engine smoke tests
         run: npm run check:engines
 
+      - name: Check error reports contain no user data
+        run: npm run check:report
+
       - name: Production build
         run: npm run build
 

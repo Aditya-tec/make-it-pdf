@@ -1,5 +1,6 @@
 /// <reference lib="webworker" />
 import { friendlyError } from "@/lib/pdf/validate";
+import { toReport, type ErrorReport } from "@/lib/report";
 
 // ponytail: single worker entry that lazy-imports the right engine per tool.
 // If tool count grows past 40, consider one worker per tool family instead.
@@ -13,7 +14,7 @@ export type WorkerRequest = {
 export type WorkerResponse =
   | { type: "progress"; percent: number; message?: string }
   | { type: "done"; files: { name: string; bytes: Uint8Array }[] }
-  | { type: "error"; message: string };
+  | { type: "error"; message: string; report?: ErrorReport };
 
 const ENGINE_MAP: Record<string, () => Promise<{ run: EngineRun }>> = {
   "merge-pdf": () => import("./engines/merge"),
@@ -85,6 +86,9 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
     (self as unknown as Worker).postMessage({ type: "done", files: result }, transferList);
   } catch (err) {
     // Uncaught OOM often bypasses this; when it does land here, friendlyError maps it.
-    post({ type: "error", message: friendlyError(err) });
+    // report only unexpected failures: friendlyError maps known user-input problems (password, corrupt, OOM) to a different text
+    const message = friendlyError(err);
+    const raw = toReport(err);
+    post({ type: "error", message, report: message === raw.message ? raw : undefined });
   }
 };

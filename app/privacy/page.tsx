@@ -42,6 +42,15 @@ export default function Privacy() {
         (such as IP address and requested page) for operating and securing the service.
       </p>
 
+      <h2>Error reports</h2>
+      <p>
+        If a tool fails unexpectedly, the page may send an error report to Sentry (sentry.io). It contains the
+        tool name, the error type, a shortened error message with quoted text and filenames removed, the
+        code location of the failure, the page address without any query or fragment, and your browser&apos;s
+        user-agent string. It never contains your files, filenames, extracted text, or option values, and it
+        is only sent when something actually breaks, never while a tool works normally.
+      </p>
+
       <h2>Passwords</h2>
       <p>
         A password you enter in the Encrypt PDF tool is used only in your browser to encrypt your file.

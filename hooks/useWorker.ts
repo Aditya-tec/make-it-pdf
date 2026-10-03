@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
+import { reportToolError, toReport } from "@/lib/report";
 import type { WorkerRequest, WorkerResponse } from "@/lib/workers/pdf.worker";
 import {
   deviceMemoryGb,
@@ -80,6 +81,7 @@ export function useWorker() {
           worker.terminate();
           workerRef.current = null;
         } else if (msg.type === "error") {
+          if (msg.report) void reportToolError(request.tool, msg.report);
           setJob({ status: "error", message: msg.message || "Something went wrong." });
           worker.terminate();
           workerRef.current = null;
@@ -88,6 +90,7 @@ export function useWorker() {
 
       worker.onerror = (err) => {
         const raw = err.message || "";
+        void reportToolError(request.tool, toReport({ name: "WorkerCrash", message: raw }));
         // Only claim OOM when the message actually mentions memory.
         // "Script error." is a browser-masked crash (could be anything: WASM init,
         // pthread failure, network error) — don't blame file size for that.

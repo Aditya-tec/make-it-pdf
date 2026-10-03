@@ -124,6 +124,7 @@ Files are read into memory in your browser, processed there, and offered as a do
 
 - **Client-only by default:** 40 of 42 tools run with zero external network requests during processing.
 - **P2P Share & Whiteboard network disclosure:** These two tools connect browsers directly via WebRTC DataChannel. The browser contacts the public PeerJS signaling service (`0.peerjs.com`) and Google STUN servers to broker the peer connection (seeing IP addresses and room IDs, never file contents or drawings). Content flows directly between browsers and is never stored on any server.
+- **Error reports (opt-in per deployment):** set `NEXT_PUBLIC_SENTRY_DSN` at build time to enable. Unexpected tool failures then send tool id, error class, a scrubbed message, stack frames, page path (no query/hash) and User-Agent to Sentry via `lib/report.ts`, never file data. Max 5 reports per tab session, 50% sampled. `npm run check:report` sends hostile errors through the real Sentry client and fails if any filename/text appears in the envelope. Also set a spike/rate limit in the Sentry project settings.
 - **Camera:** Scan to PDF accesses your device camera strictly in-tab with no uploads.
 
 See `/privacy` and `/terms` on the live site for details.
