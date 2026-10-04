@@ -45,3 +45,7 @@ next-env.d.ts
 # copied from node_modules by scripts/copy-assets.mjs
 /public/qpdf/
 /public/tess/
+
+# MCPB bundle build output (packages/offlinepdf-mcp)
+/packages/*/.mcpb-stage/
+/packages/*/*.mcpb
