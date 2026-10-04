@@ -100,7 +100,7 @@ async function testRepairBothStrategiesFailMessage() {
   const garbage = new Uint8Array([1, 2, 3, 4, 5]);
   await assert.rejects(
     () => repairPdf(garbage),
-    /Could not repair this PDF.*Both available recovery strategies/s,
+    /Could not repair this PDF[\s\S]*Both available recovery strategies/,
     "both strategies failing should produce an explicit, honest error — not a silent/partial result"
   );
   console.log("✓ repair_pdf gives an explicit error (not a false partial success) when both strategies fail");
