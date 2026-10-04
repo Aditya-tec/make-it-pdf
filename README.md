@@ -47,6 +47,14 @@ It lives in this repo as an npm workspace at [`packages/offlinepdf-sdk`](package
 
 ---
 
+## MCP server
+
+The SDK's 12 tools, plus 4 new Node-native ones (extract text, OCR, repair, a simplified GST POS receipt generator — 17 in total), are also available as a local [Model Context Protocol](https://modelcontextprotocol.io) server: **offlinepdf-mcp**. It lets Claude Desktop or Claude Code call these PDF tools directly on your machine — same "nothing leaves your device" guarantee as the website and the SDK, including OCR's language model, which is bundled in the package rather than fetched from a CDN.
+
+It lives in this repo as an npm workspace at [`packages/offlinepdf-mcp`](packages/offlinepdf-mcp) and is not published to npm — see that package's [README](packages/offlinepdf-mcp/README.md) for build/pack instructions, the full tool list, what's intentionally excluded, and Claude Desktop/Code setup.
+
+---
+
 ## Tech stack
 
 | Layer | Stack |

@@ -1,0 +1,53 @@
+{
+  "manifest_version": "0.3",
+  "name": "offlinepdf-mcp",
+  "display_name": "OfflinePDF",
+  "version": "0.1.0",
+  "description": "17 local PDF tools (merge, split, OCR, extract text, repair, GST receipts, and more) that Claude can call directly on your machine. Nothing leaves your device.",
+  "long_description": "A local Model Context Protocol server exposing OfflinePDF's PDF tools as functions Claude can call directly. Every tool reads a file from disk, does its work in this local Node process, and writes the result back to disk — no network calls, no uploads, no telemetry.\n\n12 tools wrap the offlinepdf-sdk package (merge, split, rotate, organize pages, watermark, page numbers, flatten, header/footer, crop, fingerprint, scan/strip metadata, CSV to PDF). 4 tools are new Node-native implementations written for this server: extract text, OCR (fully offline, bundled English language model), repair PDF (2 of 3 recovery strategies), and a simplified GST point-of-sale receipt generator.\n\nNot included in this version: Encrypt PDF, Remove Password, and Repair PDF's third recovery strategy, all of which depend on a pthread-enabled qpdf WebAssembly build that needs a real Worker environment this server doesn't provide. See the README for the full list of what's excluded and why.",
+  "author": {
+    "name": "Aditya Kalambe",
+    "email": "aditya.kalambe@chat360.io",
+    "url": "https://offlinepdf-woad.vercel.app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aditya-tec/make-it-pdf"
+  },
+  "homepage": "https://offlinepdf-woad.vercel.app",
+  "license": "MIT",
+  "keywords": ["pdf", "mcp", "model-context-protocol", "offline", "ocr", "pdf-tools"],
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"]
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "win32"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  },
+  "tools": [
+    { "name": "merge_pdfs", "description": "Combine two or more PDF files into one." },
+    { "name": "split_pdf", "description": "Split a PDF by page ranges, or into one file per page." },
+    { "name": "rotate_pdf", "description": "Rotate every page of a PDF 90/180/270 degrees." },
+    { "name": "organize_pdf_pages", "description": "Reorder, rotate, or delete specific pages." },
+    { "name": "watermark_pdf", "description": "Stamp a text or image watermark on every page." },
+    { "name": "add_page_numbers", "description": "Add page numbers in a chosen format and position." },
+    { "name": "flatten_pdf", "description": "Flatten fillable form fields into permanent content." },
+    { "name": "add_header_footer", "description": "Add a header/footer, optional date and page number." },
+    { "name": "crop_pdf", "description": "Trim margins, or resize pages to a target size." },
+    { "name": "fingerprint_pdf", "description": "Stamp a leak-deterrent ID into a PDF." },
+    { "name": "scan_pdf_metadata", "description": "Scan a PDF for privacy-sensitive metadata." },
+    { "name": "strip_pdf_metadata", "description": "Remove privacy-sensitive metadata from a PDF." },
+    { "name": "csv_to_pdf", "description": "Convert a CSV file into a paginated PDF table." },
+    { "name": "extract_pdf_text", "description": "Extract a PDF's text content, page by page." },
+    { "name": "ocr_pdf", "description": "OCR a scanned/image-only PDF, fully offline." },
+    { "name": "repair_pdf", "description": "Repair a damaged PDF (clean rebuild or partial recovery)." },
+    { "name": "generate_pos_receipt", "description": "Generate a simplified GST point-of-sale receipt PDF." }
+  ]
+}
