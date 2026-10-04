@@ -15,6 +15,14 @@ export default function Footer() {
           <Link href="/blog" className="underline decoration-4 underline-offset-4 hover:bg-volt">Guides</Link>
           <Link href="/changelog" className="underline decoration-4 underline-offset-4 hover:bg-volt">Changelog</Link>
           <Link href="/sdk" className="underline decoration-4 underline-offset-4 hover:bg-volt">SDK</Link>
+          <a
+            href="https://github.com/Aditya-tec/make-it-pdf/tree/main/packages/offlinepdf-mcp"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline decoration-4 underline-offset-4 hover:bg-volt"
+          >
+            MCP
+          </a>
           <Link href="/privacy" className="underline decoration-4 underline-offset-4 hover:bg-volt">Privacy</Link>
           <Link href="/terms" className="underline decoration-4 underline-offset-4 hover:bg-volt">Terms</Link>
           <a
