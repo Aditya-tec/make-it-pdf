@@ -1,6 +1,6 @@
 # OfflinePDF
 
-Privacy-first PDF tools that run entirely in your browser. Your files never leave your device — no uploads, no accounts, no watermarks.
+OfflinePDF is a privacy-first set of PDF tools that run entirely in your browser. Files are never uploaded — there are no accounts, no file limits tied to a subscription, and no watermarks.
 
 ![OfflinePDF homepage](docs/screenshot.png)
 
@@ -10,12 +10,12 @@ Privacy-first PDF tools that run entirely in your browser. Your files never leav
 
 ## Why OfflinePDF
 
-Most free PDF sites upload your documents to a server. OfflinePDF does the opposite: every tool runs locally via WebAssembly and Web Workers. Close the tab and the file is gone.
+Most free PDF websites work by uploading your document to a server, processing it there, and sending it back. OfflinePDF does the opposite — every tool runs locally, in your browser, using the device's own processing power. Close the tab and the file is gone; nothing was ever sent anywhere.
 
-- **Works offline after one visit:** a service worker (`public/sw.js`, filled with the build's file list by `scripts/make-sw.mjs`) caches the pages, JS, and the qpdf/Tesseract WASM and model files, and the site is installable as a PWA. This covers every tool except **P2P Share and Whiteboard**, which need a live connection by design and show an "unavailable offline" page. The large WASM/model files are cached in the background after first load, so the first offline use is only safe once that finishes (a few seconds on a normal connection). Verified by `npm run e2e` (Merge, Compress, and Encrypt run with the network cut).
-- **42 tools** across essentials, edit & organize, security, convert, and capture & share
-- **Tiered size limits** (light tools up to 300&nbsp;MB; heavy tools 150&nbsp;MB; OCR 75&nbsp;MB / 75 pages)  
-- **Search + voice** in the header to jump to the best tool  
+- **Works offline after your first visit.** The site saves what it needs to run — the pages, the app code, and the tools' processing engines — so it keeps working without an internet connection. This applies to every tool except **P2P Share** and **Whiteboard**, which need a live connection by design and will show an "unavailable offline" message. The files needed for offline use finish saving a few seconds after your first visit, so give it a moment before going offline.
+- **42 tools**, organized into five groups: essentials, edit & organize, security, convert, and capture & share.
+- **Size limits by tool type** — lighter tools allow files up to 300 MB; heavier tools up to 150 MB; the OCR tool allows up to 75 MB or 75 pages.
+- **Search and voice search** in the header to quickly find the right tool.
 
 ---
 
@@ -29,29 +29,29 @@ Most free PDF sites upload your documents to a server. OfflinePDF does the oppos
 | **Convert** | [PDF to JPG](/pdf-to-jpg), [Images to PDF](/images-to-pdf), [Word to PDF](/word-to-pdf), [Invert Colours](/invert-colors), [PDF to ZIP](/pdf-to-zip), [Markdown to PDF](/markdown-to-pdf), [HTML to PDF](/html-to-pdf), [CSV to PDF](/csv-to-pdf), [Excel to PDF](/excel-to-pdf), [PDF to Word](/pdf-to-word), [Create PDF](/create-pdf), [PDF to EPUB](/pdf-to-epub), [PowerPoint to PDF](/powerpoint-to-pdf), [PDF to PowerPoint](/pdf-to-powerpoint), [PDF to Excel](/pdf-to-excel), [PDF to HTML](/pdf-to-html), [eBook to PDF](/ebook-to-pdf), [PDF to Audio](/pdf-to-audio) *(listen only)* |
 | **Capture, Share & Create** | [POS Billing](/pos-billing), [Scan to PDF](/scan-to-pdf), [P2P Share](/p2p-share)\*, [Collaborative Whiteboard](/whiteboard)\* |
 
-*\* P2P Share and Whiteboard connect two browsers directly peer-to-peer using WebRTC DataChannel (PeerJS signaling + Google STUN). No files or drawings are ever stored on any server.*
+*\* P2P Share and Whiteboard connect two browsers directly to each other for a live session. Files and drawings pass straight between the two people using them and are never stored on any server.*
 
-How-to guides live under `/blog`.
+Step-by-step guides for each tool are available under `/blog`.
 
 ---
 
 ## SDK package
 
-12 of these tools — merge, split, rotate, organize pages, watermark, page numbers, flatten, headers/footers, crop & resize, fingerprint, scan/strip metadata, and CSV to PDF — are also published as a standalone, zero-native-dependency npm package: **[offlinepdf-sdk](https://www.npmjs.com/package/offlinepdf-sdk)**.
+Twelve of these tools — merge, split, rotate, organize pages, watermark, page numbers, flatten, headers/footers, crop & resize, fingerprint, scan/strip metadata, and CSV to PDF — are also published as a standalone package for other developers to use in their own projects: **[offlinepdf-sdk](https://www.npmjs.com/package/offlinepdf-sdk)**.
 
 ```bash
 npm install offlinepdf-sdk
 ```
 
-It lives in this repo as an npm workspace at [`packages/offlinepdf-sdk`](packages/offlinepdf-sdk); the website's own worker engines for those 12 tools import directly from it, so there's one source of truth rather than a forked copy. See the [usage guide](https://offlinepdf-woad.vercel.app/sdk) for a "which function do I need" walkthrough, or that package's [README](packages/offlinepdf-sdk/README.md) for the full API and what's intentionally not included yet.
+It lives in this repo at [`packages/offlinepdf-sdk`](packages/offlinepdf-sdk), and the website itself uses it for those 12 tools — so there's a single, shared implementation rather than two copies to keep in sync. See the [usage guide](https://offlinepdf-woad.vercel.app/sdk) for help choosing the right function, or that package's [README](packages/offlinepdf-sdk/README.md) for the full reference and what isn't included yet.
 
 ---
 
 ## MCP server
 
-The SDK's 12 tools, plus 4 new Node-native ones (extract text, OCR, repair, a simplified GST POS receipt generator — 17 in total), are also available as a local [Model Context Protocol](https://modelcontextprotocol.io) server: **offlinepdf-mcp**. It lets Claude Desktop or Claude Code call these PDF tools directly on your machine — same "nothing leaves your device" guarantee as the website and the SDK, including OCR's language model, which is bundled in the package rather than fetched from a CDN.
+The SDK's 12 tools, plus four more (extract text, OCR, repair, and a simplified receipt generator — 17 in total), are also available as a local server that Claude Desktop or Claude Code can call directly: **offlinepdf-mcp**. It gives Claude the same tools as the website, with the same guarantee that nothing leaves your device — including the OCR language model, which is included in the package rather than downloaded separately.
 
-It lives in this repo as an npm workspace at [`packages/offlinepdf-mcp`](packages/offlinepdf-mcp) and is not published to npm — see that package's [README](packages/offlinepdf-mcp/README.md) for build/pack instructions, the full tool list, what's intentionally excluded, and Claude Desktop/Code setup.
+It lives in this repo at [`packages/offlinepdf-mcp`](packages/offlinepdf-mcp). It isn't published anywhere for direct install — see that package's [README](packages/offlinepdf-mcp/README.md) for setup instructions, the full tool list, and what's intentionally left out.
 
 ---
 
@@ -59,22 +59,22 @@ It lives in this repo as an npm workspace at [`packages/offlinepdf-mcp`](package
 
 | Layer | Stack |
 |-------|--------|
-| App | Next.js 16 (App Router, static `output: "export"`), React 19, TypeScript |
+| App | Next.js 16 (App Router, static export), React 19, TypeScript |
 | UI | Tailwind CSS 4, `@tailwindcss/typography` |
 | PDF | pdf-lib, pdf.js |
-| Encrypt | qpdf-wasm (AES-256; COOP/COEP only on encrypt/unlock routes — see `vercel.json`) |
-| OCR | tesseract.js (English model bundled; no CDN) |
-| Word | mammoth (Word → PDF), docx (PDF → Word) |
-| PowerPoint | pptxgenjs (PDF → PowerPoint), fflate XML parser (PowerPoint → PDF) |
-| Spreadsheets | SheetJS (`xlsx` v0.20.3 via CDN) for Excel → PDF and PDF → Excel |
+| Encrypt | qpdf-wasm (AES-256; extra security headers apply only on encrypt/unlock pages — see `vercel.json`) |
+| OCR | tesseract.js (English model included; nothing downloaded at runtime) |
+| Word | mammoth (Word to PDF), docx (PDF to Word) |
+| PowerPoint | pptxgenjs (PDF to PowerPoint), fflate XML parser (PowerPoint to PDF) |
+| Spreadsheets | SheetJS (`xlsx` v0.20.3, loaded from its own CDN) for Excel to PDF and PDF to Excel |
 | HTML / Markdown | DOMPurify, marked |
 | Zip | fflate |
-| Realtime & P2P | PeerJS (WebRTC DataChannel), Google STUN (`p2p-share`, `whiteboard`) |
-| Camera & Audio | Web MediaDevices (`scan-to-pdf`), Web Speech Synthesis (`pdf-to-audio`) |
+| Live sharing | PeerJS for direct browser-to-browser connections, Google's connection-brokering service (`p2p-share`, `whiteboard`) |
+| Camera & Audio | the browser's own camera access (`scan-to-pdf`) and text-to-speech (`pdf-to-audio`) |
 | QR Codes | qrcode-generator (`p2p-share`, `whiteboard`) |
-| Hosting | Vercel (auto-deploy from `main`) |
+| Hosting | Vercel (deploys automatically from `main`) |
 
-All processing runs in a single Web Worker entry (`lib/workers/pdf.worker.ts`) that lazy-loads per-tool engines.
+All processing runs through a single background worker (`lib/workers/pdf.worker.ts`) that loads the code for each tool only when it's needed.
 
 ---
 
@@ -86,20 +86,20 @@ npm run dev      # http://localhost:3000
 npm run build    # static site → out/
 ```
 
-> **Note:** `next dev` does not apply `vercel.json` headers. Encrypt PDF needs isolated mode — use `npm run build && npm run e2e` (or a Vercel preview) to test encryption end-to-end.
+> **Note:** the local dev server does not apply the production security headers defined in `vercel.json`. Encrypt PDF needs those headers to work, so use `npm run build && npm run e2e` (or a Vercel preview) to test it end-to-end.
 
 ### Useful scripts
 
 | Script | Purpose |
 |--------|---------|
-| `npm run lint` | ESLint |
-| `npm run check:limits` | Tiered file-size config self-check |
-| `npm run check:engines` | In-memory engine smoke tests |
-| `npm run build` | Production static export (+ asset copy) |
-| `npm run check-links` | Every internal link in `out/` resolves |
-| `npm run e2e` | Playwright against `out/` with prod headers; asserts no external requests |
-| `npm run ci` | lint → limits → engines → build → check-links |
-| `node scripts/capture-screenshot.mjs` | Capture fresh homepage screenshot for README (`docs/screenshot.png`) |
+| `npm run lint` | Code style check |
+| `npm run check:limits` | Verifies the file-size limits are configured correctly |
+| `npm run check:engines` | Quick smoke test of each tool's processing engine |
+| `npm run build` | Production build (static export) |
+| `npm run check-links` | Confirms every internal link in the built site resolves |
+| `npm run e2e` | Full browser test suite against the production build; confirms no outside network requests are made |
+| `npm run ci` | Runs lint, limits, engines, build, and link checks in sequence |
+| `node scripts/capture-screenshot.mjs` | Captures a fresh homepage screenshot for this README |
 
 ---
 
@@ -107,32 +107,32 @@ npm run build    # static site → out/
 
 GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull request to `main`:
 
-1. Install dependencies  
-2. Lint + unit-style checks (`check:limits`, `check:engines`)  
-3. Production build  
-4. Link check on `out/`  
-5. Playwright e2e (Chromium)
+1. Install dependencies
+2. Lint and basic checks (`check:limits`, `check:engines`)
+3. Production build
+4. Link check on the built site
+5. End-to-end tests (Chromium)
 
-**Install-time network requirement:** `npm install` / `npm ci` must be able to reach **`https://cdn.sheetjs.com`**. The `xlsx` dependency is the patched SheetJS build (0.20.3), which SheetJS publishes only on its own CDN, not on npm (the npm copy, 0.18.5, has unpatched high-severity advisories). This applies to local setup, GitHub Actions, and the Vercel build. If you run behind a proxy or allow-list, add that host, or mirror the tarball and change the URL in `package.json`. Because it's installed from a URL, `npm audit` can't check it; when upgrading, check the [SheetJS changelog](https://docs.sheetjs.com/docs/miscellany/changelog) and update the version in the URL by hand. The lockfile pins the tarball's integrity hash.
+**One setup requirement:** installing dependencies needs access to **`https://cdn.sheetjs.com`**. The spreadsheet library this project depends on (`xlsx`, version 0.20.3) is only distributed from that address — the copy on the regular npm registry is an older version with known security issues. This applies to local setup, GitHub Actions, and the Vercel build alike. If you're behind a restrictive network or proxy, allow that address, or download the file once and host it yourself (updating the install address in `package.json`). Because it isn't installed from the npm registry, routine dependency-vulnerability scans can't check it automatically — when upgrading, check the [SheetJS changelog](https://docs.sheetjs.com/docs/miscellany/changelog) by hand and update the version in the install address. The lockfile records a checksum of the exact file used, so installs stay consistent.
 
-**Deploy:** Vercel builds and hosts from this repo. Pushing to `main` triggers production deploy; PRs get preview URLs. CI is the gate for code quality; Vercel remains the host.
+**Deploying:** Vercel builds and hosts the site directly from this repository. Pushing to `main` deploys to production; pull requests get their own preview link. GitHub Actions is the quality gate; Vercel is the host.
 
-Set `NEXT_PUBLIC_SITE_URL` in the Vercel project once you attach a custom domain (feeds sitemap, robots, Open Graph, JSON-LD via `lib/site.ts`).
+Set `NEXT_PUBLIC_SITE_URL` in the Vercel project once a custom domain is attached — it feeds the sitemap, robots file, and page previews (`lib/site.ts`).
 
 ---
 
 ## Project layout
 
 ```
-app/                 Home, tool routes, blog, privacy, terms
-components/          Header (search + voice), upload, download, tool shell
-lib/tools.ts         Tool registry (SEO, FAQ, how-to)
-lib/pdf/             Validation, limits, load/render helpers
-lib/p2p/             WebRTC room signaling & data transfer (P2P Share & Whiteboard)
-lib/workers/         Worker entry + engines/
-content/blog/        Markdown how-to posts
-scripts/             copy-assets, capture-screenshot, e2e, check-links
-.github/workflows/   CI
+app/                 Home page, tool pages, blog, privacy, terms
+components/          Header (search + voice), upload, download, shared tool UI
+lib/tools.ts         Tool registry (titles, descriptions, how-to steps)
+lib/pdf/             File validation, size limits, load/render helpers
+lib/p2p/             Connection handling for P2P Share & Whiteboard
+lib/workers/         Background worker and the per-tool engines it loads
+content/blog/        Written guides
+scripts/             Build helpers, screenshot capture, tests, link checking
+.github/workflows/   CI configuration
 docs/                Documentation assets (screenshot.png)
 ```
 
@@ -140,11 +140,11 @@ docs/                Documentation assets (screenshot.png)
 
 ## Privacy
 
-Files are read into memory in your browser, processed there, and offered as a download. They are not uploaded to OfflinePDF servers. Passwords used for encrypt/unlock never leave the device.
+Files are read into memory in your browser, processed there, and offered back to you as a download. They are never uploaded to OfflinePDF's servers. Passwords used to encrypt or unlock a file never leave your device.
 
-- **Client-only by default:** 40 of 42 tools run with zero external network requests during processing.
-- **P2P Share & Whiteboard network disclosure:** These two tools connect browsers directly via WebRTC DataChannel. The browser contacts the public PeerJS signaling service (`0.peerjs.com`) and Google STUN servers to broker the peer connection (seeing IP addresses and room IDs, never file contents or drawings). Content flows directly between browsers and is never stored on any server.
-- **Error reports (opt-in per deployment):** set `NEXT_PUBLIC_SENTRY_DSN` at build time to enable. Unexpected tool failures then send tool id, error class, a scrubbed message, stack frames, page path (no query/hash) and User-Agent to Sentry via `lib/report.ts`, never file data. Max 5 reports per tab session, 50% sampled. `npm run check:report` sends hostile errors through the real Sentry client and fails if any filename/text appears in the envelope. Also set a spike/rate limit in the Sentry project settings.
-- **Camera:** Scan to PDF accesses your device camera strictly in-tab with no uploads.
+- **No upload, by default:** 40 of the 42 tools make zero network requests while processing your file.
+- **P2P Share & Whiteboard, disclosed:** these two tools connect two browsers directly for a live session. To set up that connection, the browser contacts a connection-brokering service, which sees IP addresses and session IDs but never file contents or drawings. Once connected, everything passes directly between the two browsers and is never stored on a server.
+- **Error reporting (optional, set per deployment):** if enabled by the site operator, unexpected tool failures send a short, automatically-scrubbed error report — never file data — to help diagnose the issue. This is limited to a small number of reports per visit.
+- **Camera access:** Scan to PDF uses your device camera directly in the page, with no upload.
 
-See `/privacy` and `/terms` on the live site for details.
+See `/privacy` and `/terms` on the live site for full details.
