@@ -39,6 +39,7 @@ const ENGINE_MAP: Record<string, () => Promise<{ run: EngineRun }>> = {
   "privacy-scanner": () => import("./engines/privacyScanner"),
   "pdf-to-zip": () => import("./engines/pdfToZip"),
   "markdown-to-pdf": () => import("./engines/markdownToPdf"),
+  "text-to-pdf": () => import("./engines/txtToPdf"),
   "html-to-pdf": () => import("./engines/htmlToPdf"),
   "csv-to-pdf": () => import("./engines/csvToPdf"),
   "excel-to-pdf": () => import("./engines/excelToPdf"),

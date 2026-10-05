@@ -123,6 +123,17 @@ async function testMarkdownHtml() {
   console.log("✓ markdown-to-pdf");
 }
 
+async function testTextToPdf() {
+  const { run } = await import("./lib/workers/engines/txtToPdf.js");
+  const txt = "Line one\nLine two  with  spaces\n<not a tag>\n";
+  const [out] = await run([new TextEncoder().encode(txt).buffer], {}, noop);
+  const html = new TextDecoder().decode(out.bytes);
+  assert.match(html, /<pre>/);
+  assert.doesNotMatch(html, /<not a tag>/);
+  assert.match(html, /&lt;not a tag&gt;/);
+  console.log("✓ text-to-pdf");
+}
+
 async function testRepair() {
   const { run } = await import("./lib/workers/engines/repairPdf.js");
   const [out] = await run([await makePdf(1)], {}, noop);
@@ -296,6 +307,7 @@ async function testChunkText() {
     await testImagesToPdf();
     await testCsvQuotesAndPages();
     await testMarkdownHtml();
+    await testTextToPdf();
     await testRepair();
     await testExcelFirstSheet();
     await testPixelDiff();

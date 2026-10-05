@@ -3,7 +3,7 @@ import type { Tool } from "./tools";
 
 /** Keyword-first title: brand last via root layout template `%s | OfflinePDF`. */
 export function toolPageTitle(tool: Tool): string {
-  return `${tool.name} Free Online — No Upload, No Sign-Up`;
+  return tool.name;
 }
 
 export function toolMetadata(tool: Tool): Metadata {

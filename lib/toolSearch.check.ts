@@ -22,6 +22,7 @@ const cases: [string, string][] = [
   ["delete pages", "organize-pages"],
   ["extract text", "extract-text"],
   ["markdown to pdf", "markdown-to-pdf"],
+  ["txt to pdf", "text-to-pdf"],
   ["compare two pdfs", "compare-pdfs"],
   ["repair broken pdf", "repair-pdf"],
   ["csv to pdf", "csv-to-pdf"],

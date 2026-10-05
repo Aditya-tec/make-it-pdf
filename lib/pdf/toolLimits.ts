@@ -32,6 +32,7 @@ const TOOL_WEIGHT: Record<string, ToolWeight> = {
   "privacy-scanner": "light",
   "word-to-pdf": "light",
   "markdown-to-pdf": "light",
+  "text-to-pdf": "light",
   "html-to-pdf": "light",
   "csv-to-pdf": "light",
   "excel-to-pdf": "light",

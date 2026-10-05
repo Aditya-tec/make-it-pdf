@@ -186,6 +186,14 @@ const ICONS: Record<string, (c?: string) => ReactNode> = {
       <path d="M11 13l-3 3 3 3M21 13l3 3-3 3M14 21l4-10" fill="none" stroke={V} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </Svg>
   ),
+  "text-to-pdf": (c) => (
+    <Svg className={c}>
+      <rect x="4" y="4" width="24" height="24" rx="2" fill={K} />
+      <rect x="9" y="11" width="14" height="2" rx="1" fill={V} />
+      <rect x="9" y="16" width="14" height="2" rx="1" fill={V} />
+      <rect x="9" y="21" width="9" height="2" rx="1" fill={V} />
+    </Svg>
+  ),
   "csv-to-pdf": (c) => (
     <Svg className={c}>
       <rect x="4" y="4" width="24" height="24" rx="2" fill={K} />

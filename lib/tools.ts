@@ -547,7 +547,33 @@ export const TOOLS: Tool[] = [
         a: "OfflinePDF's Markdown to PDF tool escapes raw HTML in the file, then sanitizes the result before preview. It is not a way to run scripts.",
       },
     ],
-    related: ["html-to-pdf", "word-to-pdf", "create-pdf"],
+    related: ["text-to-pdf", "html-to-pdf", "create-pdf"],
+  },
+  {
+    slug: "text-to-pdf",
+    name: "Text to PDF",
+    tagline: "Turn a plain .txt file into a paginated PDF",
+    description:
+      "Upload a .txt file. Its line breaks and spacing are preserved exactly, wrapped to the page width, then you save the print preview as a PDF. No formatting is added or guessed.",
+    icon: "📄",
+    category: "convert",
+    howTo: [
+      "Upload a .txt file.",
+      "Click Convert to PDF.",
+      "Check the preview.",
+      "Click Save as PDF and choose Save as PDF in the print dialog.",
+    ],
+    faq: [
+      {
+        q: "Does it preserve line breaks and spacing?",
+        a: "OfflinePDF's Text to PDF tool keeps the original line breaks and spacing exactly, wrapping only when a line is too wide for the page.",
+      },
+      {
+        q: "Will it add headings or formatting?",
+        a: "No. OfflinePDF's Text to PDF tool renders the file as plain monospaced text; it does not guess at headings, bold, or lists the way the Markdown to PDF tool does.",
+      },
+    ],
+    related: ["markdown-to-pdf", "html-to-pdf", "create-pdf"],
   },
   {
     slug: "html-to-pdf",
@@ -573,7 +599,7 @@ export const TOOLS: Tool[] = [
         a: "OfflinePDF's HTML to PDF tool uses your browser's print dialog. Choose Save as PDF as the destination. Nothing is uploaded.",
       },
     ],
-    related: ["markdown-to-pdf", "word-to-pdf", "create-pdf"],
+    related: ["markdown-to-pdf", "text-to-pdf", "create-pdf"],
   },
   {
     slug: "csv-to-pdf",

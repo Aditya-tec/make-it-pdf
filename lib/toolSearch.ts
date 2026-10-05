@@ -24,6 +24,7 @@ const KEYWORDS: Record<string, string> = {
   "privacy-scanner": "privacy metadata strip info exif author remove metadata anonymize anonymise scrub clean hidden data tracking scanner",
   "pdf-to-zip": "zip archive bundle pages images download all pages jpg jpeg together one file",
   "markdown-to-pdf": "markdown md readme to pdf commonmark notes",
+  "text-to-pdf": "text txt plain text to pdf notes convert txt file",
   "html-to-pdf": "html webpage markup to pdf paste html file print",
   "csv-to-pdf": "csv comma separated spreadsheet export table to pdf rows",
   "excel-to-pdf": "excel xlsx xls spreadsheet sheet workbook to pdf",

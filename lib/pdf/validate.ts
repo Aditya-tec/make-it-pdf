@@ -28,6 +28,7 @@ const SIGNATURES: Record<string, (b: Uint8Array) => boolean> = {
   ".htm": textFile,
   ".md": textFile,
   ".csv": textFile,
+  ".txt": textFile,
 };
 
 // Text uploads: reject NULs so a renamed binary can't sneak in.
